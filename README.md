@@ -12,6 +12,6 @@
 
 **Luca Lopes Martinho**<br>**23.00064-3**
 
-**Leonardo Iorio, 23.00847-7**
+**Leonardo Iorio**<br>**23.00847-7**
 
 ---
