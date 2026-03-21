@@ -84,7 +84,9 @@ npm start
 ```
 Acesse no navegador:
 
- http://localhost:3000
+ PORT: Porta aberta pelo vite
+ Pesquise com a PORT:
+ http://localhost:(PORT)
 
  ---
 
