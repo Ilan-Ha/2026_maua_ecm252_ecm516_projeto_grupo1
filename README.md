@@ -10,8 +10,8 @@
 
 **Ilan Hameiry**<br>**23.00981-0**
 
-**Luca Lopes Martinho**<br>**23.00064-3**
-
 **Leonardo Iorio**<br>**23.00847-7**
+
+**Luca Lopes Martinho**<br>**23.00064-3**
 
 ---
