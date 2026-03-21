@@ -1,6 +1,7 @@
 // Arquivo Principal do Backend
 const http = require('http');
 
+// Criação do servidor
 const server = http.createServer((req, res) => {
   // Configurando CORS para permitir requisições do front-end
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -23,8 +24,9 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify({ error: 'Rota não encontrada' }));
   }
 });
-
+// Definição da porta
 const PORT = 3000;
+// Inicialização do servidor
 server.listen(PORT, () => {
   console.log(`Servidor back-end rodando em http://localhost:${PORT}`);
 });

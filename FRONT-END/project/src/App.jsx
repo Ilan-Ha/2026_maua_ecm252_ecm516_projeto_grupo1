@@ -4,10 +4,14 @@ import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
 
+// Componente principal
 function App() {
+  // Hook de estado para contar cliques
   const [count, setCount] = useState(0)
+  // Hook de estado para armazenar mensagem do backend
   const [backendMessage, setBackendMessage] = useState('Carregando...')
 
+  // useEffect para buscar dados do backend
   useEffect(() => {
     fetch('http://localhost:3000/api/data')
       .then(res => res.json())
@@ -15,6 +19,7 @@ function App() {
       .catch(err => setBackendMessage('Erro ao conectar com o backend'))
   }, [])
 
+  // Retorno do componente
   return (
     <>
       <section id="center">
