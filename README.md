@@ -88,7 +88,7 @@ Acesse no navegador:
 
  ---
 
-##💡 Melhorias Futuras
+## 💡 Melhorias Futuras
 
 - Sistema de login e autenticação de usuários
 - Histórico de avaliações do usuário
@@ -99,7 +99,7 @@ Acesse no navegador:
 
 ---
 
-##⚠️ Desafios e Aprendizados
+## ⚠️ Desafios e Aprendizados
 - Organização de dados de avaliações
 - Criação de interface intuitiva
 - Integração entre front-end e back-end
@@ -108,13 +108,13 @@ Acesse no navegador:
 
 ---
 
-##📄 Licença
+## 📄 Licença
 
 Este projeto está sem licença definida.
 
 ---
 
-##👥 Integrantes
+## 👥 Integrantes
 
 Arthur Silva Correia
 23.00877-6
