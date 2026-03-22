@@ -64,21 +64,28 @@ git clone https://github.com/Ilan-Ha/2026_maua_ecm252_ecm516_projeto_grupo1
 npm install
 ```
 
-4. Execute Front-End e Back-End
-Em project:
+4. Execute Front-End:
+
 ```bash
-npm run deve
+cd front-end
+
+cd project
+
+npm run dev
 ```
-Em BACK-END:
+5. Abra outro terminal e execute Back-End:
+
 ```bash
+cd front-end
+
 Node a.js
 ```
 
-5.Acesse no navegador:
+6. Acesse no navegador:
 
- PORT: Porta aberta pelo vite
- Pesquise com a PORT:
- http://localhost:(PORT)
+PORT: Porta aberta pelo vite
+Pesquise com a PORT:
+http://localhost:(PORT)
 
  ---
 
