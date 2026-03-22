@@ -2,7 +2,7 @@
 
 ![Web](https://img.shields.io/badge/Web-Platform-blue?style=for-the-badge) ![Build](https://img.shields.io/badge/Build-Passing-brightgreen)
 
-Aplicação web desenvolvida para **busca e análise de avaliações de produtos**, permitindo que usuários encontrem opiniões confiáveis antes de realizar compras.  
+Aplicação web em desenvolvimento para **busca e análise de avaliações de produtos**, permitindo que usuários encontrem opiniões confiáveis antes de realizar compras.  
 O sistema reúne reviews, notas e comentários de diferentes usuários em uma interface simples e eficiente.
 
 Projeto desenvolvido pelos integrantes da equipe durante o curso, com foco em aplicar conceitos de desenvolvimento web e experiência do usuário.
@@ -14,44 +14,31 @@ Projeto desenvolvido pelos integrantes da equipe durante o curso, com foco em ap
 Permitir que usuários:
 
 - Pesquisem produtos  
-- Visualizem avaliações  
-- Comparem opiniões  
-- Tomem decisões de compra mais informadas  
+- Façam cadastro
+- Façam login
 
 ---
 
 ## 🖥️ Telas principais
 
-- Página inicial (busca de produtos)  
-- Página de resultados  
-- Página de detalhes do produto  
-- Área de avaliações e comentários  
+- Página inicial (Seleção de categoria)  
+- Página de login
+- Página de cadastro 
 
 ---
 
 ## ⚙️ Como usar
 
 1. Acesse o site.  
-2. Digite o nome do produto na barra de pesquisa.  
-3. Visualize os resultados encontrados.  
-4. Clique em um produto para ver detalhes.  
-5. Analise:  
-   - Nota média  
-   - Comentários de usuários  
-   - Avaliações positivas e negativas  
-6. Utilize as informações para decidir sua compra.  
+2. Faça cadastro.  
+3. Faça login.  
 
 ---
 
 ## ⚙️ Funcionalidades
 
-- 🔍 Busca de produtos  
-- ⭐ Sistema de avaliação (notas)  
-- 💬 Comentários de usuários  
-- 📊 Média de avaliações  
-- 📱 Interface responsiva  
-- 🔎 Filtros de pesquisa  
-- 🧾 Exibição organizada das reviews  
+- 🔍 Criação de cadatro  
+- ⭐ Login do usuário
 
 ---
 
@@ -60,7 +47,6 @@ Permitir que usuários:
 - **Front-end:** React
 - **Back-end:** Node.js (JavaScript)
 - **Gerenciador de pacotes:** npm
-- **Banco de Dados:** (definir: MySQL / MongoDB / etc.)  
 - **Versionamento:** Git / GitHub  
 
 ---
@@ -98,7 +84,10 @@ Node a.js
 
 ## 💡 Melhorias Futuras
 
-- Sistema de login e autenticação de usuários
+- Especificações de produtos
+- Comentários de produtos no site
+- Autenticação de usuários
+- Histórico de produtos vistos
 - Histórico de avaliações do usuário
 - Integração com APIs externas (ex: Amazon, Mercado Livre)
 - Sistema de recomendação inteligente
@@ -108,7 +97,7 @@ Node a.js
 ---
 
 ## ⚠️ Desafios e Aprendizados
-- Organização de dados de avaliações
+
 - Criação de interface intuitiva
 - Integração entre front-end e back-end
 - Trabalho em equipe
