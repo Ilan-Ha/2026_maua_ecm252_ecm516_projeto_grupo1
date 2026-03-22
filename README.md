@@ -17,7 +17,7 @@ Permitir que usuários:
 - Façam cadastro
 - Façam login
 
----
+--- 
 
 ## 🖥️ Telas principais
 
