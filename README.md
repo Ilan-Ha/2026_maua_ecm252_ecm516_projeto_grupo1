@@ -135,7 +135,7 @@ Felipe Kolanian Pasquini
 Ilan Hameiry
 23.00981-0
 
-Leonardo Iorio
+Leonardo Luiz Seixas Iorio
 23.00847-7
 
 Luca Lopes Martinho
