@@ -78,7 +78,7 @@ npm run dev
 ```bash
 cd front-end
 
-Node a.js
+Node back.js
 ```
 
 6. Acesse no navegador:
