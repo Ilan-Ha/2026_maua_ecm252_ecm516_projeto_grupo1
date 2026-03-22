@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 export default function Cadastro() {
   // Hook de estado para armazenar dados do formulário/
   const [form, setForm] = useState({
@@ -44,13 +43,14 @@ export default function Cadastro() {
       alert("Erro ao cadastrar");
     }
   };
-
   return (
     <div>
+      {/* Cabeçalho */}
       <h2>Cadastro</h2>
-
+      {/* Formulário de cadastro */}
       <form onSubmit={handleSubmit}>
         <input
+          className="form-control mb-3"
           type="text"
           name="nome"
           placeholder="Nome"
@@ -58,9 +58,9 @@ export default function Cadastro() {
           onChange={handleChange}
           required
         />
-        <br />
-
+        {/* Campo de email */}
         <input
+          className="form-control mb-3"
           type="email"
           name="email"
           placeholder="Email"
@@ -68,9 +68,9 @@ export default function Cadastro() {
           onChange={handleChange}
           required
         />
-        <br />
-
+        {/* Campo de senha */}
         <input
+          className="form-control mb-3"
           type="password"
           name="senha"
           placeholder="Senha"
@@ -78,9 +78,8 @@ export default function Cadastro() {
           onChange={handleChange}
           required
         />
-        <br />
-
-        <button type="submit">Cadastrar</button>
+        {/* Botão de envio */}
+        <button className="btn btn-success" type="submit">Cadastrar</button>
       </form>
     </div>
   );

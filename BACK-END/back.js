@@ -5,7 +5,7 @@ let usuarios = [];
 // Criação do servidor
 const server = http.createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   // Respondendo requisições preflight (OPTIONS)
   if (req.method === "OPTIONS") {
@@ -51,7 +51,8 @@ const server = http.createServer((req, res) => {
       if (usuario) {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify({
-          message: "Login OK"
+          message: "Login OK",
+          usuario: usuario
         }));
       } else {
         res.writeHead(401, { "Content-Type": "application/json" });
@@ -61,6 +62,41 @@ const server = http.createServer((req, res) => {
       }
     });
     return;
+  }
+  // Rota de atualização do usuário
+ if (req.url === "/usuario" && req.method === "PUT") {
+  let body = "";
+  // Recebendo dados do front-end
+  req.on("data", chunk => {
+    body += chunk;
+  });
+  // Finalizando o recebimento de dados
+  req.on("end", () => {
+    // Recebe os dados do front-end 2
+    const { email, nome, senha } = JSON.parse(body);
+    // procura usuário pelo email
+    const usuario = usuarios.find(u => u.email === email);
+    // Se o usuário não existe
+    if (!usuario) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({
+        message: "Usuário não encontrado"
+      }));
+      return;
+    }
+    // atualiza campos
+    if (nome) usuario.nome = nome;
+    if (senha) usuario.senha = senha;
+    // Mostra no terminal
+    console.log("Usuário atualizado:", usuario);
+    // Resposta ao front-end
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({
+      message: "Dados atualizados",
+      usuario: usuario
+    }));
+  });
+  return;
   }
   // Fallback (Erro 404)
   res.writeHead(404, { "Content-Type": "application/json" });

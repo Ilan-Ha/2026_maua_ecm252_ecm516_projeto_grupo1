@@ -1,10 +1,13 @@
 import { useState } from "react";
-export default function Login({ setUsuario, setTela }) {
+export default function Perfil({ usuario }) {
   // Hook de estado para armazenar dados do formulário
   const [form, setForm] = useState({
-    email: "",
+    email: usuario?.email || "",
+    nome: usuario?.nome || "",
     senha: ""
   });
+  // Proteção caso usuario seja null (depois dos hooks!)
+  if (!usuario) return <p>Nenhum usuário logado.</p>;
   // Função para lidar com mudanças no formulário
   const handleChange = (e) => {
     setForm({
@@ -12,62 +15,58 @@ export default function Login({ setUsuario, setTela }) {
       [e.target.name]: e.target.value
     });
   };
-  // Função para lidar com o envio do formulário
-  const handleSubmit = async (e) => {
+  // Função para lidar com a atualização do perfil
+  const handleUpdate = async (e) => {
     e.preventDefault();
     // Envia dados para o backend
     try {
-      const res = await fetch("http://localhost:3000/login", {
-        method: "POST",
+      const res = await fetch("http://localhost:3000/usuario", {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(form)
       });
-      // Verifica se a resposta foi bem sucedida
-      if (!res.ok) {
-        throw new Error("Erro no login");
-      }
       // Converte a resposta para JSON
       const data = await res.json();
-      console.log("Resposta do backend:", data);
-      console.log("Usuario recebido:", data.usuario);
-      // login OK → salva usuário
-      setUsuario(data.usuario);
-      // muda para perfil
-      setTela("perfil");
+      alert(data.message);
     // Em caso de erro
-    } catch (err) {
-      alert("Email ou senha inválidos");
+    } catch {
+      alert("Erro ao atualizar");
     }
   };
   // Retorno do componente
   return (
     <div>
-      <h2>Login</h2>
-      {/* Formulário de login */}
-      <form onSubmit={handleSubmit}>
+      {/* Cabeçalho */}
+      <h2>Perfil</h2>
+      {/* Formulário de perfil */}
+      <form onSubmit={handleUpdate}>
+        {/* Campo de email */}
         <input
           className="form-control mb-3"
           type="email"
-          name="email"
-          placeholder="Email"
           value={form.email}
+          disabled
+        />
+        {/* Campo de nome */}
+        <input
+          className="form-control mb-3"
+          type="text"
+          name="nome"
+          value={form.nome}
           onChange={handleChange}
-          required
         />
         {/* Campo de senha */}
         <input
           className="form-control mb-3"
           type="password"
           name="senha"
-          placeholder="Senha"
-          value={form.senha}
+          placeholder="Nova senha"
           onChange={handleChange}
-          required
         />
         {/* Botão de envio */}
-        <button className="btn btn-primary" type="submit">Entrar</button>
+        <button className="btn btn-primary" type="submit">Atualizar</button>
       </form>
     </div>
   );
