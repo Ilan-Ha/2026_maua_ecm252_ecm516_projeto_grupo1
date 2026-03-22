@@ -12,18 +12,18 @@ Projeto desenvolvido pelos integrantes da equipe durante o curso, com foco em ap
 ## 🌐 Funcionalidade Principal
 
 Permitir que usuários:
-
-- Pesquisem produtos  
+ 
 - Façam cadastro
 - Façam login
+- Façam alterações de dados cadastrados
 
 --- 
 
 ## 🖥️ Telas principais
 
-- Página inicial (Seleção de categoria)  
 - Página de login
 - Página de cadastro 
+- Página de perfil
 
 ---
 
@@ -91,6 +91,8 @@ http://localhost:(PORT)
 
 ## 💡 Melhorias Futuras
 
+- Página inicial (Seleção de categoria)  
+- Pesquisem produtos 
 - Especificações de produtos
 - Comentários de produtos no site
 - Autenticação de usuários
