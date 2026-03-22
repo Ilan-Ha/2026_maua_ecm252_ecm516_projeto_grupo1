@@ -27,7 +27,9 @@ export default function Cadastro() {
       });
       // Verifica se a resposta foi bem sucedida/
       if (!res.ok) {
-        throw new Error("Erro no servidor");
+        const errorData = await res.json();
+        alert(errorData.message || "Erro no servidor");
+        return;
       }
       // Converte a resposta para JSON/
       const data = await res.json();
@@ -40,7 +42,7 @@ export default function Cadastro() {
       });
     // Em caso de erro/
     } catch (err) {
-      alert("Erro ao cadastrar");
+      alert("Erro ao conectar com o servidor");
     }
   };
   return (

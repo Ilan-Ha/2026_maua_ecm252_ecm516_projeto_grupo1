@@ -1,5 +1,5 @@
 import { useState } from "react";
-export default function Perfil({ usuario }) {
+export default function Perfil({ usuario, setUsuario }) {
   // Hook de estado para armazenar dados do formulário
   const [form, setForm] = useState({
     email: usuario?.email || "",
@@ -30,6 +30,11 @@ export default function Perfil({ usuario }) {
       // Converte a resposta para JSON
       const data = await res.json();
       alert(data.message);
+      // Atualiza o usuario global e o form local
+      if (data.usuario) {
+        setUsuario(data.usuario);
+        setForm({ ...form, nome: data.usuario.nome, email: data.usuario.email, senha: "" });
+      }
     // Em caso de erro
     } catch {
       alert("Erro ao atualizar");

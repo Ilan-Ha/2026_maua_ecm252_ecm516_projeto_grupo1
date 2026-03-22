@@ -51,7 +51,7 @@ function App() {
           <Login setUsuario={setUsuario} setTela={setTela} />
         )}
         {tela === "perfil" && (
-          <Perfil usuario={usuario} />
+          <Perfil usuario={usuario} setUsuario={setUsuario} />
         )}
       </div>
       {/* Documentação */}

@@ -22,7 +22,29 @@ const server = http.createServer((req, res) => {
     });
     // Finalizando o recebimento de dados
     req.on("end", () => {
-      const dados = JSON.parse(body);
+      let dados;
+      // Tenta converter o body para JSON
+      try {
+        dados = JSON.parse(body);
+      } catch {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "JSON inválido" }));
+        return;
+      }
+      // Verifica se já existe usuário com mesmo email
+      const emailExiste = usuarios.find(u => u.email === dados.email);
+      if (emailExiste) {
+        res.writeHead(409, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Email já cadastrado" }));
+        return;
+      }
+      // Verifica se já existe usuário com mesmo nome
+      const nomeExiste = usuarios.find(u => u.nome === dados.nome);
+      if (nomeExiste) {
+        res.writeHead(409, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Nome já cadastrado" }));
+        return;
+      }
       // Salva em memória
       usuarios.push(dados); 
       console.log("Usuários:", usuarios);
@@ -42,7 +64,16 @@ const server = http.createServer((req, res) => {
     });
     // Finalizando o recebimento de dados
     req.on("end", () => {
-      const { email, senha } = JSON.parse(body);
+      let dados;
+      // Tenta converter o body para JSON
+      try {
+        dados = JSON.parse(body);
+      } catch {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "JSON inválido" }));
+        return;
+      }
+      const { email, senha } = dados;
       // Verifica se o usuário existe
       const usuario = usuarios.find(
         (u) => u.email === email && u.senha === senha
@@ -52,7 +83,10 @@ const server = http.createServer((req, res) => {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify({
           message: "Login OK",
-          usuario: usuario
+          usuario: {
+            nome: usuario.nome,
+            email: usuario.email
+          }
         }));
       } else {
         res.writeHead(401, { "Content-Type": "application/json" });
@@ -73,7 +107,16 @@ const server = http.createServer((req, res) => {
   // Finalizando o recebimento de dados
   req.on("end", () => {
     // Recebe os dados do front-end 2
-    const { email, nome, senha } = JSON.parse(body);
+    let dados;
+    // Tenta converter o body para JSON
+    try {
+      dados = JSON.parse(body);
+    } catch {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "JSON inválido" }));
+      return;
+    }
+    const { email, nome, senha } = dados;
     // procura usuário pelo email
     const usuario = usuarios.find(u => u.email === email);
     // Se o usuário não existe
@@ -93,7 +136,10 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({
       message: "Dados atualizados",
-      usuario: usuario
+      usuario: {
+        nome: usuario.nome,
+        email: usuario.email
+      }
     }));
   });
   return;
