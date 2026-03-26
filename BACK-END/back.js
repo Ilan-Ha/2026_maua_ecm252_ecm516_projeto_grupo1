@@ -1,5 +1,7 @@
+import {addItem} from './userDatabaseManager.js'
+
 // Arquivo Principal do Backend
-const http = require("http");
+import http from 'http'
 // Banco de dados em memória
 let usuarios = [];
 // Criação do servidor
@@ -47,6 +49,7 @@ const server = http.createServer((req, res) => {
       }
       // Salva em memória
       usuarios.push(dados); 
+      addItem(dados)
       console.log("Usuários:", usuarios);
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({
