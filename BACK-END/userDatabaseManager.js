@@ -1,3 +1,4 @@
+import { debug } from 'console';
 import fs from 'fs';
 
 const initialData = { "users": []};
@@ -38,3 +39,19 @@ export function addItem(newItem) {
   saveData(currentData);
 }
 
+function searchData(query) {
+  const currentData = retrieveData();
+
+  if (!Array.isArray(currentData.users)) {
+    return [];
+  }
+
+  const lowerQuery = query.toLowerCase();
+
+  return currentData.users.filter(item => {
+    return Object.values(item).some(val =>
+      typeof val === 'string' &&
+      val.toLowerCase().includes(lowerQuery)
+    );
+  });
+}

@@ -1,9 +1,9 @@
-import {addItem} from './userDatabaseManager.js'
+import {addItem, retrieveData} from './userDatabaseManager.js'
 
 // Arquivo Principal do Backend
 import http from 'http'
 // Banco de dados em memória
-let usuarios = [];
+let usuarios = retrieveData().users
 // Criação do servidor
 const server = http.createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
