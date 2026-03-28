@@ -61,6 +61,7 @@ export default function Perfil({ usuario, setUsuario }) {
           name="nome"
           value={form.nome}
           onChange={handleChange}
+          required
         />
         {/* Campo de senha */}
         <input
@@ -69,6 +70,7 @@ export default function Perfil({ usuario, setUsuario }) {
           name="senha"
           placeholder="Nova senha"
           onChange={handleChange}
+          required
         />
         {/* Botão de envio */}
         <button className="btn btn-primary" type="submit">Atualizar</button>
