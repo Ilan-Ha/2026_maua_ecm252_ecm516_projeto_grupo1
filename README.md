@@ -82,9 +82,7 @@ Node back.js
 
 6. Acesse no navegador:
 
-PORT: Porta aberta pelo vite
-Pesquise com a PORT:
-http://localhost:(PORT)
+http://localhost:5173
 
  ---
 
