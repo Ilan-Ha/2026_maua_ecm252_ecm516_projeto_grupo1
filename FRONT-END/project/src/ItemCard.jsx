@@ -1,5 +1,4 @@
 import React from "react";
-import Cadastro from "./Cadastro";
 
 //
 
@@ -8,7 +7,9 @@ const ItemCard = (props) => {
     <div
       className="card"
       style={{
-        width: "14rem",
+        display:"flex",
+        width: "100%",
+        maxHeight: props.cardHeight,
         padding: "0px",
         borderRadius: "1.5rem",
       }}
@@ -20,7 +21,8 @@ const ItemCard = (props) => {
           src={props.img}
           alt="Card image cap"
           style={{
-            maxHeight: "14rem",
+            padding:"0.25rem 0.25rem 0 0.25rem",
+            maxHeight: props.cardWidth,
             objectFit: "cover",
             borderTopLeftRadius: "1.5rem",
             borderTopRightRadius: "1.5rem",
@@ -42,7 +44,6 @@ const ItemCard = (props) => {
       <div
         className="card-body"
         style={{
-          height: "6rem",
           padding: "0px",
           textAlign: "left",
         }}
