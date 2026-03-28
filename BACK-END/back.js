@@ -1,14 +1,14 @@
-import {addItem, retrieveData} from './userDatabaseManager.js'
+import {addItem, retrieveData, updateItem} from './userDatabaseManager.js'
 
 // Arquivo Principal do Backend
 import http from 'http'
-// Banco de dados em memória
-let usuarios = retrieveData().users
 // Criação do servidor
 const server = http.createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  // Recebe DataBase
+  let usuarios = retrieveData().users
   // Respondendo requisições preflight (OPTIONS)
   if (req.method === "OPTIONS") {
     res.writeHead(204);
@@ -130,19 +130,19 @@ const server = http.createServer((req, res) => {
       }));
       return;
     }
+    
+    // Salva em memória
     // atualiza campos
-    if (nome) usuario.nome = nome;
-    if (senha) usuario.senha = senha;
+    usuarios.push(dados); 
+    updateItem(usuario.email, dados)
+    // Atualiza os dados do usuário no cache atual
+    usuarios = retrieveData().users
     // Mostra no terminal
-    console.log("Usuário atualizado:", usuario);
+    console.log("Usuário atualizado:", dados);
     // Resposta ao front-end
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({
-      message: "Dados atualizados",
-      usuario: {
-        nome: usuario.nome,
-        email: usuario.email
-      }
+      message: "Dados atualizados"
     }));
   });
   return;
