@@ -59,24 +59,23 @@ git clone https://github.com/Ilan-Ha/2026_maua_ecm252_ecm516_projeto_grupo1
 ```
 2. Acesse a pasta do projeto.
 
-3. Instale as dependências:
+3. Instale as dependências pelo terminal:
 ```bash
+cd FRONT-END
+
+cd project
+
 npm install
 ```
 
 4. Execute Front-End:
-
 ```bash
-cd front-end
-
-cd project
-
 npm run dev
 ```
 5. Abra outro terminal e execute Back-End:
 
 ```bash
-cd front-end
+cd BACK-END
 
 Node back.js
 ```
