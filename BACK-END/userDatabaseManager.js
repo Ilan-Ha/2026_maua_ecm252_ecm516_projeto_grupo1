@@ -55,3 +55,22 @@ function searchData(query) {
     );
   });
 }
+
+export function updateItem(email, updates) {
+  const currentData = retrieveData();
+
+  if (!Array.isArray(currentData.users)) {
+    currentData.users = [];
+  }
+
+  const user = currentData.users.find(u => u.email === email);
+  if (!user) {
+    return false;
+  }
+
+  if (typeof updates.nome === 'string') user.nome = updates.nome;
+  if (typeof updates.senha === 'string') user.senha = updates.senha;
+
+  saveData(currentData);
+  return true;
+}
