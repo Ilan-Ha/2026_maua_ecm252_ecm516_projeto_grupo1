@@ -8,12 +8,17 @@
     {
       "nome": "alou",
       "email": "alou@alou",
-      "senha": "teste"
+      "senha": "alouNovaSenha"
     },
     {
       "nome": "testeServidoresSeparados",
       "email": "servidores@separados",
       "senha": "testeModificacaoDeSenha"
+    },
+    {
+      "nome": "2026Mar29",
+      "email": "Mar@2026.29",
+      "senha": "29DeMarco"
     }
   ]
 }
