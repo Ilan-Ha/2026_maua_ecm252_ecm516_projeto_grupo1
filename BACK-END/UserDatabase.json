@@ -9,6 +9,11 @@
       "nome": "alou",
       "email": "alou@alou",
       "senha": "teste"
+    },
+    {
+      "nome": "testeServidoresSeparados",
+      "email": "servidores@separados",
+      "senha": "testeModificacaoDeSenha"
     }
   ]
 }
