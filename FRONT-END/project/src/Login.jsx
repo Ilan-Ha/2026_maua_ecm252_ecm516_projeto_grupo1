@@ -1,4 +1,8 @@
 import { useState } from "react";
+import config from "./config";
+
+const svc = config.services.auth;
+
 export default function Login({ setUsuario, setTela }) {
   // Hook de estado para armazenar dados do formulário
   const [form, setForm] = useState({
@@ -17,7 +21,7 @@ export default function Login({ setUsuario, setTela }) {
     e.preventDefault();
     // Envia dados para o backend
     try {
-      const res = await fetch("http://localhost:3001/login", {
+      const res = await fetch(`http://localhost:${svc.port}${svc.endpoints.login}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

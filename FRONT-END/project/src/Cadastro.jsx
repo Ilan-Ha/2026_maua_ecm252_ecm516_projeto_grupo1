@@ -1,4 +1,8 @@
 import { useState } from "react";
+import config from "./config";
+
+const svc = config.services.auth;
+
 export default function Cadastro() {
   // Hook de estado para armazenar dados do formulário/
   const [form, setForm] = useState({
@@ -18,7 +22,7 @@ export default function Cadastro() {
     e.preventDefault();
     // Envia dados para o backend/
     try {
-      const res = await fetch("http://localhost:3000/cadastro", {
+      const res = await fetch(`http://localhost:${svc.port}${svc.endpoints.register}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

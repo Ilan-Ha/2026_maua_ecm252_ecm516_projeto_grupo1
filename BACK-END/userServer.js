@@ -1,6 +1,10 @@
 import express from 'express'
 import cors from 'cors'
 import { retrieveData, updateItem } from './userDatabaseManager.js'
+import config from './config.js'
+
+const svc = config.services.user;
+const end = svc.endpoints;
 
 const app = express()
 
@@ -9,7 +13,7 @@ app.use(express.json())
 
 let usuarios = retrieveData().users
 
-app.put('/usuario', (req, res) => {
+app.put(end.changeInformation, (req, res) => {
   try {
     const { email, nome, senha } = req.body
 
@@ -41,6 +45,6 @@ app.put('/usuario', (req, res) => {
   }
 })
 
-app.listen(3002, () => {
-  console.log('Servidor de Usuario em http://localhost:3002')
+app.listen(svc.port, () => {
+  console.log(`Servidor de usuario executando em http://localhost:${svc.port}`)
 })

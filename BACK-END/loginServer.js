@@ -1,6 +1,10 @@
 import express from 'express'
 import cors from 'cors'
-import { retrieveData } from './userDatabaseManager.js'
+import { addItem, retrieveData } from './userDatabaseManager.js'
+import config from './config.js'
+
+const svc = config.services.auth;
+const end = svc.endpoints;
 
 const app = express()
 
@@ -16,7 +20,17 @@ const findUser = (email, senha) => {
   )
 }
 
-app.post('/login', (req, res) => {
+const handleExistences = (nome, email) => {
+  const emailExiste = usuarios.find(u => u.email === email)
+  if (emailExiste) return "Email já cadastrado"
+
+  const nomeExiste = usuarios.find(u => u.nome === nome)
+  if (nomeExiste) return "Nome já cadastrado"
+
+  return null
+}
+
+app.post(end.login, (req, res) => {
   try {
     const { email, senha } = req.body
 
@@ -44,6 +58,35 @@ app.post('/login', (req, res) => {
   }
 })
 
-app.listen(3001, () => {
-  console.log("Servidor rodando em http://localhost:3001")
+app.post(end.register, (req, res) => {
+  try {
+    const { nome, email, senha } = req.body
+
+    const erro = handleExistences(nome, email)
+
+    if (erro) {
+      return res.status(409).json({ message: erro })
+    }
+
+    const novoUsuario = { nome, email, senha }
+
+    usuarios.push(novoUsuario)
+    addItem(novoUsuario)
+
+    console.log("Usuários:", usuarios)
+
+    res.status(200).json({
+      message: "Usuário cadastrado"
+    })
+
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      erro: 'Erro ao cadastrar usuario'
+    })
+  }
+})
+
+app.listen(svc.port, () => {
+  console.log(`Servidor de login executando em http://localhost:${svc.port}`)
 })
