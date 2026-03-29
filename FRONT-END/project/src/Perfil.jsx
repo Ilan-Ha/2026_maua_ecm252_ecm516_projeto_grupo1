@@ -20,7 +20,7 @@ export default function Perfil({ usuario, setUsuario }) {
     e.preventDefault();
     // Envia dados para o backend
     try {
-      const res = await fetch("http://localhost:3000/usuario", {
+      const res = await fetch("http://localhost:3002/usuario", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
