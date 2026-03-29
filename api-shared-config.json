@@ -1,0 +1,19 @@
+{
+    "services":{
+        "auth":{
+            "port": 3000,
+            "endpoints": {
+                "login": "/login",
+                "register": "/cadastro"
+            }
+        },
+        "user":{
+            "port": 3001,
+            "endpoints": {
+                "user": "/usuario",
+                "perfil": "/usuario/perfil",
+                "changeInformation": "/usuario/perfil/atualizar"
+            }
+        }
+    }
+}
