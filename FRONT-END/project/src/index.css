@@ -11,8 +11,8 @@
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
@@ -91,6 +91,10 @@ h2 {
     font-size: 20px;
   }
 }
+
+h4 {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
 p {
   margin: 0;
 }
@@ -108,4 +112,22 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+.card-title.custom-title{
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;  
+  font-width: 50;
+  border: none;
+}
+
+.custom-body.item-card{
+  background-color: #E8F6E4;
+}
+
+.card-title.item-card-title{
+  color: #377F3F;
+  font-size: clamp(0.8rem, 4vw, 3rem);
+  
+  
 }
