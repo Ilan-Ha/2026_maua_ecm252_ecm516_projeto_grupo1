@@ -1,76 +1,29 @@
 import React from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-//
+//  PROPS
+//  img = src da imagem
+//  itemName = titulo do card
+//  onClick = pagina que o card leva ao ser clicado
 
 const ItemCard = (props) => {
   return (
-    <div
-      className="card"
-      style={{
-        display:"flex",
-        width: "100%",
-        maxHeight: props.cardHeight,
-        padding: "0px",
-        borderRadius: "1.5rem",
-      }}
-      onClick={props.onClick}
+    <div className="card h-100 shadow-sm hover rounded-4" style={{
+      transition: "transform 0.2s, box-shadow 0.2s",
+      cursor: "pointer"
+    }}
     >
-      <div className="img-body">
-        <img
-          class="card-img-top"
-          src={props.img}
-          alt="Card image cap"
-          style={{
-            padding:"0.25rem 0.25rem 0 0.25rem",
-            maxHeight: props.cardWidth,
-            objectFit: "cover",
-            borderTopLeftRadius: "1.5rem",
-            borderTopRightRadius: "1.5rem",
-          }}
-        ></img>
-        <div
-          style={{
-            position: "absolute",
-            bottom: "6rem",
-            left: 0,
-            width: "100%",
-            height: "50%",
-            background:
-              "linear-gradient(to bottom, rgba(255, 255, 255, 0) 75%, rgba(255, 255, 255) 100%)",
-
-          }}
-        />
-      </div>
-      <div
-        className="card-body"
+      <img 
+        className="card-img-top"  
+        src={props.img} 
+        alt={props.itemName}
         style={{
-          padding: "0px",
-          textAlign: "left",
+          objectFit: "cover",
+          padding: "0.75rem"
         }}
-      >
-        <h2
-          style={{
-            textAlign: "left",
-            padding: "0.25rem 0px 0px 1rem",
-            fontFamily: "Calibri",
-            fontWeight: "Bold",
-          }}
-        >
-          {props.itemName}
-        </h2>
-        <button
-          className="btn btn-success"
-          style={{
-            marginLeft: "1rem",
-            borderRadius: "2rem",
-            backgroundColor: "#e8f6e4",
-            borderColor: "#e8f6e4",
-            color: "#377f3f",
-            fontWeight: 700,
-          }}
-        >
-          Ver produtos ⇒
-        </button>
+      />
+      <div className="card-body d-flex flex-column text-center rounded-bottom-4 custom-body item-card ">
+        <h2 className="card-title custom-title m-auto item-card-title">{props.itemName}</h2>
       </div>
     </div>
   );
