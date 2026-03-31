@@ -1,4 +1,30 @@
-import {addItem, retrieveData, updateItem} from './userDatabaseManager.js'
+import mysql2 from 'mysql2/promise'
+import dotenv from 'dotenv'
+dotenv.config({ path: '../.env' })
+
+const dbPassword = process.env.LoginPassword;
+
+if (!dbPassword) {
+  throw new Error("LoginPassword is not defined");
+}
+
+let dbConection 
+
+const conectar = async () => {
+    try {
+        dbConection = await mysql2.createConnection({
+            host: 'sql10.freesqldatabase.com',
+            user: 'sql10821756',
+            password: dbPassword,
+            database: 'sql10821756',
+            port: '3306'
+        })
+        console.log('Conectado ao MySQL')
+    } catch (error) {
+        console.log(`Erro ao conectar com o banco de dados: ${error}`)
+    }
+}
+conectar()
 
 // Arquivo Principal do Backend
 import http from 'http'
@@ -8,7 +34,6 @@ const server = http.createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   // Recebe DataBase
-  let usuarios = retrieveData().users
   // Respondendo requisições preflight (OPTIONS)
   if (req.method === "OPTIONS") {
     res.writeHead(204);
@@ -23,7 +48,7 @@ const server = http.createServer((req, res) => {
       body += chunk;
     });
     // Finalizando o recebimento de dados
-    req.on("end", () => {
+    req.on("end", async () => {
       let dados;
       // Tenta converter o body para JSON
       try {
@@ -33,24 +58,33 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({ error: "JSON inválido" }));
         return;
       }
+
+      const [result] = await dbConection.query('SELECT Username, Email FROM tb_login WHERE Email = ? AND Username = ?',[dados.email,dados.nome])
+
+      let Username = false, Email = false
+      if(result[0]){
+        console.log(result[0])
+        Username = result[0].Username
+        Email = result[0].Email
+      }
+      
       // Verifica se já existe usuário com mesmo email
-      const emailExiste = usuarios.find(u => u.email === dados.email);
-      if (emailExiste) {
+      
+      if (Email) {
         res.writeHead(409, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: "Email já cadastrado" }));
         return;
       }
+      
       // Verifica se já existe usuário com mesmo nome
-      const nomeExiste = usuarios.find(u => u.nome === dados.nome);
-      if (nomeExiste) {
+      if (Username) {
         res.writeHead(409, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: "Nome já cadastrado" }));
         return;
       }
       // Salva em memória
-      usuarios.push(dados); 
-      addItem(dados)
-      console.log("Usuários:", usuarios);
+       await dbConection.query('INSERT INTO tb_login (Username, Email, PasswordHash) VALUES (?, ?, ?)',
+        [dados.nome,dados.email,dados.senha])
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({
         message: "Usuário cadastrado"
@@ -66,7 +100,7 @@ const server = http.createServer((req, res) => {
       body += chunk;
     });
     // Finalizando o recebimento de dados
-    req.on("end", () => {
+    req.on("end", async () => {
       let dados;
       // Tenta converter o body para JSON
       try {
@@ -78,25 +112,30 @@ const server = http.createServer((req, res) => {
       }
       const { email, senha } = dados;
       // Verifica se o usuário existe
-      const usuario = usuarios.find(
-        (u) => u.email === email && u.senha === senha
-      );
-      // Se o usuário existe
-      if (usuario) {
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({
-          message: "Login OK",
-          usuario: {
-            nome: usuario.nome,
-            email: usuario.email
-          }
-        }));
-      } else {
-        res.writeHead(401, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({
-          message: "Credenciais inválidas"
-        }));
+      const [result] = await dbConection.query(
+  'SELECT * FROM tb_login WHERE Email = ? AND PasswordHash = ?',
+  [email, senha]
+);
+
+if (!result.length) {
+  res.writeHead(401, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ message: "Credenciais inválidas" }));
+  return;
+} else{
+
+  const {Username, Email} = result[0]
+  // Se o usuário existe
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({
+      message: "Login OK",
+      usuario: {
+        nome: Username,
+        email: Email
       }
+    }));
+}
+
+      
     });
     return;
   }
@@ -108,7 +147,7 @@ const server = http.createServer((req, res) => {
     body += chunk;
   });
   // Finalizando o recebimento de dados
-  req.on("end", () => {
+  req.on("end", async () => {
     // Recebe os dados do front-end 2
     let dados;
     // Tenta converter o body para JSON
@@ -121,7 +160,10 @@ const server = http.createServer((req, res) => {
     }
     const { email, nome, senha } = dados;
     // procura usuário pelo email
-    const usuario = usuarios.find(u => u.email === email);
+
+    const [result] = await dbConection.query('SELECT * FROM tb_login WHERE Email = ? ',[email])
+
+    const usuario = result[0]
     // Se o usuário não existe
     if (!usuario) {
       res.writeHead(404, { "Content-Type": "application/json" });
@@ -131,12 +173,11 @@ const server = http.createServer((req, res) => {
       return;
     }
     
-    // Salva em memória
+    
     // atualiza campos
-    usuarios.push(dados); 
-    updateItem(usuario.email, dados)
-    // Atualiza os dados do usuário no cache atual
-    usuarios = retrieveData().users
+    await dbConection.query('UPDATE tb_login SET Username = ?, Email = ?, PasswordHash = ? WHERE LoginID = ?',
+        [dados.nome,dados.email,dados.senha,usuario.LoginID])
+
     // Mostra no terminal
     console.log("Usuário atualizado:", dados);
     // Resposta ao front-end
