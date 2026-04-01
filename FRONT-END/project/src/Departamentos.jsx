@@ -1,21 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import ItemCard from "./ItemCard.jsx";
+import Cadastro from "./Cadastro.jsx";
+import Header from "./Header.jsx";
 
 export default function Departamentos() {
-  const height = "8.50rem";
-  
+  const [tela, setTela] = useState("departamentos");
+
+  if (tela === "cadastro") {
+    return <Cadastro></Cadastro>;
+  }
+
   return (
     <div className="container-fluid">
+      <Header></Header>
       <div className="header" style={{ padding: "3rem 1rem" }}>
-        <h2
-          style={{
-            fontFamily: "Calibri",
-            fontWeight: "bold",
-            marginBottom: ".25rem",
-          }}
-        >
-          CATEGORIAS DE PRODUTOS
-        </h2>
+        <h2 className="title-departamentos">CATEGORIAS DE PRODUTOS</h2>
         <p className="text-muted" style={{ marginBottom: "1.5rem" }}>
           Explore especificações técnicas e detalhes por categoria
         </p>
@@ -23,53 +22,48 @@ export default function Departamentos() {
           type="text"
           className="form-control"
           placeholder="Buscar categoria"
-          style={{ borderRadius: "1.5rem", height: "60%", margin: "0 auto" }}
+          style={{
+            borderRadius: "1.5rem",
+            height: "60%",
+            margin: "0 auto",
+            maxWidth: "800px",
+          }}
         />
       </div>
-      <div className="categories">
-        <div className="container">
-          <div className="row">
-            <div className="col d-flex justify-content-center">
-              <ItemCard
-                cardHeight={height}
-                itemName="Celular"
-                img="celular.png"
-              ></ItemCard>
+      <div className="bottom">
+        <div className="container-fluid">
+          <div className="row row-cols-2 row-cols-lg-4 g-2">
+            <div className="col">
+              <div className="item-card" onClick={() => setTela("cadastro")}>
+                <ItemCard
+                  img="./celulares.webp"
+                  itemName="Celulares"
+                ></ItemCard>
+              </div>
             </div>
-            <div className="col d-flex justify-content-center">
-              <ItemCard
-                cardHeight={height}
-                itemName="Placas de Vídeo"
-                img="placa-grafica.png"
-              ></ItemCard>
+            <div className="col">
+              <div className="item-card" onClick={() => setTela("cadastro")}>
+                <ItemCard
+                  img="./gpu.jpg"
+                  itemName="Placas de Vídeo"
+                ></ItemCard>
+              </div>
             </div>
-            <div className="col d-flex justify-content-center">
-              <ItemCard
-                cardHeight={height}
-                itemName="Geladeira"
-                img="geladeira.png"
-              ></ItemCard>
+            <div className="col">
+              <div className="item-card" onClick={() => setTela("cadastro")}>
+                <ItemCard
+                  img="./geladeira.webp"
+                  itemName="Geladeiras"
+                ></ItemCard>
+              </div>
             </div>
-            <div className="col d-flex justify-content-center">
-              <ItemCard
-                cardHeight={height}
-                itemName="Air Fryers"
-                img="fritadeira-de-ar.png"
-              ></ItemCard>
-            </div>
-            <div className="col d-flex justify-content-center">
-              <ItemCard
-                cardHeight={height}
-                itemName="Microondas"
-                img="microondas.png"
-              ></ItemCard>
-            </div>
-            <div className="col d-flex justify-content-center">
-              <ItemCard
-                cardHeight={height}
-                itemName="Videogames"
-                img="consola-de-video.png"
-              ></ItemCard>
+            <div className="col">
+              <div className="item-card" onClick={() => setTela("cadastro")}>
+                <ItemCard
+                  img="./bike.webp"
+                  itemName="Bicicletas"
+                ></ItemCard>
+              </div>
             </div>
           </div>
         </div>
