@@ -126,7 +126,7 @@ h2.title-departamentos {
 
 .card-title.item-card-title {
   color: #377f3f;
-  font-size: clamp(0.8rem, 4vw, 2rem);
+  font-size: clamp(0.8rem, 2vw, 2rem);
 }
 
 .header-bar {
