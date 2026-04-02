@@ -3,9 +3,38 @@ import ItemCard from "./ItemCard.jsx";
 import Cadastro from "./Cadastro.jsx";
 import Header from "./Header.jsx";
 import { BrowserRouter } from "react-router";
+import { useState } from "react";
+import data from './tempData.json'
 
 
 export default function Departamentos() {
+  const [tag,setTag] = useState(null)
+
+const renderCatalog = () => {
+  if (tag !== null) {
+    return (
+      <>
+        <button onClick={() => setTag(null)}>Voltar</button>
+        {data.Itens[tag].map((item, i) => (
+          <div className="col" key={i}>
+            <ItemCard img={item.imag} itemName={item.name} />
+          </div>
+        ))}
+      </>
+    )
+  }
+
+  return data.Categorias.map((item, i) => (
+    <div className="col" key={i}>
+      <div
+        className="item-card"
+        onClick={() => setTag(item.tag)}
+      >
+        <ItemCard img={item.imag} itemName={item.name} />
+      </div>
+    </div>
+  ))
+}
   return (
     <div className="container-fluid"> 
       <Header></Header>
@@ -29,42 +58,7 @@ export default function Departamentos() {
       <div className="bottom">
         <div className="container-fluid">
           <div className="row row-cols-2 row-cols-lg-4 g-2">
-            <div className="col">
-              <div className="item-card">
-                <ItemCard
-                  img="./celulares.webp"
-                  itemName="Celulares"
-                  itemLink="/cadastro"
-                ></ItemCard>
-              </div>
-            </div>
-            <div className="col">
-              <div className="item-card">
-                <ItemCard
-                  img="./gpu.jpg"
-                  itemName="Placas de Vídeo"
-                  itemLink="/login"
-                ></ItemCard>
-              </div>
-            </div>
-            <div className="col">
-              <div className="item-card">
-                <ItemCard
-                  img="./geladeira.webp"
-                  itemName="Geladeiras"
-                  itemLink="/cadastro"
-                ></ItemCard>
-              </div>
-            </div>
-            <div className="col">
-              <div className="item-card">
-                <ItemCard
-                  img="./bike.webp"
-                  itemName="Bicicletas"
-                  itemLink="/login"
-                ></ItemCard>
-              </div>
-            </div>
+            {renderCatalog()}
           </div>
         </div>
       </div>
