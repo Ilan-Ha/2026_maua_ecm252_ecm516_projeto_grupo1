@@ -1,77 +1,48 @@
 import React from "react";
-import Cadastro from "./Cadastro";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
-//
+//  PROPS
+//  img = "./exemplo.smp "            -- diretorio da imagem (public não precisa ser ./public/img.png, apenas ./img.png)
+//  itemName = "titulo de exemplo"    -- titulo do card   
+//  itemLink = "/exemplo"             -- pagina que o card leva ao ser clicado  (deve ter / no início)
 
 const ItemCard = (props) => {
-  return (
-    <div
-      className="card"
-      style={{
-        width: "14rem",
-        padding: "0px",
-        borderRadius: "1.5rem",
-      }}
-      onClick={props.onClick}
-    >
-      <div className="img-body">
-        <img
-          class="card-img-top"
-          src={props.img}
-          alt="Card image cap"
-          style={{
-            maxHeight: "14rem",
-            objectFit: "cover",
-            borderTopLeftRadius: "1.5rem",
-            borderTopRightRadius: "1.5rem",
-          }}
-        ></img>
-        <div
-          style={{
-            position: "absolute",
-            bottom: "6rem",
-            left: 0,
-            width: "100%",
-            height: "50%",
-            background:
-              "linear-gradient(to bottom, rgba(255, 255, 255, 0) 75%, rgba(255, 255, 255) 100%)",
 
-          }}
-        />
-      </div>
+  return (
+    <Link to={props.itemLink} className="text-decoration-none">
       <div
-        className="card-body"
+        className="card h-100 shadow-sm hover rounded-4"
         style={{
-          height: "6rem",
-          padding: "0px",
-          textAlign: "left",
+          transition: "transform 0.2s, box-shadow 0.2s",
+          cursor: "pointer",
         }}
       >
-        <h2
+        <div
+          className="card-image-container d-flex"
           style={{
-            textAlign: "left",
-            padding: "0.25rem 0px 0px 1rem",
-            fontFamily: "Calibri",
-            fontWeight: "Bold",
+            aspectRatio: "1/1",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {props.itemName}
-        </h2>
-        <button
-          className="btn btn-success"
-          style={{
-            marginLeft: "1rem",
-            borderRadius: "2rem",
-            backgroundColor: "#e8f6e4",
-            borderColor: "#e8f6e4",
-            color: "#377f3f",
-            fontWeight: 700,
-          }}
-        >
-          Ver produtos ⇒
-        </button>
+          <img
+            className="card-img-top"
+            src={props.img}
+            alt={props.itemName}
+            style={{
+              objectFit: "cover",
+              padding: "0.75rem",
+            }}
+          />
+        </div>
+        <div className="card-body d-flex flex-column text-center rounded-bottom-4 custom-body item-card ">
+          <h2 className="card-title custom-title m-auto item-card-title">
+            {props.itemName}
+          </h2>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

@@ -11,8 +11,8 @@
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
@@ -55,7 +55,6 @@ body {
 }
 
 #root {
-  width: 1126px;
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
@@ -91,6 +90,10 @@ h2 {
     font-size: 20px;
   }
 }
+
+h4 {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
 p {
   margin: 0;
 }
@@ -108,4 +111,44 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+.card-title.custom-title,
+h2.title-departamentos {
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;
+  border: none;
+}
+
+.custom-body.item-card {
+  background-color: #e8f6e4;
+}
+
+.card-title.item-card-title {
+  color: #377f3f;
+  font-size: clamp(1rem, 2vw, 2rem);
+}
+
+.header-bar {
+  height: 20;
+  padding: 1%;
+  box-sizing: border-box;
+}
+
+.logo-header {
+  width: clamp(135px, 12vw, 350px);
+  height: auto; /* Mantém a proporção da imagem */
+  display: block; /* Remove espaços vazios de elementos inline */
+}
+
+.header-bar-container {
+  display: flex;
+  align-items: center; /* Centraliza a logo verticalmente no container */
+  height: clamp(4rem, 8vh, 6rem); 
+}
+
+.btn.btn-header {
+  font-size: clamp(0.75rem, 1vw + 0.5rem, 1rem) ;
+  padding: clamp(4px, 1vw, 10px) clamp(10px, 2vw, 20px);
+  white-space: nowrap; /* Impede que o texto quebre em duas linhas */
 }
