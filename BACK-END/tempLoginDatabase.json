@@ -23,16 +23,25 @@
     ],
     "Itens":{
         "Celular":[{"imag": "./celulares.webp",
-            "name": "Celulares"},{"imag": "./celulares.webp",
             "name": "Celulares"}],
-        "GPU":[{"imag": "./gpu.jpg",
-            "name": "Placas de Vídeo"},{"imag": "./gpu.jpg",
+        "GPU":[
+            {"imag": "./gpu.jpg",
+            "name": "Placas de Vídeo"},
+            {"imag": "./gpu.jpg",
+            "name": "Placas de Vídeo"},
+        {"imag": "./gpu.jpg",
+            "name": "Placas de Vídeo"},
+            {"imag": "./gpu.jpg",
             "name": "Placas de Vídeo"}],
         "Geladeira":[{"imag": "./geladeira.webp",
             "name": "Geladeiras"},{"imag": "./geladeira.webp",
             "name": "Geladeiras"}],
         "Bike":[{"imag": "./bike.webp",
-            "name": "Bicicletas"},{"imag": "./bike.webp",
-            "name": "Bicicletas"}]
+            "name": "Bicicletas"},
+            {"imag": "./bike.webp",
+            "name": "Bicicletas"},
+            {"imag": "./bike.webp",
+            "name": "Bicicletas"}
+        ]
     }
 }

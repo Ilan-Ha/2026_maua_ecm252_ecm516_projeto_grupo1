@@ -1,4 +1,5 @@
 import {addItem, retrieveData, updateItem} from './userDatabaseManager.js'
+import fs from "fs"
 
 // Arquivo Principal do Backend
 import http from 'http'
@@ -147,6 +148,26 @@ const server = http.createServer((req, res) => {
   });
   return;
   }
+  // Rota de catalogo
+  if (req.url === "/catalog" && req.method === "GET") {
+  try {
+    const data = fs.readFileSync("tempLoginDatabase.json", "utf-8");
+
+    res.writeHead(200, {
+      "Content-Type": "application/json"
+    });
+
+    res.end(data);
+  } catch (err) {
+    res.writeHead(500, {
+      "Content-Type": "application/json"
+    });
+
+    res.end(JSON.stringify({ error: "Failed to load catalog" }));
+  }
+
+  return;
+}
   // Fallback (Erro 404)
   res.writeHead(404, { "Content-Type": "application/json" });
   res.end(JSON.stringify({ error: "Rota não encontrada" }));

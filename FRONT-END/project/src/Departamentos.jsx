@@ -3,13 +3,23 @@ import ItemCard from "./ItemCard.jsx";
 import Cadastro from "./Cadastro.jsx";
 import Header from "./Header.jsx";
 import { BrowserRouter } from "react-router";
-import { useState } from "react";
-import data from './tempData.json'
+import { useState, useEffect } from "react";
+
 
 
 export default function Departamentos() {
+  const [data, setData] = useState(null)
   const [tag,setTag] = useState(null)
 
+  useEffect(() => {
+    fetch("http://localhost:3000/catalog")
+    .then(res => res.json())
+    .then(json => setData(json))
+    .catch(err => console.error("Erro ao carregar catálogo: ", err))
+  }, [])
+
+  if (!data) return <p>Carregando catálogo...</p>;
+  
 const renderCatalog = () => {
   if (tag !== null) {
     return (
