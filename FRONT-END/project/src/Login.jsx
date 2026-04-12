@@ -1,5 +1,7 @@
 import { useState } from "react";
-export default function Login({ setUsuario, setTela }) {
+import { useNavigate } from "react-router-dom";
+export default function Login({ setUsuario}) {
+  const navigate = useNavigate()
   // Hook de estado para armazenar dados do formulário
   const [form, setForm] = useState({
     email: "",
@@ -35,7 +37,7 @@ export default function Login({ setUsuario, setTela }) {
       // login OK → salva usuário
       setUsuario(data.usuario);
       // muda para perfil
-      setTela("perfil");
+      navigate("/perfil");
     // Em caso de erro
     } catch (err) {
       alert("Email ou senha inválidos");
