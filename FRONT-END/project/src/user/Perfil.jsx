@@ -1,5 +1,8 @@
 import { useState } from "react";
+import config from "../config";
 export default function Perfil({ usuario, setUsuario }) {
+  const svc = config.services.user
+  const url = config.url +":" + String(svc.port) + String(svc.endpoints.perfil)
   // Hook de estado para armazenar dados do formulário
   const [form, setForm] = useState({
     email: usuario?.email || "",
@@ -20,7 +23,7 @@ export default function Perfil({ usuario, setUsuario }) {
     e.preventDefault();
     // Envia dados para o backend
     try {
-      const res = await fetch("http://localhost:3000/usuario", {
+      const res = await fetch(url, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"

@@ -1,9 +1,11 @@
 import {addItem, retrieveData, updateItem} from './userDatabaseManager.js'
 import fs from "fs"
-
+import config from './config.js';
 // Arquivo Principal do Backend
 import http from 'http'
 // Criação do servidor
+const svc = config.services
+
 const server = http.createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
@@ -17,7 +19,7 @@ const server = http.createServer((req, res) => {
     return;
   }
   // Rota de cadastro
-   if (req.url === "/cadastro" && req.method === "POST") {
+   if (req.url === svc.auth.endpoints.register && req.method === "POST") {
     let body = "";
     // Recebendo dados do front-end
     req.on("data", chunk => {
@@ -60,7 +62,7 @@ const server = http.createServer((req, res) => {
     return;
   }
   // Rota de login
-  if (req.url === "/login" && req.method === "POST") {
+  if (req.url === svc.auth.endpoints.login && req.method === "POST") {
     let body = "";
     // Recebendo dados do front-end
     req.on("data", chunk => {
@@ -102,7 +104,7 @@ const server = http.createServer((req, res) => {
     return;
   }
   // Rota de atualização do usuário
- if (req.url === "/usuario" && req.method === "PUT") {
+ if (req.url === svc.user.endpoints.perfil && req.method === "PUT") {
   let body = "";
   // Recebendo dados do front-end
   req.on("data", chunk => {
@@ -149,7 +151,7 @@ const server = http.createServer((req, res) => {
   return;
   }
   // Rota de catalogo
-  if (req.url === "/catalog" && req.method === "GET") {
+  if (req.url === svc.catalog.endpoints.catalog && req.method === "GET") {
   try {
     const data = fs.readFileSync("tempLoginDatabase.json", "utf-8");
 
@@ -173,8 +175,8 @@ const server = http.createServer((req, res) => {
   res.end(JSON.stringify({ error: "Rota não encontrada" }));
 });
 //Definição da porta
-const PORT = 3000;
+const PORT = svc.auth.port;
 // Inicialização do servidor
 server.listen(PORT, () => {
-  console.log(`Rodando em http://localhost:${PORT}`);
+  console.log(`Rodando em ${config.url}:${PORT}`);
 });

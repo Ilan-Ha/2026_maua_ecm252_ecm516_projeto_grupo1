@@ -1,21 +1,23 @@
 
-import Cadastro from "./Cadastro";
-import Login from "./Login";
-import Perfil from "./Perfil";
+import Cadastro from "./auth/Cadastro";
+import Login from "./auth/Login";
+import Perfil from "./user/Perfil";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Departamentos from "./Departamentos";
+import Departamentos from "./catalog/Departamentos";
 import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
 import { useState } from "react";
+import config from "./config";
 
 function App() {
+  const svc = config.services
   const [usuario,setUsuario] = useState(null)
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Departamentos />} />
-        <Route path="/cadastro" element={<Cadastro />} />
-        <Route path="/login" element={<Login setUsuario={setUsuario}/>} />
-        <Route path="/perfil" element={<Perfil usuario={usuario} setUsuario={setUsuario}/>} />
+        <Route path={svc.auth.endpoints.register} element={<Cadastro />} />
+        <Route path={svc.auth.endpoints.login} element={<Login setUsuario={setUsuario}/>} />
+        <Route path={svc.user.endpoints.perfil} element={<Perfil usuario={usuario} setUsuario={setUsuario}/>} />
       </Routes>
     </BrowserRouter>
   );

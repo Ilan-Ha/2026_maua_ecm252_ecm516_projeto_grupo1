@@ -1,18 +1,20 @@
 
 import ItemCard from "./ItemCard.jsx";
-import Cadastro from "./Cadastro.jsx";
-import Header from "./Header.jsx";
+import Cadastro from "../auth/Cadastro.jsx";
+import Header from "../Header.jsx";
 import { BrowserRouter } from "react-router";
 import { useState, useEffect } from "react";
-
+import config from "../config.jsx";
 
 
 export default function Departamentos() {
+  const svc = config.services.catalog
+  const url = config.url +":" + String(svc.port) + String(svc.endpoints.catalog)
   const [data, setData] = useState(null)
   const [tag,setTag] = useState(null)
 
   useEffect(() => {
-    fetch("http://localhost:3000/catalog")
+    fetch(url)
     .then(res => res.json())
     .then(json => setData(json))
     .catch(err => console.error("Erro ao carregar catálogo: ", err))

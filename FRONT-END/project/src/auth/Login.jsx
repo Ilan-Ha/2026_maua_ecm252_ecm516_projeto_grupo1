@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import config from "../config";
 export default function Login({ setUsuario}) {
+  const svc = config.services.auth
+  const url = config.url +":" + String(svc.port) + String(svc.endpoints.login)
   const navigate = useNavigate()
   // Hook de estado para armazenar dados do formulário
   const [form, setForm] = useState({
@@ -19,7 +22,7 @@ export default function Login({ setUsuario}) {
     e.preventDefault();
     // Envia dados para o backend
     try {
-      const res = await fetch("http://localhost:3000/login", {
+      const res = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
