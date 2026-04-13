@@ -1,0 +1,25 @@
+{
+    "url": "http://localhost",
+    "services":{
+        "auth":{
+            "port":3000,
+            "endpoints":{
+                "login": "/login",
+                "register": "/cadastro"
+            }
+        },
+        "user":{
+            "port":3000,
+            "endpoints":{
+                "perfil": "/perfil",
+                "update": "/perfil/atualizar"
+            }
+        },
+        "catalog":{
+            "port":3000,
+            "endpoints":{
+                "catalog": "/catalogo"
+            }
+        }
+    }
+}
