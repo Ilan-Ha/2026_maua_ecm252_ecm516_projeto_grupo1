@@ -154,7 +154,14 @@ const server = http.createServer((req, res) => {
   if (req.url === svc.catalog.endpoints.catalog && req.method === "GET") {
   try {
     const data = fs.readFileSync("tempLoginDatabase.json", "utf-8");
-
+    try{
+      const url = new URL(req.url, `${config.url}${svc.catalog.endpoints.catalog}`)
+      const language = url.searchParams.get('lang')
+      console.log(`\n${language}`)
+    }
+    catch(err){
+      console.log(err)
+    }
     res.writeHead(200, {
       "Content-Type": "application/json"
     });
