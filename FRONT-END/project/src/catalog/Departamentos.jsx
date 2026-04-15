@@ -5,9 +5,10 @@ import Header from "../Header.jsx";
 import { BrowserRouter } from "react-router";
 import { useState, useEffect } from "react";
 import config from "../config.jsx";
-
+import { useTranslation } from "react-i18next";
 
 export default function Departamentos() {
+  const { t, i18n } = useTranslation();
   const svc = config.services.catalog
   const url = config.url +":" + String(svc.port) + String(svc.endpoints.catalog)
   const [data, setData] = useState(null)
@@ -53,7 +54,7 @@ const renderCatalog = () => {
       <div className="header" style={{ padding: "3rem 1rem" }}>
         <h2 className="title-departamentos">CATEGORIAS DE PRODUTOS</h2>
         <p className="text-muted" style={{ marginBottom: "1.5rem" }}>
-          Explore especificações técnicas e detalhes por categoria
+          {t('teste')}
         </p>
         <input
           type="text"
