@@ -14,6 +14,11 @@
       "nome": "a",
       "email": "a@a",
       "senha": "funcionou"
+    },
+    {
+      "nome": "Arthur",
+      "email": "arthursilvacorreia1@gmail.com",
+      "senha": "arthur08"
     }
   ]
 }
