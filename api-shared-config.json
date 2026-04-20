@@ -1,5 +1,6 @@
 {
     "url": "http://localhost",
+    "start": "/",
     "services":{
         "auth":{
             "port":3000,
@@ -19,6 +20,12 @@
             "port":3000,
             "endpoints":{
                 "catalog": "/catalogo"
+            }
+        },
+        "search":{
+            "port":3000,
+            "endpoints":{
+                "search": "/comparar"
             }
         }
     }

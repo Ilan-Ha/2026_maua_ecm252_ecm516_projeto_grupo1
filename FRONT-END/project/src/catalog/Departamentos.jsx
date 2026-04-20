@@ -6,6 +6,37 @@ import { BrowserRouter } from "react-router";
 import { useState, useEffect } from "react";
 import config from "../config.jsx";
 
+const Page = (props) => {
+  return (
+    <div className="container-fluid"> 
+      <Header></Header>
+      <div className="header" style={{ padding: "3rem 1rem" }}>
+        <h2 className="title-departamentos">CATEGORIAS DE PRODUTOS</h2>
+        <p className="text-muted" style={{ marginBottom: "1.5rem" }}>
+          Explore especificações técnicas e detalhes por categoria
+        </p>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Buscar categoria"
+          style={{
+            borderRadius: "1.5rem",
+            height: "60%",
+            margin: "0 auto",
+            maxWidth: "800px",
+          }}
+        />
+      </div>
+      <div className="bottom">
+        <div className="container-fluid">
+          <div className="row row-cols-2 row-cols-lg-4 g-2">
+            {props.children}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function Departamentos() {
   const svc = config.services.catalog
@@ -20,7 +51,9 @@ export default function Departamentos() {
     .catch(err => console.error("Erro ao carregar catálogo: ", err))
   }, [])
 
-  if (!data) return <p>Carregando catálogo...</p>;
+  if (!data) return (<Page>
+    <p>Carregando catálogo...</p>
+    </Page>)
   
 const renderCatalog = () => {
   if (tag !== null) {
@@ -48,34 +81,8 @@ const renderCatalog = () => {
   ))
 }
   return (
-    <div className="container-fluid"> 
-      <Header></Header>
-      <div className="header" style={{ padding: "3rem 1rem" }}>
-        <h2 className="title-departamentos">CATEGORIAS DE PRODUTOS</h2>
-        <p className="text-muted" style={{ marginBottom: "1.5rem" }}>
-          Explore especificações técnicas e detalhes por categoria
-        </p>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Buscar categoria"
-          style={{
-            borderRadius: "1.5rem",
-            height: "60%",
-            margin: "0 auto",
-            maxWidth: "800px",
-          }}
-        />
-      </div>
-      <div className="bottom">
-        <div className="container-fluid">
-          <div className="row row-cols-2 row-cols-lg-4 g-2">
-            {renderCatalog()}
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-  );
+    <Page>
+      {renderCatalog()}
+    </Page>
+  )
 }

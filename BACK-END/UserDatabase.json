@@ -9,6 +9,11 @@
       "nome": "alou",
       "email": "alou@alou",
       "senha": "teste"
+    },
+    {
+      "nome": "a",
+      "email": "a@a",
+      "senha": "funcionou"
     }
   ]
 }

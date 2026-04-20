@@ -7,6 +7,7 @@ import Departamentos from "./catalog/Departamentos";
 import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
 import { useState } from "react";
 import config from "./config";
+import Search from "./search/Search";
 
 function App() {
   const svc = config.services
@@ -15,6 +16,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Departamentos />} />
+        <Route path={svc.search.endpoints.search} element={<Search/>}></Route>
         <Route path={svc.auth.endpoints.register} element={<Cadastro />} />
         <Route path={svc.auth.endpoints.login} element={<Login setUsuario={setUsuario}/>} />
         <Route path={svc.user.endpoints.perfil} element={<Perfil usuario={usuario} setUsuario={setUsuario}/>} />

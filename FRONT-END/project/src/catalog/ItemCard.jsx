@@ -40,6 +40,7 @@ const ItemCard = (props) => {
           <h2 className="card-title custom-title m-auto item-card-title">
             {props.itemName}
           </h2>
+            {props.children}
         </div>
       </div>
     </Link>
