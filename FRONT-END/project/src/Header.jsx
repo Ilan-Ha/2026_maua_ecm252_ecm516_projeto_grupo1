@@ -1,6 +1,6 @@
-import Cadastro from "./auth/Cadastro";
-import Login from "./auth/Login";
-import Departamentos from "./catalog/Departamentos";
+import Cadastro from "./usuario/Cadastro";
+import Login from "./usuario/Login";
+import Departamentos from "./catalogo/Departamentos";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import config from "./config";
 
