@@ -3,9 +3,11 @@ import config from './config.js'
 import express from 'express'
 import cors from 'cors'
 import { getCatalogo, initSeed } from "./productDatabaseManager.js";
+import dotenv from "dotenv";
+dotenv.config({ path: "../.env" });
 //conectando ao banco de dados
 import mongoose from "mongoose";
-mongoose.connect("mongodb://arthursilvacorreia199_db_user:enxadanodiego321@ac-7wuyakn-shard-00-00.7ybc0ug.mongodb.net:27017,ac-7wuyakn-shard-00-01.7ybc0ug.mongodb.net:27017,ac-7wuyakn-shard-00-02.7ybc0ug.mongodb.net:27017/?ssl=true&replicaSet=atlas-pfy2is-shard-0&authSource=admin&appName=ALLFORONE")
+mongoose.connect(process.env.MONGO_URI)
   .then(async () => {
     console.log("Mongo conectado");
     await initSeed();
