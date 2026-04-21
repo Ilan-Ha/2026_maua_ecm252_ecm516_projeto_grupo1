@@ -4,17 +4,12 @@ import express from 'express'
 import cors from 'cors'
 import { getCatalogo, initSeed } from "./productDatabaseManager.js";
 import dotenv from "dotenv";
-dotenv.config({ path: "../.env" });
-//conectando ao banco de dados
 import mongoose from "mongoose";
-mongoose.connect(process.env.MONGO_URI)
-  .then(async () => {
-    console.log("Mongo conectado");
-    await initSeed();
-  })
-  .catch(err => console.log(err));
+mongoose.set("strictQuery", true);
+dotenv.config({ path: "../.env" });
 const app = express()
 const svc = config.services
+const PORT = svc.auth.port
 // Middlewares
 app.use(cors())
 // Permite receber JSON direto no req.body
@@ -92,13 +87,41 @@ app.get(svc.catalog.endpoints.catalog, async (req, res) => {
     res.status(500).json({ error: "Erro ao carregar catálogo" });
   }
 });
+//status do backend e do banco de dados
+app.get("/health", async (req, res) => {
+  const dbOk = mongoose.connection.readyState === 1;
+  res.json({
+    backend: true,
+    db: dbOk,
+    status: dbOk ? "ok" : "degraded"
+  });
+});
+app.get("/health/db", async (req, res) => {
+  const ok = mongoose.connection.readyState === 1;
+  res.json({
+    db: ok,
+    status: ok ? "ok" : "error"
+  });
+});
 // Fallback (Erro 404)
 app.use((req, res) => {
   res.status(404).json({ error: "Rota não encontrada" })
 })
-// Definição da porta
-const PORT = svc.auth.port
 // Inicialização do servidor
-app.listen(PORT, () => {
-  console.log(`Rodando em ${config.url}:${PORT}`)
-})
+const startServer = async () => {
+  try {
+    if (!process.env.MONGO_URI) {
+      throw new Error("MONGO_URI não definida no .env");
+    }
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("Mongo conectado");
+    await initSeed();
+    app.listen(PORT, () => {
+      console.log(`Rodando em ${config.url}:${PORT}`);
+    });
+  } catch (err) {
+    console.error("Falha ao iniciar servidor:", err);
+    process.exit(1);
+  }
+};
+startServer();
