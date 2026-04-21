@@ -1,76 +1,34 @@
-import { debug } from 'console';
-import fs from 'fs';
-
-const initialData = { "users": []};
-const filePath = 'UserDatabase.json';
-
-function saveData(dataObject) {
-  const jsonString = JSON.stringify(dataObject, null, 2);
-  fs.writeFileSync(filePath, jsonString);
+import mongoose from "mongoose";
+// Schema
+const userSchema = new mongoose.Schema({
+  nome: String,
+  email: { type: String, unique: true },
+  senha: String
+});
+const User = mongoose.model("User", userSchema);
+// Retrieve
+export async function retrieveData() {
+  const users = await User.find();
+  return { users };
 }
-
-export function retrieveData() {
-  try {
-    // Check if file exists
-    if (fs.existsSync(filePath)) {
-      const data = fs.readFileSync(filePath, 'utf-8');
-      return JSON.parse(data);
-    } else {
-      // If file doesn't exist, initialize it
-      saveData(initialData);
-      return initialData;
-    }
-  } catch (error) {
-    console.error('Error reading data:', error);
-    return initialData;
-  }
+// Add  
+export async function addItem(newItem) {
+  return await User.create(newItem);
 }
-
-export function addItem(newItem) {
-  const currentData = retrieveData();
-
-  // Ensure array exists (extra safety)
-  if (!Array.isArray(currentData.users)) {
-    currentData.users = [];
-  }
-
-  currentData.users.push(newItem);
-
-  saveData(currentData);
-}
-
-function searchData(query) {
-  const currentData = retrieveData();
-
-  if (!Array.isArray(currentData.users)) {
-    return [];
-  }
-
-  const lowerQuery = query.toLowerCase();
-
-  return currentData.users.filter(item => {
-    return Object.values(item).some(val =>
-      typeof val === 'string' &&
-      val.toLowerCase().includes(lowerQuery)
-    );
+// Search
+export async function searchData(query) {
+  return await User.find({
+    $or: [
+      { nome: { $regex: query, $options: "i" } },
+      { email: { $regex: query, $options: "i" } }
+    ]
   });
 }
-
-export function updateItem(email, updates) {
-  const currentData = retrieveData();
-
-  if (!Array.isArray(currentData.users)) {
-    currentData.users = [];
-  }
-
-  const user = currentData.users.find(u => u.email === email);
-  if (!user) {
-    return false;
-  }
-
-  if (typeof updates.nome === 'string') user.nome = updates.nome;
-  if (typeof updates.senha === 'string') user.senha = updates.senha;
-
-  saveData(currentData);
-  return true;
+// Update
+export async function updateItem(email, updates) {
+  const result = await User.updateOne(
+    { email },
+    { $set: updates }
+  );
+  return result.matchedCount > 0;
 }

@@ -1,16 +1,9 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-
-//  PROPS
-//  img = "./exemplo.smp "            -- diretorio da imagem (public não precisa ser ./public/img.png, apenas ./img.png)
-//  itemName = "titulo de exemplo"    -- titulo do card   
-//  itemLink = "/exemplo"             -- pagina que o card leva ao ser clicado  (deve ter / no início)
+import { Link } from "react-router-dom";
 
 const ItemCard = (props) => {
-
   return (
-    <Link to={props.itemLink} className="text-decoration-none">
+    <Link to={props.itemLink ?? "#"} className="text-decoration-none">
       <div
         className="card h-100 shadow-sm hover rounded-4"
         style={{
@@ -28,7 +21,7 @@ const ItemCard = (props) => {
         >
           <img
             className="card-img-top"
-            src={props.img}
+            src={props.img || "https://placehold.co/400"}
             alt={props.itemName}
             style={{
               objectFit: "cover",
@@ -36,11 +29,13 @@ const ItemCard = (props) => {
             }}
           />
         </div>
-        <div className="card-body d-flex flex-column text-center rounded-bottom-4 custom-body item-card ">
+
+        <div className="card-body d-flex flex-column text-center rounded-bottom-4 custom-body item-card">
           <h2 className="card-title custom-title m-auto item-card-title">
             {props.itemName}
           </h2>
-            {props.children}
+
+          {props.children}
         </div>
       </div>
     </Link>
