@@ -26,9 +26,7 @@ const userSchema = new mongoose.Schema({
   senha: String
 });
 const User = mongoose.model("User", userSchema);
-// =========================
 // Rota de cadastro
-// =========================
 app.post(svc.auth.endpoints.register, async (req, res) => {
   const dados = req.body;
   // verifica se o email já existe
@@ -46,9 +44,7 @@ app.post(svc.auth.endpoints.register, async (req, res) => {
   // mostra no terminal
   res.json({ message: "Usuário cadastrado" });
 });
-// =========================
 // Rota de login
-// =========================
 app.post(svc.auth.endpoints.login, async (req, res) => {
   const { email, senha } = req.body;
   // procura usuario pelo email
@@ -68,9 +64,7 @@ app.post(svc.auth.endpoints.login, async (req, res) => {
     message: "Credenciais inválidas"
   });
 });
-// =========================
 // Rota de atualização do usuário
-// =========================
 app.put(svc.user.endpoints.perfil, async (req, res) => {
   const dados = req.body;
   // procura usuario pelo email
@@ -89,9 +83,7 @@ app.put(svc.user.endpoints.perfil, async (req, res) => {
   // mostra no terminal
   res.json({ message: "Dados atualizados" });
 });
-// =========================
 // Rota de catalogo
-// =========================
 app.get(svc.catalog.endpoints.catalog, async (req, res) => {
   try {
     const data = await getCatalogo();
@@ -100,15 +92,11 @@ app.get(svc.catalog.endpoints.catalog, async (req, res) => {
     res.status(500).json({ error: "Erro ao carregar catálogo" });
   }
 });
-// =========================
 // Fallback (Erro 404)
-// =========================
 app.use((req, res) => {
   res.status(404).json({ error: "Rota não encontrada" })
 })
-// =========================
 // Definição da porta
-// =========================
 const PORT = svc.auth.port
 // Inicialização do servidor
 app.listen(PORT, () => {

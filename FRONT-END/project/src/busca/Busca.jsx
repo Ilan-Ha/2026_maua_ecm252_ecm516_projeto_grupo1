@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Header from "../Header.jsx";
-import ItemCard from "../catalogo/ItemCard.jsx";
+import ItemCard from "../catalogo/CartaoDeItem.jsx";
 
 const Search = () => {
   const [data, setData] = useState({ Categorias: [], Itens: {} });

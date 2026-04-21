@@ -6,7 +6,7 @@ import Departamentos from "./catalogo/Departamentos";
 import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
 import { useState } from "react";
 import config from "./config";
-import Search from "./busca/Search";
+import Search from "./busca/Busca";
 
 function App() {
   const svc = config.services

@@ -1,4 +1,4 @@
-import ItemCard from "./ItemCard.jsx";
+import ItemCard from "./CartaoDeItem.jsx";
 import Header from "../Header.jsx";
 import { useState, useEffect } from "react";
 import config from "../config.jsx";
