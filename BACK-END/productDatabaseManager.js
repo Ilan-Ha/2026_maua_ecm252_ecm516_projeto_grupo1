@@ -1,22 +1,20 @@
 import mongoose from "mongoose";
-
 // Categoria
 const categoriaSchema = new mongoose.Schema({
   nome: String,
   tag: { type: String, unique: true },
   imagem: String
 });
-
 // Produto
 const produtoSchema = new mongoose.Schema({
   nome: String,
   imagem: String,
   categoriaTag: { type: String, index: true }
 });
-
+//Categoria
 const Categoria =
   mongoose.models.Categoria || mongoose.model("Categoria", categoriaSchema);
-
+//Produto
 const Produto =
   mongoose.models.Produto || mongoose.model("Produto", produtoSchema);
 
@@ -25,22 +23,22 @@ const categorias = [
   {
     nome: "Celulares",
     tag: "Celular",
-    imagem: "https://media.gazetadopovo.com.br/2017/02/1bb3d975c17784892d30e51965581b75-gpLarge.png"
+    imagem: "https://static.vecteezy.com/system/resources/previews/000/576/831/original/smartphone-icon-vector-illustration.jpg"
   },
   {
     nome: "Placas de Vídeo",
     tag: "GPU",
-    imagem: "https://tse4.mm.bing.net/th/id/OIP.nk53EeUs5_ClaN9vGilVYwHaGc?rs=1&pid=ImgDetMain&o=7&rm=3"
+    imagem: "https://tse1.mm.bing.net/th/id/OIP.HMW3NgXewMev1TjuoaKQuAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"
   },
   {
     nome: "Geladeiras",
     tag: "Geladeira",
-    imagem: "https://tse3.mm.bing.net/th/id/OIP.pc407fZm0X3bd_3sEeA-YwHaJ4?pid=ImgDet&w=60&h=60&c=7&rs=1&o=7&rm=3"
+    imagem: "https://img.freepik.com/vetores-premium/vetor-de-icone-de-geladeira-em-design-moderno_777568-2353.jpg"
   },
   {
     nome: "Bicicletas",
     tag: "Bike",
-    imagem: "https://cdn.acidcow.com/pics/20110406/funny_and_weird_bicycles_15.jpg"
+    imagem: "https://th.bing.com/th/id/R.001d09dd02871412d7a578e3331f4084?rik=4HmPB4l%2fmd5JKw&pid=ImgRaw&r=0"
   }
 ];
 
