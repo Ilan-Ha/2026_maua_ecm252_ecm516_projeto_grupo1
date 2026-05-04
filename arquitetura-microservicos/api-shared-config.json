@@ -1,0 +1,63 @@
+{
+    "url": "http://localhost",
+    "ports":{
+        "back":{
+            "gateway": 3000,
+            "auth": 3001,
+            "user": 3002,
+            "catalog": 3003
+        },
+        "front":{
+            "shell": 4000,
+            "auth": 4001,
+            "user": 4002,
+            "catalog": 4003
+        }
+        
+    },
+    "paths":{
+        "start": "/",
+        "auth":{
+                "login": "/login",
+                "register": "/cadastro"   
+            },
+        "user":{
+                "perfil": "/perfil",
+                "update": "/perfil/atualizar"
+            },
+        "catalog":{
+                "catalog": "/catalogo"    
+            },
+        "search":{
+                "search": "/comparar"
+            }
+    },
+    "services":{
+        "auth":{
+            "port":3000,
+            "endpoints":{
+                "login": "/login",
+                "register": "/cadastro"
+            }
+        },
+        "user":{
+            "port":3000,
+            "endpoints":{
+                "perfil": "/perfil",
+                "update": "/perfil/atualizar"
+            }
+        },
+        "catalog":{
+            "port":3000,
+            "endpoints":{
+                "catalog": "/catalogo"
+            }
+        },
+        "search":{
+            "port":3000,
+            "endpoints":{
+                "search": "/comparar"
+            }
+        }
+    }
+}
