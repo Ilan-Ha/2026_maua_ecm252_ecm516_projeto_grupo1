@@ -603,14 +603,14 @@ async function inserirProdutos() {
     {
       nome: "Geladeira Brastemp Frost Free 375L",
       imagem:
-        "https://brastemp.vtexassets.com/arquivos/ids/227068/Geladeira-Brastemp-Frost-Free-375-litros-BRM45HK.png",
+        "https://brastemp.vtexassets.com/arquivos/ids/285442-1600-auto?v=639120439093400000&width=1600&height=auto&aspect=true",
       categoriaTag: "Geladeira",
       descricao: "Geladeira duplex Frost Free com compartimento extra frio.",
       precoMedio: 3299.90,
       lancamento: 2023,
       marca: "Brastemp",
       imagens: [
-        "https://brastemp.vtexassets.com/arquivos/ids/227068/Geladeira-Brastemp-Frost-Free-375-litros-BRM45HK.png"
+        "https://brastemp.vtexassets.com/arquivos/ids/285442-1600-auto?v=639120439093400000&width=1600&height=auto&aspect=true"
       ],
       especificacoes: {
         capacidade: "375 litros",
@@ -634,16 +634,16 @@ async function inserirProdutos() {
     },
 
     {
-      nome: "Geladeira Electrolux French Door 579L",
+      nome: "Refrigerador French Door Electrolux Frost Free com 484 Litros",
       imagem:
-        "https://electrolux.vtexassets.com/arquivos/ids/232589/Geladeira-Electrolux-French-Door-579-litros-DM84X.png",
+        "https://fastshopbr.vtexassets.com/arquivos/ids/4739201-540-auto/0_2b5d20e4-c8a1-40f1-b6f6-4dfd2df653c2.jpeg.webp?v=639136684102100000&quality=8",
       categoriaTag: "Geladeira",
-      descricao: "Geladeira French Door espaçosa com painel digital e gaveta FlexiSpace.",
-      precoMedio: 7999.90,
+      descricao: "Geladeira Electrolux Frost Free Inverter 480L Efficient AutoSense 3 Portas Inox Look (IM7S), Tecnologia AutoSense, Gaveta HortiNatura, Tecnologia Inverter, TasteGuard, Fit the home e IceMax.",
+      precoMedio: 5888.00,
       lancamento: 2023,
       marca: "Electrolux",
       imagens: [
-        "https://electrolux.vtexassets.com/arquivos/ids/232589/Geladeira-Electrolux-French-Door-579-litros-DM84X.png"
+        "https://fastshopbr.vtexassets.com/arquivos/ids/4739201-540-auto/0_2b5d20e4-c8a1-40f1-b6f6-4dfd2df653c2.jpeg.webp?v=639136684102100000&quality=8"
       ],
       especificacoes: {
         capacidade: "579 litros",
@@ -655,7 +655,7 @@ async function inserirProdutos() {
       sitesCompra: [
         {
           loja: "Amazon",
-          preco: 7799.90,
+          preco: 5799.90,
           link: "https://www.amazon.com.br"
         }
       ]
@@ -698,14 +698,14 @@ async function inserirProdutos() {
     {
       nome: "Geladeira Consul 340L",
       imagem:
-        "https://consul.vtexassets.com/arquivos/ids/215089/Geladeira-Consul-Frost-Free-340-litros-CRM39AB.png",
+        "https://m.media-amazon.com/images/I/315ViJS9TvL._AC_SX679_.jpg",
       categoriaTag: "Geladeira",
       descricao: "Geladeira compacta Frost Free ideal para apartamentos pequenos.",
       precoMedio: 2199.90,
       lancamento: 2022,
       marca: "Consul",
       imagens: [
-        "https://consul.vtexassets.com/arquivos/ids/215089/Geladeira-Consul-Frost-Free-340-litros-CRM39AB.png"
+        "https://m.media-amazon.com/images/I/315ViJS9TvL._AC_SX679_.jpg"
       ],
       especificacoes: {
         capacidade: "340 litros",
@@ -725,14 +725,14 @@ async function inserirProdutos() {
     {
       nome: "Geladeira LG French Door 525L",
       imagem:
-        "https://www.lg.com/br/images/geladeiras/md07503412/gallery/GR-L228CV-525L-01.jpg",
+        "https://cdn.leroymerlin.com.br/products/geladeira_smart_lg_french_door_,inverter_525l_preto_fosco_c_1567799593_9a54_600x600.jpg",
       categoriaTag: "Geladeira",
       descricao: "Geladeira LG French Door com Door-in-Door e inverter compressor.",
       precoMedio: 8999.90,
       lancamento: 2023,
       marca: "LG",
       imagens: [
-        "https://www.lg.com/br/images/geladeiras/md07503412/gallery/GR-L228CV-525L-01.jpg"
+        "https://cdn.leroymerlin.com.br/products/geladeira_smart_lg_french_door_,inverter_525l_preto_fosco_c_1567799593_9a54_600x600.jpg"
       ],
       especificacoes: {
         capacidade: "525 litros",
@@ -759,14 +759,14 @@ async function inserirProdutos() {
     {
       nome: "Geladeira Brastemp Inverse 443L",
       imagem:
-        "https://brastemp.vtexassets.com/arquivos/ids/227080/Geladeira-Brastemp-Inverse-443-litros-BRE57AK.png",
+        "https://www.frigelar.com.br/ccstore/v1/images/?source=/file/v7957207479638538637/products/kit2907_10.jpg&height=475&width=475",
       categoriaTag: "Geladeira",
       descricao: "Geladeira inverse com freezer embaixo, ideal para famílias grandes.",
       precoMedio: 4499.90,
       lancamento: 2023,
       marca: "Brastemp",
       imagens: [
-        "https://brastemp.vtexassets.com/arquivos/ids/227080/Geladeira-Brastemp-Inverse-443-litros-BRE57AK.png"
+        "https://www.frigelar.com.br/ccstore/v1/images/?source=/file/v7957207479638538637/products/kit2907_10.jpg&height=475&width=475"
       ],
       especificacoes: {
         capacidade: "443 litros",
