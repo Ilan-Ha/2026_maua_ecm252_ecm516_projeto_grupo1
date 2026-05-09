@@ -34,6 +34,8 @@ const Produto = mongoose.model("Produto", produtoSchema);
 async function inserirProdutos() {
   const produtos = [
     {
+      // Placa de vídeo
+
       nome: "RTX 4070",
       imagem:
         "https://www.pcgamesn.com/wp-content/sites/pcgamesn/2023/04/nvidia-rtx-4070-official-release-date-confirmed.jpg",
@@ -92,9 +94,6 @@ async function inserirProdutos() {
         }
       ]
     },
-
-    // ── GPUs extras ──
-
     {
       nome: "RTX 3060",
       imagem:
@@ -182,20 +181,139 @@ async function inserirProdutos() {
         }
       ]
     },
+    {
+      nome: "RX 7800 XT",
+      imagem:
+        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7800xt.png",
+      categoriaTag: "GPU",
+      descricao: "GPU AMD intermediária para jogos em 1440p com excelente custo-benefício.",
+      precoMedio: 3799.90,
+      lancamento: 2023,
+      marca: "AMD",
+      imagens: [
+        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7800xt.png"
+      ],
+      especificacoes: {
+        vram: "16GB",
+        arquitetura: "RDNA 3",
+        rayTracing: true
+      },
+      sitesCompra: [
+        {
+          loja: "Kabum",
+          preco: 3699.90,
+          link: "https://www.kabum.com.br"
+        },
+        {
+          loja: "Pichau",
+          preco: 3749.90,
+          link: "https://www.pichau.com.br"
+        }
+      ]
+    },
+
+    {
+      nome: "RTX 4080 Super",
+      imagem:
+        "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada/rtx-4080-super/geforce-ada-4080-super-product-photo-001.png",
+      categoriaTag: "GPU",
+      descricao: "GPU de alto desempenho para jogos em 4K e criação de conteúdo profissional.",
+      precoMedio: 8499.90,
+      lancamento: 2024,
+      marca: "NVIDIA",
+      imagens: [
+        "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada/rtx-4080-super/geforce-ada-4080-super-product-photo-001.png"
+      ],
+      especificacoes: {
+        vram: "16GB",
+        arquitetura: "Ada Lovelace",
+        rayTracing: true,
+        dlss: "DLSS 3.5"
+      },
+      sitesCompra: [
+        {
+          loja: "Terabyte",
+          preco: 8299.90,
+          link: "https://www.terabyteshop.com.br"
+        },
+        {
+          loja: "Kabum",
+          preco: 8399.90,
+          link: "https://www.kabum.com.br"
+        }
+      ]
+    },
+
+    {
+      nome: "Intel Arc A770",
+      imagem:
+        "https://www.intel.com/content/dam/www/central-libraries/us/en/images/2022-10/arc-a770-702x395.png",
+      categoriaTag: "GPU",
+      descricao: "GPU Intel de entrada com suporte a Ray Tracing e bom desempenho em 1080p.",
+      precoMedio: 1899.90,
+      lancamento: 2022,
+      marca: "Intel",
+      imagens: [
+        "https://www.intel.com/content/dam/www/central-libraries/us/en/images/2022-10/arc-a770-702x395.png"
+      ],
+      especificacoes: {
+        vram: "16GB",
+        arquitetura: "Xe HPG (Alchemist)",
+        rayTracing: true
+      },
+      sitesCompra: [
+        {
+          loja: "Pichau",
+          preco: 1799.90,
+          link: "https://www.pichau.com.br"
+        }
+      ]
+    },
+
+    {
+      nome: "RX 7600",
+      imagem:
+        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7600.png",
+      categoriaTag: "GPU",
+      descricao: "GPU AMD de entrada para jogos em 1080p com ótima eficiência energética.",
+      precoMedio: 1999.90,
+      lancamento: 2023,
+      marca: "AMD",
+      imagens: [
+        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7600.png"
+      ],
+      especificacoes: {
+        vram: "8GB",
+        arquitetura: "RDNA 3",
+        rayTracing: true
+      },
+      sitesCompra: [
+        {
+          loja: "Kabum",
+          preco: 1899.90,
+          link: "https://www.kabum.com.br"
+        },
+        {
+          loja: "Terabyte",
+          preco: 1949.90,
+          link: "https://www.terabyteshop.com.br"
+        }
+      ]
+    },
 
     // ── Celulares ──
 
     {
       nome: "iPhone 15 Pro Max",
       imagem:
-        "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-max-black-titanium?wid=940&hei=1112&fmt=png-alpha",
+        "https://tse4.mm.bing.net/th/id/OIP.HiIn6ftndp34b0G88wiNvQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",
       categoriaTag: "Celular",
       descricao: "Smartphone premium da Apple com chip A17 Pro e câmera de 48MP.",
       precoMedio: 9499.90,
       lancamento: 2023,
       marca: "Apple",
       imagens: [
-        "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-max-black-titanium?wid=940&hei=1112&fmt=png-alpha"
+        "https://tse4.mm.bing.net/th/id/OIP.HiIn6ftndp34b0G88wiNvQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"
       ],
       especificacoes: {
         tela: "6.7 polegadas OLED",
@@ -222,14 +340,14 @@ async function inserirProdutos() {
     {
       nome: "Samsung Galaxy S24 Ultra",
       imagem:
-        "https://images.samsung.com/is/image/samsung/p6pim/br/2401/gallery/br-galaxy-s24-ultra-s928-sm-s928bztdzto-thumb-539573460",
+        "https://image-us.samsung.com/us/smartphones/galaxy-s24/all-gallery/01_E3_OnlineExclusive_TitaniumBlue_Lockup_1600x1200.jpg?$product-details-jpg$?$product-details-thumbnail-jpg$",
       categoriaTag: "Celular",
       descricao: "Smartphone Android topo de linha com S Pen e câmera de 200MP.",
       precoMedio: 8999.90,
       lancamento: 2024,
       marca: "Samsung",
       imagens: [
-        "https://images.samsung.com/is/image/samsung/p6pim/br/2401/gallery/br-galaxy-s24-ultra-s928-sm-s928bztdzto-thumb-539573460"
+        "https://image-us.samsung.com/us/smartphones/galaxy-s24/all-gallery/01_E3_OnlineExclusive_TitaniumBlue_Lockup_1600x1200.jpg?$product-details-jpg$?$product-details-thumbnail-jpg$"
       ],
       especificacoes: {
         tela: "6.8 polegadas Dynamic AMOLED 2X",
@@ -256,14 +374,14 @@ async function inserirProdutos() {
     {
       nome: "Xiaomi 14 Ultra",
       imagem:
-        "https://i02.appmifile.com/images/2024/02/22/a9bdb413-d842-4cf2-a498-6e58e1e9a0e8.png",
+        "https://i02.appmifile.com/334_operator_sg/22/02/2024/d36105f6de5a716a1c0737352c2827be.png",
       categoriaTag: "Celular",
       descricao: "Flagship Xiaomi com câmera Leica e carregamento rápido de 90W.",
       precoMedio: 6499.90,
       lancamento: 2024,
       marca: "Xiaomi",
       imagens: [
-        "https://i02.appmifile.com/images/2024/02/22/a9bdb413-d842-4cf2-a498-6e58e1e9a0e8.png"
+        "https://i02.appmifile.com/334_operator_sg/22/02/2024/d36105f6de5a716a1c0737352c2827be.png"
       ],
       especificacoes: {
         tela: "6.73 polegadas AMOLED",
@@ -285,14 +403,14 @@ async function inserirProdutos() {
     {
       nome: "Motorola Edge 40 Pro",
       imagem:
-        "https://motorolarepair.com/wp-content/uploads/2023/07/motorola-edge-40-pro.png",
+        "https://tse3.mm.bing.net/th/id/OIP.yYZbnh2p8k8ipXN_GjKHtAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",
       categoriaTag: "Celular",
       descricao: "Smartphone Motorola premium com tela curva e carregamento de 125W.",
       precoMedio: 4299.90,
       lancamento: 2023,
       marca: "Motorola",
       imagens: [
-        "https://motorolarepair.com/wp-content/uploads/2023/07/motorola-edge-40-pro.png"
+        "https://tse3.mm.bing.net/th/id/OIP.yYZbnh2p8k8ipXN_GjKHtAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"
       ],
       especificacoes: {
         tela: "6.67 polegadas pOLED",
@@ -311,6 +429,170 @@ async function inserirProdutos() {
         {
           loja: "Americanas",
           preco: 4199.90,
+          link: "https://www.americanas.com.br"
+        }
+      ]
+    },
+    {
+      nome: "Samsung Galaxy A55",
+      imagem:
+        "https://www.bing.com/th?id=OPHS.rq7kVd4LEtBMTg474C474&o=5&pid=21.1&w=128&h=168&qlt=100&dpr=1&o=2&bw=6&bc=FFFFFF",
+      categoriaTag: "Celular",
+      descricao: "Smartphone intermediário Samsung com tela Super AMOLED e proteção IP67.",
+      precoMedio: 2299.90,
+      lancamento: 2024,
+      marca: "Samsung",
+      imagens: [
+        "https://www.bing.com/th?id=OPHS.rq7kVd4LEtBMTg474C474&o=5&pid=21.1&w=128&h=168&qlt=100&dpr=1&o=2&bw=6&bc=FFFFFF"
+      ],
+      especificacoes: {
+        tela: "6.6 polegadas Super AMOLED",
+        processador: "Exynos 1480",
+        ram: "8GB",
+        armazenamento: "128GB",
+        camera: "50MP + 12MP + 5MP",
+        bateria: "5000 mAh"
+      },
+      sitesCompra: [
+        {
+          loja: "Magazine Luiza",
+          preco: 2199.90,
+          link: "https://www.magazineluiza.com.br"
+        },
+        {
+          loja: "Amazon",
+          preco: 2249.90,
+          link: "https://www.amazon.com.br"
+        }
+      ]
+    },
+
+    {
+      nome: "iPhone 14",
+      imagem:
+        "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-14-blue-select-202209",
+      categoriaTag: "Celular",
+      descricao: "iPhone com chip A15 Bionic, tela de 6.1 polegadas e câmera dupla.",
+      precoMedio: 5499.90,
+      lancamento: 2022,
+      marca: "Apple",
+      imagens: [
+        "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-14-blue-select-202209"
+      ],
+      especificacoes: {
+        tela: "6.1 polegadas OLED",
+        processador: "A15 Bionic",
+        ram: "6GB",
+        armazenamento: "128GB",
+        camera: "12MP + 12MP",
+        bateria: "3279 mAh"
+      },
+      sitesCompra: [
+        {
+          loja: "Kabum",
+          preco: 5299.90,
+          link: "https://www.kabum.com.br"
+        },
+        {
+          loja: "Casas Bahia",
+          preco: 5399.90,
+          link: "https://www.casasbahia.com.br"
+        }
+      ]
+    },
+
+    {
+      nome: "Xiaomi Redmi Note 13 Pro",
+      imagem:
+        "https://www.bing.com/th?id=OPHS.Aist2IPhX2BENw474C474&o=5&pid=21.1&w=128&h=168&qlt=100&dpr=1&o=2&bw=6&bc=FFFFFF",
+      categoriaTag: "Celular",
+      descricao: "Smartphone Xiaomi com câmera de 200MP e carregamento rápido de 67W.",
+      precoMedio: 1799.90,
+      lancamento: 2024,
+      marca: "Xiaomi",
+      imagens: [
+        "https://www.bing.com/th?id=OPHS.Aist2IPhX2BENw474C474&o=5&pid=21.1&w=128&h=168&qlt=100&dpr=1&o=2&bw=6&bc=FFFFFF"
+      ],
+      especificacoes: {
+        tela: "6.67 polegadas AMOLED",
+        processador: "Snapdragon 7s Gen 2",
+        ram: "8GB",
+        armazenamento: "256GB",
+        camera: "200MP + 8MP + 2MP",
+        bateria: "5100 mAh"
+      },
+      sitesCompra: [
+        {
+          loja: "Amazon",
+          preco: 1699.90,
+          link: "https://www.amazon.com.br"
+        },
+        {
+          loja: "Magazine Luiza",
+          preco: 1749.90,
+          link: "https://www.magazineluiza.com.br"
+        }
+      ]
+    },
+
+    {
+      nome: "Google Pixel 8 Pro",
+      imagem:
+        "https://static1.howtogeekimages.com/wordpress/wp-content/uploads/2023/11/pixel-8pro.png",
+      categoriaTag: "Celular",
+      descricao: "Smartphone Google com IA avançada, chip Tensor G3 e câmera profissional.",
+      precoMedio: 6999.90,
+      lancamento: 2023,
+      marca: "Google",
+      imagens: [
+        "https://static1.howtogeekimages.com/wordpress/wp-content/uploads/2023/11/pixel-8pro.png"
+      ],
+      especificacoes: {
+        tela: "6.7 polegadas LTPO OLED",
+        processador: "Google Tensor G3",
+        ram: "12GB",
+        armazenamento: "128GB",
+        camera: "50MP + 48MP + 48MP",
+        bateria: "5050 mAh"
+      },
+      sitesCompra: [
+        {
+          loja: "Amazon",
+          preco: 6799.90,
+          link: "https://www.amazon.com.br"
+        }
+      ]
+    },
+
+    {
+      nome: "Motorola Moto G84",
+      imagem:
+        "https://i5.walmartimages.com.mx/mg/gm/1p/images/product-images/img_large/00762765199978l.jpg",
+      categoriaTag: "Celular",
+      descricao: "Smartphone Motorola intermediário com tela pOLED de 120Hz e som estéreo Dolby Atmos.",
+      precoMedio: 1499.90,
+      lancamento: 2023,
+      marca: "Motorola",
+      imagens: [
+        "https://i5.walmartimages.com.mx/mg/gm/1p/images/product-images/img_large/00762765199978l.jpg"
+      ],
+      especificacoes: {
+        tela: "6.55 polegadas pOLED 120Hz",
+        processador: "Snapdragon 695",
+        ram: "8GB",
+        armazenamento: "256GB",
+        camera: "50MP + 8MP",
+        bateria: "5000 mAh"
+      },
+      sitesCompra: [
+        {
+          loja: "Casas Bahia",
+          preco: 1399.90,
+          link: "https://www.casasbahia.com.br"
+        },
+        {
+          loja: "Americanas",
+          preco: 1449.90,
           link: "https://www.americanas.com.br"
         }
       ]
@@ -437,6 +719,134 @@ async function inserirProdutos() {
           loja: "Casas Bahia",
           preco: 2099.90,
           link: "https://www.casasbahia.com.br"
+        }
+      ]
+    },
+    {
+      nome: "Geladeira LG French Door 525L",
+      imagem:
+        "https://www.lg.com/br/images/geladeiras/md07503412/gallery/GR-L228CV-525L-01.jpg",
+      categoriaTag: "Geladeira",
+      descricao: "Geladeira LG French Door com Door-in-Door e inverter compressor.",
+      precoMedio: 8999.90,
+      lancamento: 2023,
+      marca: "LG",
+      imagens: [
+        "https://www.lg.com/br/images/geladeiras/md07503412/gallery/GR-L228CV-525L-01.jpg"
+      ],
+      especificacoes: {
+        capacidade: "525 litros",
+        tipo: "French Door",
+        eficienciaEnergetica: "A++",
+        corExterna: "Inox",
+        voltagem: "Bivolt",
+        inverterCompressor: true
+      },
+      sitesCompra: [
+        {
+          loja: "Magazine Luiza",
+          preco: 8799.90,
+          link: "https://www.magazineluiza.com.br"
+        },
+        {
+          loja: "Amazon",
+          preco: 8899.90,
+          link: "https://www.amazon.com.br"
+        }
+      ]
+    },
+
+    {
+      nome: "Geladeira Brastemp Inverse 443L",
+      imagem:
+        "https://brastemp.vtexassets.com/arquivos/ids/227080/Geladeira-Brastemp-Inverse-443-litros-BRE57AK.png",
+      categoriaTag: "Geladeira",
+      descricao: "Geladeira inverse com freezer embaixo, ideal para famílias grandes.",
+      precoMedio: 4499.90,
+      lancamento: 2023,
+      marca: "Brastemp",
+      imagens: [
+        "https://brastemp.vtexassets.com/arquivos/ids/227080/Geladeira-Brastemp-Inverse-443-litros-BRE57AK.png"
+      ],
+      especificacoes: {
+        capacidade: "443 litros",
+        tipo: "Inverse Frost Free",
+        eficienciaEnergetica: "A",
+        corExterna: "Inox",
+        voltagem: "110V"
+      },
+      sitesCompra: [
+        {
+          loja: "Casas Bahia",
+          preco: 4299.90,
+          link: "https://www.casasbahia.com.br"
+        },
+        {
+          loja: "Kabum",
+          preco: 4399.90,
+          link: "https://www.kabum.com.br"
+        }
+      ]
+    },
+
+    {
+      nome: "Geladeira Electrolux Top Freezer 431L",
+      imagem:
+        "https://electrolux.vtexassets.com/arquivos/ids/232600/Geladeira-Electrolux-Top-Freezer-431-litros-TF55S.png",
+      categoriaTag: "Geladeira",
+      descricao: "Geladeira duplex com prateleiras de vidro temperado e controle de temperatura.",
+      precoMedio: 2899.90,
+      lancamento: 2022,
+      marca: "Electrolux",
+      imagens: [
+        "https://electrolux.vtexassets.com/arquivos/ids/232600/Geladeira-Electrolux-Top-Freezer-431-litros-TF55S.png"
+      ],
+      especificacoes: {
+        capacidade: "431 litros",
+        tipo: "Top Freezer Frost Free",
+        eficienciaEnergetica: "A",
+        corExterna: "Platinum",
+        voltagem: "220V"
+      },
+      sitesCompra: [
+        {
+          loja: "Magazine Luiza",
+          preco: 2799.90,
+          link: "https://www.magazineluiza.com.br"
+        }
+      ]
+    },
+
+    {
+      nome: "Geladeira Panasonic Econavi 480L",
+      imagem:
+        "https://panasonic.vtexassets.com/arquivos/ids/200123/NR-BB71GVFB-01.png",
+      categoriaTag: "Geladeira",
+      descricao: "Geladeira Panasonic com tecnologia Econavi para economia de energia inteligente.",
+      precoMedio: 4999.90,
+      lancamento: 2023,
+      marca: "Panasonic",
+      imagens: [
+        "https://panasonic.vtexassets.com/arquivos/ids/200123/NR-BB71GVFB-01.png"
+      ],
+      especificacoes: {
+        capacidade: "480 litros",
+        tipo: "Bottom Freezer Frost Free",
+        eficienciaEnergetica: "A+",
+        corExterna: "Aço Escovado",
+        voltagem: "Bivolt",
+        econavi: true
+      },
+      sitesCompra: [
+        {
+          loja: "Amazon",
+          preco: 4799.90,
+          link: "https://www.amazon.com.br"
+        },
+        {
+          loja: "Magazine Luiza",
+          preco: 4899.90,
+          link: "https://www.magazineluiza.com.br"
         }
       ]
     },
@@ -573,429 +983,6 @@ async function inserirProdutos() {
         }
       ]
     },
-
-    // ── GPUs extras ──
-
-    {
-      nome: "RX 7800 XT",
-      imagem:
-        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7800xt.png",
-      categoriaTag: "GPU",
-      descricao: "GPU AMD intermediária para jogos em 1440p com excelente custo-benefício.",
-      precoMedio: 3799.90,
-      lancamento: 2023,
-      marca: "AMD",
-      imagens: [
-        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7800xt.png"
-      ],
-      especificacoes: {
-        vram: "16GB",
-        arquitetura: "RDNA 3",
-        rayTracing: true
-      },
-      sitesCompra: [
-        {
-          loja: "Kabum",
-          preco: 3699.90,
-          link: "https://www.kabum.com.br"
-        },
-        {
-          loja: "Pichau",
-          preco: 3749.90,
-          link: "https://www.pichau.com.br"
-        }
-      ]
-    },
-
-    {
-      nome: "RTX 4080 Super",
-      imagem:
-        "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada/rtx-4080-super/geforce-ada-4080-super-product-photo-001.png",
-      categoriaTag: "GPU",
-      descricao: "GPU de alto desempenho para jogos em 4K e criação de conteúdo profissional.",
-      precoMedio: 8499.90,
-      lancamento: 2024,
-      marca: "NVIDIA",
-      imagens: [
-        "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada/rtx-4080-super/geforce-ada-4080-super-product-photo-001.png"
-      ],
-      especificacoes: {
-        vram: "16GB",
-        arquitetura: "Ada Lovelace",
-        rayTracing: true,
-        dlss: "DLSS 3.5"
-      },
-      sitesCompra: [
-        {
-          loja: "Terabyte",
-          preco: 8299.90,
-          link: "https://www.terabyteshop.com.br"
-        },
-        {
-          loja: "Kabum",
-          preco: 8399.90,
-          link: "https://www.kabum.com.br"
-        }
-      ]
-    },
-
-    {
-      nome: "Intel Arc A770",
-      imagem:
-        "https://www.intel.com/content/dam/www/central-libraries/us/en/images/2022-10/arc-a770-702x395.png",
-      categoriaTag: "GPU",
-      descricao: "GPU Intel de entrada com suporte a Ray Tracing e bom desempenho em 1080p.",
-      precoMedio: 1899.90,
-      lancamento: 2022,
-      marca: "Intel",
-      imagens: [
-        "https://www.intel.com/content/dam/www/central-libraries/us/en/images/2022-10/arc-a770-702x395.png"
-      ],
-      especificacoes: {
-        vram: "16GB",
-        arquitetura: "Xe HPG (Alchemist)",
-        rayTracing: true
-      },
-      sitesCompra: [
-        {
-          loja: "Pichau",
-          preco: 1799.90,
-          link: "https://www.pichau.com.br"
-        }
-      ]
-    },
-
-    {
-      nome: "RX 7600",
-      imagem:
-        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7600.png",
-      categoriaTag: "GPU",
-      descricao: "GPU AMD de entrada para jogos em 1080p com ótima eficiência energética.",
-      precoMedio: 1999.90,
-      lancamento: 2023,
-      marca: "AMD",
-      imagens: [
-        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7600.png"
-      ],
-      especificacoes: {
-        vram: "8GB",
-        arquitetura: "RDNA 3",
-        rayTracing: true
-      },
-      sitesCompra: [
-        {
-          loja: "Kabum",
-          preco: 1899.90,
-          link: "https://www.kabum.com.br"
-        },
-        {
-          loja: "Terabyte",
-          preco: 1949.90,
-          link: "https://www.terabyteshop.com.br"
-        }
-      ]
-    },
-
-    // ── Celulares extras ──
-
-    {
-      nome: "Samsung Galaxy A55",
-      imagem:
-        "https://images.samsung.com/is/image/samsung/p6pim/br/2403/gallery/br-galaxy-a55-5g-sm-a556ezddzto-thumb-539573460",
-      categoriaTag: "Celular",
-      descricao: "Smartphone intermediário Samsung com tela Super AMOLED e proteção IP67.",
-      precoMedio: 2299.90,
-      lancamento: 2024,
-      marca: "Samsung",
-      imagens: [
-        "https://images.samsung.com/is/image/samsung/p6pim/br/2403/gallery/br-galaxy-a55-5g-sm-a556ezddzto-thumb-539573460"
-      ],
-      especificacoes: {
-        tela: "6.6 polegadas Super AMOLED",
-        processador: "Exynos 1480",
-        ram: "8GB",
-        armazenamento: "128GB",
-        camera: "50MP + 12MP + 5MP",
-        bateria: "5000 mAh"
-      },
-      sitesCompra: [
-        {
-          loja: "Magazine Luiza",
-          preco: 2199.90,
-          link: "https://www.magazineluiza.com.br"
-        },
-        {
-          loja: "Amazon",
-          preco: 2249.90,
-          link: "https://www.amazon.com.br"
-        }
-      ]
-    },
-
-    {
-      nome: "iPhone 14",
-      imagem:
-        "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-14-blue-select-202209",
-      categoriaTag: "Celular",
-      descricao: "iPhone com chip A15 Bionic, tela de 6.1 polegadas e câmera dupla.",
-      precoMedio: 5499.90,
-      lancamento: 2022,
-      marca: "Apple",
-      imagens: [
-        "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-14-blue-select-202209"
-      ],
-      especificacoes: {
-        tela: "6.1 polegadas OLED",
-        processador: "A15 Bionic",
-        ram: "6GB",
-        armazenamento: "128GB",
-        camera: "12MP + 12MP",
-        bateria: "3279 mAh"
-      },
-      sitesCompra: [
-        {
-          loja: "Kabum",
-          preco: 5299.90,
-          link: "https://www.kabum.com.br"
-        },
-        {
-          loja: "Casas Bahia",
-          preco: 5399.90,
-          link: "https://www.casasbahia.com.br"
-        }
-      ]
-    },
-
-    {
-      nome: "Xiaomi Redmi Note 13 Pro",
-      imagem:
-        "https://i02.appmifile.com/images/2023/09/21/redmi-note-13-pro.png",
-      categoriaTag: "Celular",
-      descricao: "Smartphone Xiaomi com câmera de 200MP e carregamento rápido de 67W.",
-      precoMedio: 1799.90,
-      lancamento: 2024,
-      marca: "Xiaomi",
-      imagens: [
-        "https://i02.appmifile.com/images/2023/09/21/redmi-note-13-pro.png"
-      ],
-      especificacoes: {
-        tela: "6.67 polegadas AMOLED",
-        processador: "Snapdragon 7s Gen 2",
-        ram: "8GB",
-        armazenamento: "256GB",
-        camera: "200MP + 8MP + 2MP",
-        bateria: "5100 mAh"
-      },
-      sitesCompra: [
-        {
-          loja: "Amazon",
-          preco: 1699.90,
-          link: "https://www.amazon.com.br"
-        },
-        {
-          loja: "Magazine Luiza",
-          preco: 1749.90,
-          link: "https://www.magazineluiza.com.br"
-        }
-      ]
-    },
-
-    {
-      nome: "Google Pixel 8 Pro",
-      imagem:
-        "https://lh3.googleusercontent.com/2XOGIF0W-0FGq-vrcYJCYHRtkXqX2Z4T-mKhLRsNzER5GaKVPMi6ZzXnQM1V3WN0rIY",
-      categoriaTag: "Celular",
-      descricao: "Smartphone Google com IA avançada, chip Tensor G3 e câmera profissional.",
-      precoMedio: 6999.90,
-      lancamento: 2023,
-      marca: "Google",
-      imagens: [
-        "https://lh3.googleusercontent.com/2XOGIF0W-0FGq-vrcYJCYHRtkXqX2Z4T-mKhLRsNzER5GaKVPMi6ZzXnQM1V3WN0rIY"
-      ],
-      especificacoes: {
-        tela: "6.7 polegadas LTPO OLED",
-        processador: "Google Tensor G3",
-        ram: "12GB",
-        armazenamento: "128GB",
-        camera: "50MP + 48MP + 48MP",
-        bateria: "5050 mAh"
-      },
-      sitesCompra: [
-        {
-          loja: "Amazon",
-          preco: 6799.90,
-          link: "https://www.amazon.com.br"
-        }
-      ]
-    },
-
-    {
-      nome: "Motorola Moto G84",
-      imagem:
-        "https://motorolarepair.com/wp-content/uploads/2023/09/moto-g84.png",
-      categoriaTag: "Celular",
-      descricao: "Smartphone Motorola intermediário com tela pOLED de 120Hz e som estéreo Dolby Atmos.",
-      precoMedio: 1499.90,
-      lancamento: 2023,
-      marca: "Motorola",
-      imagens: [
-        "https://motorolarepair.com/wp-content/uploads/2023/09/moto-g84.png"
-      ],
-      especificacoes: {
-        tela: "6.55 polegadas pOLED 120Hz",
-        processador: "Snapdragon 695",
-        ram: "8GB",
-        armazenamento: "256GB",
-        camera: "50MP + 8MP",
-        bateria: "5000 mAh"
-      },
-      sitesCompra: [
-        {
-          loja: "Casas Bahia",
-          preco: 1399.90,
-          link: "https://www.casasbahia.com.br"
-        },
-        {
-          loja: "Americanas",
-          preco: 1449.90,
-          link: "https://www.americanas.com.br"
-        }
-      ]
-    },
-
-    // ── Geladeiras extras ──
-
-    {
-      nome: "Geladeira LG French Door 525L",
-      imagem:
-        "https://www.lg.com/br/images/geladeiras/md07503412/gallery/GR-L228CV-525L-01.jpg",
-      categoriaTag: "Geladeira",
-      descricao: "Geladeira LG French Door com Door-in-Door e inverter compressor.",
-      precoMedio: 8999.90,
-      lancamento: 2023,
-      marca: "LG",
-      imagens: [
-        "https://www.lg.com/br/images/geladeiras/md07503412/gallery/GR-L228CV-525L-01.jpg"
-      ],
-      especificacoes: {
-        capacidade: "525 litros",
-        tipo: "French Door",
-        eficienciaEnergetica: "A++",
-        corExterna: "Inox",
-        voltagem: "Bivolt",
-        inverterCompressor: true
-      },
-      sitesCompra: [
-        {
-          loja: "Magazine Luiza",
-          preco: 8799.90,
-          link: "https://www.magazineluiza.com.br"
-        },
-        {
-          loja: "Amazon",
-          preco: 8899.90,
-          link: "https://www.amazon.com.br"
-        }
-      ]
-    },
-
-    {
-      nome: "Geladeira Brastemp Inverse 443L",
-      imagem:
-        "https://brastemp.vtexassets.com/arquivos/ids/227080/Geladeira-Brastemp-Inverse-443-litros-BRE57AK.png",
-      categoriaTag: "Geladeira",
-      descricao: "Geladeira inverse com freezer embaixo, ideal para famílias grandes.",
-      precoMedio: 4499.90,
-      lancamento: 2023,
-      marca: "Brastemp",
-      imagens: [
-        "https://brastemp.vtexassets.com/arquivos/ids/227080/Geladeira-Brastemp-Inverse-443-litros-BRE57AK.png"
-      ],
-      especificacoes: {
-        capacidade: "443 litros",
-        tipo: "Inverse Frost Free",
-        eficienciaEnergetica: "A",
-        corExterna: "Inox",
-        voltagem: "110V"
-      },
-      sitesCompra: [
-        {
-          loja: "Casas Bahia",
-          preco: 4299.90,
-          link: "https://www.casasbahia.com.br"
-        },
-        {
-          loja: "Kabum",
-          preco: 4399.90,
-          link: "https://www.kabum.com.br"
-        }
-      ]
-    },
-
-    {
-      nome: "Geladeira Electrolux Top Freezer 431L",
-      imagem:
-        "https://electrolux.vtexassets.com/arquivos/ids/232600/Geladeira-Electrolux-Top-Freezer-431-litros-TF55S.png",
-      categoriaTag: "Geladeira",
-      descricao: "Geladeira duplex com prateleiras de vidro temperado e controle de temperatura.",
-      precoMedio: 2899.90,
-      lancamento: 2022,
-      marca: "Electrolux",
-      imagens: [
-        "https://electrolux.vtexassets.com/arquivos/ids/232600/Geladeira-Electrolux-Top-Freezer-431-litros-TF55S.png"
-      ],
-      especificacoes: {
-        capacidade: "431 litros",
-        tipo: "Top Freezer Frost Free",
-        eficienciaEnergetica: "A",
-        corExterna: "Platinum",
-        voltagem: "220V"
-      },
-      sitesCompra: [
-        {
-          loja: "Magazine Luiza",
-          preco: 2799.90,
-          link: "https://www.magazineluiza.com.br"
-        }
-      ]
-    },
-
-    {
-      nome: "Geladeira Panasonic Econavi 480L",
-      imagem:
-        "https://panasonic.vtexassets.com/arquivos/ids/200123/NR-BB71GVFB-01.png",
-      categoriaTag: "Geladeira",
-      descricao: "Geladeira Panasonic com tecnologia Econavi para economia de energia inteligente.",
-      precoMedio: 4999.90,
-      lancamento: 2023,
-      marca: "Panasonic",
-      imagens: [
-        "https://panasonic.vtexassets.com/arquivos/ids/200123/NR-BB71GVFB-01.png"
-      ],
-      especificacoes: {
-        capacidade: "480 litros",
-        tipo: "Bottom Freezer Frost Free",
-        eficienciaEnergetica: "A+",
-        corExterna: "Aço Escovado",
-        voltagem: "Bivolt",
-        econavi: true
-      },
-      sitesCompra: [
-        {
-          loja: "Amazon",
-          preco: 4799.90,
-          link: "https://www.amazon.com.br"
-        },
-        {
-          loja: "Magazine Luiza",
-          preco: 4899.90,
-          link: "https://www.magazineluiza.com.br"
-        }
-      ]
-    },
-
-    // ── Bicicletas extras ──
-
     {
       nome: "Groove Hype 50",
       imagem:
