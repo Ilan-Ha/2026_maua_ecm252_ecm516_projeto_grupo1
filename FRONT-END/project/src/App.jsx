@@ -4,6 +4,7 @@ import Perfil from "./usuario/Perfil";
 import StatusLed from "./StatusLed";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Departamentos from "./catalogo/Departamentos";
+import DetalhesProduto from "./catalogo/DetalhesProduto";
 import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
 import { useState } from "react";
 import config from "./config";
@@ -17,6 +18,7 @@ function App() {
     <StatusLed />
       <Routes>
         <Route path="/" element={<Departamentos />} />
+        <Route path="/produto/:id" element={<DetalhesProduto />} />
         <Route path={svc.search.endpoints.search} element={<Search />}></Route>
         <Route path={svc.auth.endpoints.register} element={<Cadastro />} />
         <Route path={svc.auth.endpoints.login} element={<Login setUsuario={setUsuario} />} />

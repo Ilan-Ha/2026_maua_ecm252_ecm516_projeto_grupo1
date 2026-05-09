@@ -1,6 +1,7 @@
 import ItemCard from "./CartaoDeItem.jsx";
 import Header from "../Header.jsx";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import config from "../config.jsx";
 // Componente da Página
 const Page = (props) => {
@@ -68,7 +69,7 @@ export default function Departamentos() {
           <button onClick={() => setTag(null)}>Voltar</button>
           {items.map((item, i) => (
             <div className="col" key={i}>
-              <ItemCard img={item.imagem} itemName={item.nome} />
+              <ItemCard img={item.imagem} itemName={item.nome} itemLink={`/produto/${item._id}`} />
             </div>
           ))}
         </>

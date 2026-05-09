@@ -19,7 +19,8 @@
         "catalog":{
             "port":3000,
             "endpoints":{
-                "catalog": "/catalogo"
+                "catalog": "/catalogo",
+                "produto": "/produto"
             }
         },
         "search":{

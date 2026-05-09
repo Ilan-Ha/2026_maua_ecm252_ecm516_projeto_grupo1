@@ -2,7 +2,7 @@ import fs from "fs"
 import config from './config.js'
 import express from 'express'
 import cors from 'cors'
-import { getCatalogo, initSeed } from "./productDatabaseManager.js";
+import { getCatalogo, initSeed, getProdutoById } from "./productDatabaseManager.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 mongoose.set("strictQuery", true);
@@ -103,6 +103,19 @@ app.get("/health/db", async (req, res) => {
     status: ok ? "ok" : "error"
   });
 });
+// Rota de produto por ID
+app.get("/produto/:id", async (req, res) => {
+  try {
+    const produto = await getProdutoById(req.params.id);
+    if (!produto) {
+      return res.status(404).json({ error: "Produto não encontrado" });
+    }
+    res.json(produto);
+  } catch (err) {
+    res.status(400).json({ error: "ID inválido" });
+  }
+});
+
 // Fallback (Erro 404)
 app.use((req, res) => {
   res.status(404).json({ error: "Rota não encontrada" })
@@ -119,6 +132,7 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log(`Rodando em ${config.url}:${PORT}`);
     });
+
   } catch (err) {
     console.error("Falha ao iniciar servidor:", err);
     process.exit(1);
