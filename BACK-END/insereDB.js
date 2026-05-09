@@ -154,14 +154,14 @@ async function inserirProdutos() {
     {
       nome: "RX 7900 XTX",
       imagem:
-        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7900xtx.png",
+        "https://img.terabyteshop.com.br/produto/g/placa-de-video-gigabyte-amd-radeon-rx-7600-xt-gaming-oc-16gb-gddr6-fsr-ray-tracing-gv-r76xtgaming-oc-16gd_188716.png",
       categoriaTag: "GPU",
       descricao: "GPU AMD topo de linha para 4K e criação de conteúdo.",
       precoMedio: 7499.90,
       lancamento: 2022,
       marca: "AMD",
       imagens: [
-        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7900xtx.png"
+        "https://img.terabyteshop.com.br/produto/g/placa-de-video-gigabyte-amd-radeon-rx-7600-xt-gaming-oc-16gb-gddr6-fsr-ray-tracing-gv-r76xtgaming-oc-16gd_188716.png"
       ],
       especificacoes: {
         vram: "24GB",
@@ -184,14 +184,14 @@ async function inserirProdutos() {
     {
       nome: "RX 7800 XT",
       imagem:
-        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7800xt.png",
+        "https://www.amd.com/content/dam/amd/en/images/products/graphics/2648997-amd-radeon-7800xt.jpg",
       categoriaTag: "GPU",
       descricao: "GPU AMD intermediária para jogos em 1440p com excelente custo-benefício.",
       precoMedio: 3799.90,
       lancamento: 2023,
       marca: "AMD",
       imagens: [
-        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7800xt.png"
+        "https://www.amd.com/content/dam/amd/en/images/products/graphics/2648997-amd-radeon-7800xt.jpg"
       ],
       especificacoes: {
         vram: "16GB",
@@ -215,14 +215,14 @@ async function inserirProdutos() {
     {
       nome: "RTX 4080 Super",
       imagem:
-        "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada/rtx-4080-super/geforce-ada-4080-super-product-photo-001.png",
+        "https://tpucdn.com/gpu-specs/images/c/4182-top.jpg",
       categoriaTag: "GPU",
       descricao: "GPU de alto desempenho para jogos em 4K e criação de conteúdo profissional.",
       precoMedio: 8499.90,
       lancamento: 2024,
       marca: "NVIDIA",
       imagens: [
-        "https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ada/rtx-4080-super/geforce-ada-4080-super-product-photo-001.png"
+        "https://tpucdn.com/gpu-specs/images/c/4182-top.jpg"
       ],
       especificacoes: {
         vram: "16GB",
@@ -247,14 +247,14 @@ async function inserirProdutos() {
     {
       nome: "Intel Arc A770",
       imagem:
-        "https://www.intel.com/content/dam/www/central-libraries/us/en/images/2022-10/arc-a770-702x395.png",
+        "https://www.yugatech.com/wp-content/uploads/2022/09/Intel-Arc-A770-desktop-graphics-1-1536x864.png",
       categoriaTag: "GPU",
       descricao: "GPU Intel de entrada com suporte a Ray Tracing e bom desempenho em 1080p.",
       precoMedio: 1899.90,
       lancamento: 2022,
       marca: "Intel",
       imagens: [
-        "https://www.intel.com/content/dam/www/central-libraries/us/en/images/2022-10/arc-a770-702x395.png"
+        "https://www.yugatech.com/wp-content/uploads/2022/09/Intel-Arc-A770-desktop-graphics-1-1536x864.png"
       ],
       especificacoes: {
         vram: "16GB",
@@ -273,14 +273,14 @@ async function inserirProdutos() {
     {
       nome: "RX 7600",
       imagem:
-        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7600.png",
+        "https://www.bing.com/th?id=OPHS.%2fxQViqZhI7zcDg474C474&o=5&pid=21.1&w=128&h=128&qlt=100&dpr=1&o=2&bw=6&bc=FFFFFF",
       categoriaTag: "GPU",
       descricao: "GPU AMD de entrada para jogos em 1080p com ótima eficiência energética.",
       precoMedio: 1999.90,
       lancamento: 2023,
       marca: "AMD",
       imagens: [
-        "https://www.amd.com/content/dam/amd/en/images/products/graphics/amd-radeon-rx-7600.png"
+        "https://www.bing.com/th?id=OPHS.%2fxQViqZhI7zcDg474C474&o=5&pid=21.1&w=128&h=128&qlt=100&dpr=1&o=2&bw=6&bc=FFFFFF"
       ],
       especificacoes: {
         vram: "8GB",
