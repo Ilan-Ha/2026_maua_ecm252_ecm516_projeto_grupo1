@@ -1,79 +1,137 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import Header from "../Header.jsx";
 import config from "../config";
-export default function Login({ setUsuario}) {
-  const svc = config.services.auth
-  const url = config.url +":" + String(svc.port) + String(svc.endpoints.login)
-  const navigate = useNavigate()
-  // Hook de estado para armazenar dados do formulário
+
+export default function Login({ setUsuario }) {
+  const svc = config.services.auth;
+  const perfilPath = config.services.user.endpoints.perfil;
+  const url =
+    config.url + ":" + String(svc.port) + String(svc.endpoints.login);
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     email: "",
-    senha: ""
+    senha: "",
   });
-  // Função para lidar com mudanças no formulário
+  const [loading, setLoading] = useState(false);
+  const [mensagem, setMensagem] = useState({ tipo: "", texto: "" });
+
   const handleChange = (e) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
+    if (mensagem.texto) setMensagem({ tipo: "", texto: "" });
   };
-  // Função para lidar com o envio do formulário
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Envia dados para o backend
+    setLoading(true);
+    setMensagem({ tipo: "", texto: "" });
+
     try {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(form)
+        body: JSON.stringify(form),
       });
-      // Verifica se a resposta foi bem sucedida
+
       if (!res.ok) {
-        throw new Error("Erro no login");
+        const errorData = await res.json().catch(() => ({}));
+        setMensagem({
+          tipo: "danger",
+          texto: errorData.message || "Email ou senha inválidos",
+        });
+        return;
       }
-      // Converte a resposta para JSON
+
       const data = await res.json();
-      console.log("Resposta do backend:", data);
-      console.log("Usuario recebido:", data.usuario);
-      // login OK → salva usuário
       setUsuario(data.usuario);
-      // muda para perfil
-      navigate("/perfil");
-    // Em caso de erro
-    } catch (err) {
-      alert("Email ou senha inválidos");
+      navigate(perfilPath);
+    } catch {
+      setMensagem({
+        tipo: "danger",
+        texto: "Erro ao conectar com o servidor",
+      });
+    } finally {
+      setLoading(false);
     }
   };
-  // Retorno do componente
+
   return (
-    <div>
-      <h2>Login</h2>
-      {/* Formulário de login */}
-      <form onSubmit={handleSubmit}>
-        <input
-          className="form-control mb-3"
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
-        {/* Campo de senha */}
-        <input
-          className="form-control mb-3"
-          type="password"
-          name="senha"
-          placeholder="Senha"
-          value={form.senha}
-          onChange={handleChange}
-          required
-        />
-        {/* Botão de envio */}
-        <button className="btn btn-primary" type="submit">Entrar</button>
-      </form>
+    <div className="container-fluid">
+      <Header />
+      <div className="auth-page login-page">
+        <div className="auth-card login-card">
+          <h2 className="auth-title">Entrar</h2>
+          <p className="auth-subtitle text-muted">
+            Acesse sua conta para ver seu perfil e comparar produtos.
+          </p>
+
+          {mensagem.texto && (
+            <div
+              className={`alert alert-${mensagem.tipo} auth-alert`}
+              role="alert"
+            >
+              {mensagem.texto}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="mb-3 text-start">
+              <label htmlFor="login-email" className="form-label auth-label">
+                Email
+              </label>
+              <input
+                id="login-email"
+                className="form-control auth-input"
+                type="email"
+                name="email"
+                placeholder="voce@email.com"
+                value={form.email}
+                onChange={handleChange}
+                required
+                autoComplete="email"
+              />
+            </div>
+
+            <div className="mb-4 text-start">
+              <label htmlFor="login-senha" className="form-label auth-label">
+                Senha
+              </label>
+              <input
+                id="login-senha"
+                className="form-control auth-input"
+                type="password"
+                name="senha"
+                placeholder="Sua senha"
+                value={form.senha}
+                onChange={handleChange}
+                required
+                autoComplete="current-password"
+              />
+            </div>
+
+            <button
+              className="auth-submit"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "Entrando..." : "Entrar"}
+            </button>
+          </form>
+
+          <p className="auth-footer">
+            Não tem conta?{" "}
+            <Link to={svc.endpoints.register} className="auth-link">
+              Cadastrar
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

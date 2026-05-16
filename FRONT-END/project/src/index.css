@@ -152,3 +152,151 @@ h2.title-departamentos {
   padding: clamp(4px, 1vw, 10px) clamp(10px, 2vw, 20px);
   white-space: nowrap; /* Impede que o texto quebre em duas linhas */
 }
+
+/* Auth pages (cadastro, login) — paleta verde do projeto */
+.auth-page {
+  --auth-green: #377f3f;
+  --auth-green-dark: #2a6330;
+  --auth-green-border: #6bab72;
+  --auth-green-soft: rgba(55, 127, 63, 0.14);
+  --auth-page-bg: #ffffff;
+  --auth-card-bg: #e8f6e4;
+  --auth-text: #2c332c;
+  --auth-muted: #5c6b5c;
+
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1rem 4rem;
+  background: var(--auth-page-bg);
+  min-height: calc(100svh - 5rem);
+}
+
+.cadastro-page .auth-card,
+.login-page .auth-card {
+  animation: auth-fade-in 0.35s ease-out;
+}
+
+@keyframes auth-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem;
+  border: 1px solid #c8dcc8;
+  border-radius: 1rem;
+  box-shadow:
+    0 4px 6px rgba(55, 127, 63, 0.06),
+    0 16px 40px rgba(55, 127, 63, 0.12);
+  background: var(--auth-card-bg);
+  text-align: left;
+}
+
+.auth-title {
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;
+  color: var(--auth-green);
+  margin-bottom: 0.35rem;
+  text-align: center;
+}
+
+.auth-subtitle {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  color: var(--auth-muted) !important;
+}
+
+.auth-alert {
+  border-radius: 0.75rem;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.auth-form {
+  margin-bottom: 0.5rem;
+}
+
+.auth-label {
+  font-weight: 600;
+  color: var(--auth-text);
+  font-size: 0.9rem;
+  margin-bottom: 0.35rem;
+}
+
+.auth-input {
+  border-radius: 0.75rem;
+  padding: 0.65rem 1rem;
+  border: 1.5px solid var(--auth-green-border);
+  background: #fff;
+  color: var(--auth-text);
+}
+
+.auth-input::placeholder {
+  color: #8a9a8a;
+}
+
+.auth-input:focus {
+  border-color: var(--auth-green);
+  box-shadow: 0 0 0 0.2rem var(--auth-green-soft);
+  outline: none;
+}
+
+.auth-submit {
+  width: 100%;
+  border-radius: 999px;
+  padding: 0.7rem 1rem;
+  background: var(--auth-green);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.auth-submit:hover:not(:disabled) {
+  background: var(--auth-green-dark);
+}
+
+.auth-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 1.25rem;
+  margin-bottom: 0;
+  font-size: 0.95rem;
+  color: var(--auth-muted);
+}
+
+.auth-link {
+  color: var(--auth-green);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  color: var(--auth-green-dark);
+  text-decoration: underline;
+}
+
+/* Mantém contraste claro mesmo com dark mode do sistema */
+@media (prefers-color-scheme: dark) {
+  .auth-page {
+    --auth-page-bg: #ffffff;
+    --auth-card-bg: #e8f6e4;
+    --auth-text: #2c332c;
+    --auth-muted: #5c6b5c;
+  }
+}
