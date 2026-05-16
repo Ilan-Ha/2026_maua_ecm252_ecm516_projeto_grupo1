@@ -1,91 +1,154 @@
 import { useState } from "react";
+import Header from "../Header.jsx";
+import { Link } from "react-router-dom";
 import config from "../config";
+
 export default function Cadastro() {
-  const svc = config.services.auth
-  const url = config.url +":" + String(svc.port) + String(svc.endpoints.register)
-  // Hook de estado para armazenar dados do formulário/
+  const svc = config.services.auth;
+  const url =
+    config.url + ":" + String(svc.port) + String(svc.endpoints.register);
+
   const [form, setForm] = useState({
     nome: "",
     email: "",
-    senha: ""
+    senha: "",
   });
-  // Função para lidar com mudanças no formulário/
+  const [loading, setLoading] = useState(false);
+  const [mensagem, setMensagem] = useState({ tipo: "", texto: "" });
+
   const handleChange = (e) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
+    if (mensagem.texto) setMensagem({ tipo: "", texto: "" });
   };
-  // Função para lidar com o envio do formulário/
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Envia dados para o backend/
+    setLoading(true);
+    setMensagem({ tipo: "", texto: "" });
+
     try {
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(form)
+        body: JSON.stringify(form),
       });
-      // Verifica se a resposta foi bem sucedida/
+
       if (!res.ok) {
         const errorData = await res.json();
-        alert(errorData.message || "Erro no servidor");
+        setMensagem({
+          tipo: "danger",
+          texto: errorData.message || "Erro no servidor",
+        });
         return;
       }
-      // Converte a resposta para JSON/
+
       const data = await res.json();
-      alert(data.message);
-      // Limpa o formulário/
-      setForm({
-        nome: "",
-        email: "",
-        senha: ""
+      setMensagem({ tipo: "success", texto: data.message });
+      setForm({ nome: "", email: "", senha: "" });
+    } catch {
+      setMensagem({
+        tipo: "danger",
+        texto: "Erro ao conectar com o servidor",
       });
-    // Em caso de erro/
-    } catch (err) {
-      alert("Erro ao conectar com o servidor");
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
-    <div>
-      {/* Cabeçalho */}
-      <h2>Cadastro</h2>
-      {/* Formulário de cadastro */}
-      <form onSubmit={handleSubmit}>
-        <input
-          className="form-control mb-3"
-          type="text"
-          name="nome"
-          placeholder="Nome"
-          value={form.nome}
-          onChange={handleChange}
-          required
-        />
-        {/* Campo de email */}
-        <input
-          className="form-control mb-3"
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
-        {/* Campo de senha */}
-        <input
-          className="form-control mb-3"
-          type="password"
-          name="senha"
-          placeholder="Senha"
-          value={form.senha}
-          onChange={handleChange}
-          required
-        />
-        {/* Botão de envio */}
-        <button className="btn btn-success" type="submit">Cadastrar</button>
-      </form>
+    <div className="container-fluid">
+      <Header />
+      <div className="auth-page cadastro-page">
+        <div className="auth-card cadastro-card">
+          <h2 className="auth-title">Criar conta</h2>
+          <p className="auth-subtitle text-muted">
+            Cadastre-se para acessar seu perfil e comparar produtos.
+          </p>
+
+          {mensagem.texto && (
+            <div
+              className={`alert alert-${mensagem.tipo} auth-alert`}
+              role="alert"
+            >
+              {mensagem.texto}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="mb-3 text-start">
+              <label htmlFor="nome" className="form-label auth-label">
+                Nome
+              </label>
+              <input
+                id="nome"
+                className="form-control auth-input"
+                type="text"
+                name="nome"
+                placeholder="Seu nome"
+                value={form.nome}
+                onChange={handleChange}
+                required
+                autoComplete="name"
+              />
+            </div>
+
+            <div className="mb-3 text-start">
+              <label htmlFor="email" className="form-label auth-label">
+                Email
+              </label>
+              <input
+                id="email"
+                className="form-control auth-input"
+                type="email"
+                name="email"
+                placeholder="voce@email.com"
+                value={form.email}
+                onChange={handleChange}
+                required
+                autoComplete="email"
+              />
+            </div>
+
+            <div className="mb-4 text-start">
+              <label htmlFor="senha" className="form-label auth-label">
+                Senha
+              </label>
+              <input
+                id="senha"
+                className="form-control auth-input"
+                type="password"
+                name="senha"
+                placeholder="Mínimo 6 caracteres"
+                value={form.senha}
+                onChange={handleChange}
+                required
+                minLength={6}
+                autoComplete="new-password"
+              />
+            </div>
+
+            <button
+              className="auth-submit"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "Cadastrando..." : "Cadastrar"}
+            </button>
+          </form>
+
+          <p className="auth-footer">
+            Já tem conta?{" "}
+            <Link to={svc.endpoints.login} className="auth-link">
+              Entrar
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
