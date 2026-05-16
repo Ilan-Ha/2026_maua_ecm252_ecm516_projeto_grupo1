@@ -792,14 +792,14 @@ async function inserirProdutos() {
     {
       nome: "Geladeira Electrolux Top Freezer 431L",
       imagem:
-        "https://electrolux.vtexassets.com/arquivos/ids/232600/Geladeira-Electrolux-Top-Freezer-431-litros-TF55S.png",
+        "https://electrolux.vtexassets.com/arquivos/ids/209238-540-540?v=638762556556270000&width=540&height=540&aspect=true&format=auto",
       categoriaTag: "Geladeira",
       descricao: "Geladeira duplex com prateleiras de vidro temperado e controle de temperatura.",
       precoMedio: 2899.90,
       lancamento: 2022,
       marca: "Electrolux",
       imagens: [
-        "https://electrolux.vtexassets.com/arquivos/ids/232600/Geladeira-Electrolux-Top-Freezer-431-litros-TF55S.png"
+        "https://electrolux.vtexassets.com/arquivos/ids/209238-540-540?v=638762556556270000&width=540&height=540&aspect=true&format=auto"
       ],
       especificacoes: {
         capacidade: "431 litros",
@@ -818,16 +818,16 @@ async function inserirProdutos() {
     },
 
     {
-      nome: "Geladeira Panasonic Econavi 480L",
+      nome: "Geladeira Panasonic Frost Free 480L A+++ Black Glass - NR-BB71GVFB",
       imagem:
-        "https://panasonic.vtexassets.com/arquivos/ids/200123/NR-BB71GVFB-01.png",
+        "https://panasonic.vtexassets.com/arquivos/ids/164129-1200-auto?v=638842261623200000&width=1200&height=auto&aspect=true",
       categoriaTag: "Geladeira",
       descricao: "Geladeira Panasonic com tecnologia Econavi para economia de energia inteligente.",
-      precoMedio: 4999.90,
+      precoMedio: 5999.90,
       lancamento: 2023,
       marca: "Panasonic",
       imagens: [
-        "https://panasonic.vtexassets.com/arquivos/ids/200123/NR-BB71GVFB-01.png"
+        "https://panasonic.vtexassets.com/arquivos/ids/164129-1200-auto?v=638842261623200000&width=1200&height=auto&aspect=true"
       ],
       especificacoes: {
         capacidade: "480 litros",
@@ -890,14 +890,14 @@ async function inserirProdutos() {
     {
       nome: "Sense Impact SL",
       imagem:
-        "https://www.bikemagazine.com.br/wp-content/uploads/2023/01/sense-impact-sl-2023.jpg",
+        "https://www.sensebike.com.br/cdn/shop/files/ImpactSL.jpg?v=1725461156&width=960",
       categoriaTag: "Bike",
       descricao: "Mountain bike intermediária com quadro em alumínio e suspensão a ar.",
       precoMedio: 6999.90,
       lancamento: 2023,
       marca: "Sense",
       imagens: [
-        "https://www.bikemagazine.com.br/wp-content/uploads/2023/01/sense-impact-sl-2023.jpg"
+        "https://www.sensebike.com.br/cdn/shop/files/ImpactSL.jpg?v=1725461156&width=960"
       ],
       especificacoes: {
         quadro: "Alumínio",
@@ -986,14 +986,14 @@ async function inserirProdutos() {
     {
       nome: "Groove Hype 50",
       imagem:
-        "https://www.groovebikes.com.br/wp-content/uploads/2023/01/hype-50-azul.jpg",
+        "https://groovebikes.com.br/wp-content/uploads/2020/09/AMARELO-E-GRAFITE-1536x1536.jpg",
       categoriaTag: "Bike",
       descricao: "Mountain bike de entrada ideal para iniciantes em trilhas e uso urbano.",
       precoMedio: 2199.90,
       lancamento: 2023,
       marca: "Groove",
       imagens: [
-        "https://www.groovebikes.com.br/wp-content/uploads/2023/01/hype-50-azul.jpg"
+        "https://groovebikes.com.br/wp-content/uploads/2020/09/AMARELO-E-GRAFITE-1536x1536.jpg"
       ],
       especificacoes: {
         quadro: "Alumínio 6061",
@@ -1020,14 +1020,14 @@ async function inserirProdutos() {
     {
       nome: "Cannondale Trail 5",
       imagem:
-        "https://www.cannondale.com/media/catalog/product/c/a/cannondale-trail-5-2024.png",
+        "https://www.ecompletocdn.com.br/i/fp/1340/1526695_2_1700672292.jpg",
       categoriaTag: "Bike",
       descricao: "Mountain bike premium com suspensão RockShox e câmbio Shimano Deore.",
       precoMedio: 8999.90,
       lancamento: 2024,
       marca: "Cannondale",
       imagens: [
-        "https://www.cannondale.com/media/catalog/product/c/a/cannondale-trail-5-2024.png"
+        "https://www.ecompletocdn.com.br/i/fp/1340/1526695_2_1700672292.jpg"
       ],
       especificacoes: {
         quadro: "Alumínio SmartForm C2",
@@ -1049,14 +1049,14 @@ async function inserirProdutos() {
     {
       nome: "Caloi City Tour Sport",
       imagem:
-        "https://www.caloi.com/media/catalog/product/c/a/caloi-city-tour-sport-2024.png",
+        "https://www.flashbike.com.br/site/carrega?_tp=img5&_img=007551001.jpg",
       categoriaTag: "Bike",
       descricao: "Bicicleta urbana confortável com quadro em alumínio e câmbio Shimano.",
       precoMedio: 1899.90,
       lancamento: 2024,
       marca: "Caloi",
       imagens: [
-        "https://www.caloi.com/media/catalog/product/c/a/caloi-city-tour-sport-2024.png"
+        "https://www.flashbike.com.br/site/carrega?_tp=img5&_img=007551001.jpg"
       ],
       especificacoes: {
         quadro: "Alumínio",
@@ -1083,14 +1083,14 @@ async function inserirProdutos() {
     {
       nome: "Trek Marlin 7",
       imagem:
-        "https://trek.scene7.com/is/image/TrekBicycleProducts/Marlin7_2024_Black.png",
+        "https://images.tcdn.com.br/img/img_prod/717653/bicicleta_trek_marlin_7_geracao_3_186_5041_1_20260131115831_96c933c68528.jpg",
       categoriaTag: "Bike",
       descricao: "Mountain bike intermediária Trek com suspensão a ar e componentes de qualidade.",
       precoMedio: 5999.90,
       lancamento: 2024,
       marca: "Trek",
       imagens: [
-        "https://trek.scene7.com/is/image/TrekBicycleProducts/Marlin7_2024_Black.png"
+        "https://images.tcdn.com.br/img/img_prod/717653/bicicleta_trek_marlin_7_geracao_3_186_5041_1_20260131115831_96c933c68528.jpg"
       ],
       especificacoes: {
         quadro: "Alumínio Alpha Silver",
@@ -1117,14 +1117,14 @@ async function inserirProdutos() {
     {
       nome: "GTS M1 Elétrica",
       imagem:
-        "https://www.gtsbikes.com.br/wp-content/uploads/2023/06/gts-m1-eletrica.jpg",
+        "https://images.tcdn.com.br/img/img_prod/394779/scooter_eletrica_gtsm1_1000w_60v_20ah_bateria_de_litio_5767_18295_1_20260514110013_5bb7ca0ebe4d.jpg",
       categoriaTag: "Bike",
       descricao: "Bicicleta elétrica urbana com motor de 350W e autonomia de 40km.",
       precoMedio: 4999.90,
       lancamento: 2024,
       marca: "GTS",
       imagens: [
-        "https://www.gtsbikes.com.br/wp-content/uploads/2023/06/gts-m1-eletrica.jpg"
+        "https://images.tcdn.com.br/img/img_prod/394779/scooter_eletrica_gtsm1_1000w_60v_20ah_bateria_de_litio_5767_18295_1_20260514110013_5bb7ca0ebe4d.jpg"
       ],
       especificacoes: {
         quadro: "Alumínio",
