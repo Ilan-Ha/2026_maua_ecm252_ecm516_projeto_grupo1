@@ -2,6 +2,7 @@ import express from "express"
 import cors from "cors"
 import fetch from "node-fetch"
 import config from "../config.js";
+import axios from "axios" 
 
 /* 
 Falta
@@ -14,6 +15,7 @@ moongose
 const svc = config.ports.back
 const path = config.paths
 const PORT = svc.gateway
+
 const app = express();
 // Middlewares
 app.use(cors());
@@ -21,7 +23,7 @@ app.use(cors());
 app.use(express.json());
 
 // Rota de cadastro
-app.post(svc.auth.endpoints.register, async (req, res) => {
+app.post(path.auth.register, async (req, res) => {
     /*
     Registro
     --------
@@ -33,6 +35,16 @@ app.post(svc.auth.endpoints.register, async (req, res) => {
     gateway devolve retorno ao server de autentificacao
     se for positivo, registra o novo usuario
     gateway retorna ao front*/
+
+    const {event, payload} = req.body
+    console.log(event)
+    console.log(payload)
+
+    await axios.post(`${config.url}:${svc.auth}${path.auth.register}`, {
+      event: event,
+      payload: payload
+    })
+    res.end()
 });
 
 
