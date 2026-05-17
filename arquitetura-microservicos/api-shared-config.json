@@ -1,8 +1,15 @@
 {
     "url": "http://localhost",
+    "events": {
+        "user":{
+            "register": "register.user"
+        }
+    },
     "ports":{
         "back":{
-            "gateway": 3000,
+            "eventBus":10001,
+            "gateway": 10000,
+            "images": 3000,
             "auth": 3001,
             "user": 3002,
             "catalog": 3003
@@ -17,6 +24,10 @@
     },
     "paths":{
         "start": "/",
+        "events":{
+            "event": "/eventos",
+            "subscribe": "/inscricao" 
+        },
         "auth":{
                 "login": "/login",
                 "register": "/cadastro"   
