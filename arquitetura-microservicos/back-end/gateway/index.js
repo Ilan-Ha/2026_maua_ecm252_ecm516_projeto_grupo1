@@ -36,6 +36,8 @@ app.post(path.auth.register, async (req, res) => {
     se for positivo, registra o novo usuario
     gateway retorna ao front*/
 
+    console.log(req.body)
+    
     const {event, payload} = req.body
     console.log(event)
     console.log(payload)
