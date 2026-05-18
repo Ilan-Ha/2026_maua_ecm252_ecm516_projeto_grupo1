@@ -2,7 +2,8 @@
     "url": "http://localhost",
     "events": {
         "user":{
-            "register": "register.user"
+            "register": "user.create",
+            "added": "user.added"
         }
     },
     "ports":{
