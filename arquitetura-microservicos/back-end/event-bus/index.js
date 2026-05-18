@@ -17,7 +17,18 @@ const url = `${config.url}`
 // mapa de inscricoes dos eventos
 const subscribers = new Map()
 
+// rota de debbug
+
+app.get("/dados", (req,res) => {
+    console.log(subscribers)
+    res.json({
+        subscribers: JSON.stringify(Object.fromEntries(subscribers))
+    })
+})
+
+
 // Registro de inscricoes
+
 app.post(paths.subscribe, (req, res) => {
     console.log(req.body)
     const { calbackUrl, serviceName, events} = req.body
@@ -33,20 +44,58 @@ app.post(paths.subscribe, (req, res) => {
         subscribers.set(eventName, [])
         }
 
-        subscribers.get(eventName).push({
+        // checagem devido a graceful shutdown não funcionar
+
+        const clientes = subscribers.get(eventName)
+        
+        const isThere = clientes.some(client => client.serviceName === serviceName && client.calbackUrl === calbackUrl)
+
+        // se o servidor ja havia se inscrito
+        // teve que desligar 
+        // e re-ligou
+        // não se re-inscreve
+        if(!isThere){
+          clientes.push({
             serviceName,
             calbackUrl
-        })
+          })
+          
+          console.log(`${serviceName} escutando ${eventName}`)
+        }
+        else {
+          console.log(`${serviceName} não se inscreveu em ${eventName} por já estar inscrito.`)
+        }
         
-        console.log(`${serviceName} escutando ${eventName}`)
     }
     res.end()
 })
 
+// função legado de tentar fazer graceful shutdown funcionar
+
+// // Registro de desinscricao
+// app.post(paths.unsubscribe, (req, res) => {
+//     // recebe
+//     console.log("aa")
+//     // console.log("oi")
+//     // console.log(req)
+
+//     // const { calbackUrl, serviceName, events} = req.body
+
+//     // for (const eventName of events){
+//     //     if(subscribers.has(eventName)){
+//     //         let updateSubscribers = subscribers.get(eventName).filter(service => service.serviceName !== serviceName && service.calbackUrl !== calbackUrl)
+
+//     //         console.log(`${serviceName} se desinscreveu de ${eventName}`)
+
+//     //         subscribers.set(eventName,updateSubscribers)     
+//     //     }
+
+//     // }
+//     res.end()
+// })
+
 // eventos
-
-    // registro 
-
+ 
 app.post(paths.event, async (req, res) => {
     const {event, payload} = req.body
     console.log(event)
