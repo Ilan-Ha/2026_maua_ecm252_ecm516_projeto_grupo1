@@ -18,6 +18,23 @@ const events = config.events
 const calbakckUrl = `${config.url}:${PORT}${path.events.event}`
 const sendEvent = `${config.url}:${svc.eventBus}${path.events.event}`
 
+// eventos para se inscrever
+const subscribe = [
+  events.user.register,
+  events.user.added
+]
+
+// tratamento de eventos
+const eventFunctions = {
+  [events.user.register]: (payload) => {
+    console.log(`Evento ${events.user.register}`)
+    console.log(payload)
+  },
+  [events.user.added]: (payload) => {
+    console.log(`Evento ${events.user.added}`)
+    console.log("Vou mudar o banco de dados")
+  }
+}
 // Rota de cadastro
 app.post(path.auth.register, async (req, res) => {
   const {event, payload} = req.body
@@ -35,7 +52,8 @@ app.post(path.auth.register, async (req, res) => {
 app.post(path.events.event, (req, res) => {
   const { event, payload } = req.body;
   console.log(event)
-  console.log(payload)
+  eventFunctions[event](payload)
+
   res.end()
 })
 
@@ -53,11 +71,14 @@ const startServer = async () => {
     app.listen(PORT, async () => {
       console.log(`Rodando em ${config.url}:${PORT}`)
 
+      console.log(subscribe)
+      console.log(eventFunctions)
+
       // registro no bus de eventos
         await axios.post(`${config.url}:${svc.eventBus}${path.events.subscribe}`,{
             calbackUrl: calbakckUrl,
             serviceName: "auth",
-            events: [events.user.register]
+            events: subscribe
         })
         
         console.log("Serviço de autentificação inscrito")
