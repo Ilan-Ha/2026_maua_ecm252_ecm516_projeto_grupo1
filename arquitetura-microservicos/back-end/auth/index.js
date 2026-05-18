@@ -4,6 +4,8 @@ import axios from "axios"
 //import fetch from "node-fetch"
 import config from "../config.js";
 
+//import process from "node:process"
+
 const app = express();
 // Middlewares
 app.use(cors());
@@ -15,7 +17,7 @@ const path = config.paths
 const PORT = svc.auth
 const events = config.events
 
-const calbakckUrl = `${config.url}:${PORT}${path.events.event}`
+const calbackUrl = `${config.url}:${PORT}${path.events.event}`
 const sendEvent = `${config.url}:${svc.eventBus}${path.events.event}`
 
 // eventos para se inscrever
@@ -68,24 +70,41 @@ const startServer = async () => {
     // await mongoose.connect(process.env.MONGO_URI);
     // console.log("Mongo conectado");
     // await initSeed();
-    app.listen(PORT, async () => {
+    const server = app.listen(PORT, () => {
       console.log(`Rodando em ${config.url}:${PORT}`)
 
       console.log(subscribe)
       console.log(eventFunctions)
 
-      // registro no bus de eventos
-        await axios.post(`${config.url}:${svc.eventBus}${path.events.subscribe}`,{
-            calbackUrl: calbakckUrl,
-            serviceName: "auth",
-            events: subscribe
-        })
-        
-        console.log("Serviço de autentificação inscrito")
     });
+
+    // registro no bus de eventos
+      await axios.post(`${config.url}:${svc.eventBus}${path.events.subscribe}`,{
+          calbackUrl: calbackUrl,
+          serviceName: "auth",
+          events: subscribe
+      })
+      
+      console.log("Serviço de autentificação inscrito")
+      return server
+
   } catch (err) {
     console.error("Falha ao iniciar servidor:", err);
     process.exit(1);
   }
 };
-startServer();
+
+let servidor
+
+/*
+  Obs: falha ao conseguir fazer um codigo de encerramento que conclui por completo antes de ser forçado a parar pelo sistem
+  Não remover essas linhas, para caso consiga descobrir como fazer funcionar
+*/
+// sinais escutados para o fechamento
+// process.on('SIGTERM', () => gracefulShutdown('SIGTERM')) // solicitacao de fechamento generica
+// process.on('SIGINT', () => gracefulShutdown('SIGINT')) // solicitacao interativa (Ctrl + C)
+
+startServer()
+.then(server => {
+  servidor = server
+})
