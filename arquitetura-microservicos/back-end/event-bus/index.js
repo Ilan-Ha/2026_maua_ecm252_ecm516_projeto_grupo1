@@ -59,7 +59,7 @@ app.post(paths.event, async (req, res) => {
                 event,
                 payload
             })
-            console.log(`Envento enviado para ${socket.serviceName}`)
+            console.log(`Evento enviado para ${socket.serviceName}`)
 
         } catch (e) {}
     }
