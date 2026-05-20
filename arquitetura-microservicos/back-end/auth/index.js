@@ -35,6 +35,23 @@ const eventFunctions = {
 
 // Rota de cadastro
 app.post(path.auth.register, async (req, res) => {
+  /*
+  const dados = req.body;
+  // verifica se o email já existe
+  const emailExiste = await User.findOne({ email: dados.email });
+  if (emailExiste) {
+    return res.status(409).json({ message: "Email já cadastrado" });
+  }
+  // verifica se o nome já existe
+  const nomeExiste = await User.findOne({ nome: dados.nome });
+  if (nomeExiste) {
+    return res.status(409).json({ message: "Nome já cadastrado" });
+  }
+  // cria usuario
+  await User.create(dados);
+  // mostra no terminal
+  res.json({ message: "Usuário cadastrado" });
+   */
   const {event, payload} = req.body
   console.log(event)
   console.log(payload)
@@ -44,7 +61,9 @@ app.post(path.auth.register, async (req, res) => {
     payload: payload
   })
 
-  res.end()
+  res.status(201).json({
+    message: "Usuário cadastrado"
+  })
 });
 
 // endpoint de eventos
