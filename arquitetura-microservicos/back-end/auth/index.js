@@ -22,21 +22,17 @@ const sendEvent = `${config.url}:${svc.eventBus}${path.events.event}`
 
 // eventos para se inscrever
 const subscribe = [
-  events.user.register,
   events.user.added
 ]
 
 // tratamento de eventos
 const eventFunctions = {
-  [events.user.register]: (payload) => {
-    console.log(`Evento ${events.user.register}`)
-    console.log(payload)
-  },
   [events.user.added]: (payload) => {
     console.log(`Evento ${events.user.added}`)
     console.log("Vou mudar o banco de dados")
   }
 }
+
 // Rota de cadastro
 app.post(path.auth.register, async (req, res) => {
   const {event, payload} = req.body
@@ -47,6 +43,7 @@ app.post(path.auth.register, async (req, res) => {
     event: event,
     payload: payload
   })
+
   res.end()
 });
 
@@ -70,12 +67,12 @@ const startServer = async () => {
     // await mongoose.connect(process.env.MONGO_URI);
     // console.log("Mongo conectado");
     // await initSeed();
-    const server = app.listen(PORT, () => {
+
+    //const server = 
+    app.listen(PORT, () => {
       console.log(`Rodando em ${config.url}:${PORT}`)
 
       console.log(subscribe)
-      console.log(eventFunctions)
-
     });
 
     // registro no bus de eventos
@@ -86,7 +83,7 @@ const startServer = async () => {
       })
       
       console.log("Serviço de autentificação inscrito")
-      return server
+      //return server
 
   } catch (err) {
     console.error("Falha ao iniciar servidor:", err);
@@ -94,7 +91,6 @@ const startServer = async () => {
   }
 };
 
-let servidor
 
 /*
   Obs: falha ao conseguir fazer um codigo de encerramento que conclui por completo antes de ser forçado a parar pelo sistem
@@ -104,7 +100,9 @@ let servidor
 // process.on('SIGTERM', () => gracefulShutdown('SIGTERM')) // solicitacao de fechamento generica
 // process.on('SIGINT', () => gracefulShutdown('SIGINT')) // solicitacao interativa (Ctrl + C)
 
+//let servidor
+
 startServer()
-.then(server => {
-  servidor = server
-})
+// .then(server => {
+//   servidor = server
+// })
