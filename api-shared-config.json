@@ -28,6 +28,12 @@
             "endpoints":{
                 "search": "/comparar"
             }
+        },
+        "history":{
+            "port":3000,
+            "endpoints":{
+                "history": "/historico"
+            }
         }
     }
 }

@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "../Header.jsx";
 import config from "../config.jsx";
+import { historyService } from "../services/historyService.js";
 
-export default function DetalhesProduto() {
+export default function DetalhesProduto({ usuario }) {
   const { id } = useParams();
   const svc = config.services.catalog;
   const baseUrl = config.url + ":" + svc.port;
@@ -26,6 +27,12 @@ export default function DetalhesProduto() {
         setLoading(false);
       });
   }, [id]);
+
+  useEffect(() => {
+    if (produto) {
+      historyService.recordAccess(usuario, produto);
+    }
+  }, [produto, usuario]);
 
   if (loading) {
     return (
