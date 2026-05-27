@@ -5,7 +5,7 @@ import StatusLed from "./StatusLed";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Departamentos from "./catalogo/Departamentos";
 import DetalhesProduto from "./catalogo/DetalhesProduto";
-import Historico from "./catalogo/Historico";
+import Historico from "./historico/Historico";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState } from "react";
 import config from "./config";
@@ -13,7 +13,7 @@ import Search from "./busca/Busca";
 
 function App() {
   const svc = config.services;
-  
+
   // Inicializa o usuário a partir do localStorage para persistir a sessão (F5)
   const [usuario, setUsuario] = useState(() => {
     const saved = localStorage.getItem("usuario");

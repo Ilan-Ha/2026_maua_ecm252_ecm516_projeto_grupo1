@@ -13,7 +13,7 @@ const PORT = svc.auth.port
 // Middlewares
 app.use(cors())
 // Permite receber JSON direto no req.body
-app.use(express.json()) 
+app.use(express.json())
 // Schema do usuário
 const userSchema = new mongoose.Schema({
   nome: String,
@@ -21,6 +21,18 @@ const userSchema = new mongoose.Schema({
   senha: String
 });
 const User = mongoose.model("User", userSchema);
+// Schema do histórico de produtos vistos
+const historicoSchema = new mongoose.Schema({
+  email: String,
+  _id: String,
+  nome: String,
+  marca: String,
+  imagem: String,
+  precoMedio: Number,
+  categoriaTag: String,
+  acessadoEm: { type: Date, default: Date.now }
+}, { _id: false });
+const Historico = mongoose.model("Historico", historicoSchema);
 // Rota de cadastro
 app.post(svc.auth.endpoints.register, async (req, res) => {
   const dados = req.body;
@@ -116,6 +128,30 @@ app.get("/produto/:id", async (req, res) => {
   }
 });
 
+// Rota de histórico — registra um produto acessado >/
+app.post(svc.history.endpoints.history, async (req, res) => {
+  const { email, _id, nome, marca, imagem, precoMedio, categoriaTag } = req.body;
+  if (!_id || !nome) {
+    return res.status(400).json({ error: "Dados insuficientes" });
+  }
+  // Remove entrada anterior do mesmo produto para evitar duplicatas
+  await Historico.deleteOne({ email: email || "anonimo", _id });
+  // Insere o novo registro
+  await Historico.create({ email: email || "anonimo", _id, nome, marca, imagem, precoMedio, categoriaTag, acessadoEm: new Date() });
+  res.json({ message: "Acesso registrado" });
+});
+// Rota de histórico — retorna os produtos acessados pelo usuário
+app.get(svc.history.endpoints.history, async (req, res) => {
+  const email = req.query.email || "anonimo";
+  const itens = await Historico.find({ email }).sort({ acessadoEm: -1 }).limit(50).lean();
+  res.json(itens);
+});
+// Rota de histórico — limpa todo o histórico do usuário
+app.delete(svc.history.endpoints.history, async (req, res) => {
+  const email = req.query.email || "anonimo";
+  await Historico.deleteMany({ email });
+  res.json({ message: "Histórico limpo" });
+});
 // Fallback (Erro 404)
 app.use((req, res) => {
   res.status(404).json({ error: "Rota não encontrada" })

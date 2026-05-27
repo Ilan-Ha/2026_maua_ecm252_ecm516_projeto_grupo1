@@ -3,6 +3,50 @@ import { useParams, Link } from "react-router-dom";
 import Header from "../Header.jsx";
 import config from "../config.jsx";
 
+// Salva o acesso ao produto no localStorage e no backend
+function registrarAcesso(produto) {
+  try {
+    const CHAVE = "allforone_history_produtos";
+    const historico = JSON.parse(localStorage.getItem(CHAVE) || "[]");
+    // Remove entrada anterior do mesmo produto para não duplicar
+    const filtrado = historico.filter(item => item._id !== produto._id);
+    // Insere no início com timestamp
+    filtrado.unshift({
+      _id: produto._id,
+      nome: produto.nome,
+      marca: produto.marca || "",
+      imagem: produto.imagem || "",
+      precoMedio: produto.precoMedio || 0,
+      categoriaTag: produto.categoriaTag || "",
+      acessadoEm: new Date().toISOString()
+    });
+    // Mantém no máximo 50 itens
+    localStorage.setItem(CHAVE, JSON.stringify(filtrado.slice(0, 50)));
+  } catch (err) {
+    console.error("Erro ao salvar histórico local:", err);
+  }
+
+  // Persiste no backend (silencioso: falhas não afetam a experiência)
+  try {
+    const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
+    const svcHistory = config.services.history;
+    const url = config.url + ":" + svcHistory.port + svcHistory.endpoints.history;
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: usuario?.email || "anonimo",
+        _id: produto._id,
+        nome: produto.nome,
+        marca: produto.marca || "",
+        imagem: produto.imagem || "",
+        precoMedio: produto.precoMedio || 0,
+        categoriaTag: produto.categoriaTag || ""
+      })
+    }).catch(() => {}); // Ignora erros de rede silenciosamente
+  } catch { /* Ignora */ }
+}
+
 export default function DetalhesProduto() {
   const { id } = useParams();
   const svc = config.services.catalog;
@@ -20,12 +64,15 @@ export default function DetalhesProduto() {
       .then((data) => {
         setProduto(data);
         setLoading(false);
+        // Registra o acesso assim que o produto carrega
+        registrarAcesso(data);
       })
       .catch((err) => {
         setErro(err.message);
         setLoading(false);
       });
   }, [id]);
+
 
   if (loading) {
     return (
