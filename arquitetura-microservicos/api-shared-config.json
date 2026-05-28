@@ -1,5 +1,13 @@
 {
     "url": "http://localhost",
+    "requests": {
+        "user":{
+            "name":{
+                "exits": "user.name.exists",
+                "valdate": "user.name.validate"
+            }
+        }
+    },
     "events": {
         "user":{
             "register": "user.create",
@@ -8,6 +16,7 @@
     },
     "ports":{
         "back":{
+            "requestBus": 10002,
             "eventBus":10001,
             "gateway": 10000,
             "images": 3000,
@@ -25,9 +34,13 @@
     },
     "paths":{
         "start": "/",
+        "requests":{
+            "request": "/requisicao"
+        },
         "events":{
             "event": "/eventos",
-            "subscribe": "/inscricao" 
+            "subscribe": "/inscricao",
+            "unsubscribe": "/desinscricao" 
         },
         "auth":{
                 "login": "/login",
