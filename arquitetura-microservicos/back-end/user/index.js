@@ -1,8 +1,44 @@
 import express from "express"
 import cors from "cors"
 import axios from "axios" 
-import config from "../config.js";
+import z from "zod"
+import config from "../utlis/config.js";
+import process from "node:process"
+import mongoose from "mongoose"
 
+//  .env compartilhado e proprio
+import getDirname from "../utlis/getDirname.js";
+import loadEnv from "../utlis/loadEnv.js";
+import { timeStamp } from "node:console"
+
+loadEnv(getDirname(import.meta.url))
+
+// #region schemas
+// mongoDB
+
+const userSchemaMongoose = new mongoose.Schema({
+  nome: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: true
+  },
+}, {timestamps: true, collection: 'user'})
+
+const User = mongoose.model("User", userSchemaMongoose);
+
+const userSchemaZod = z.object({
+  nome: z.string().trim()
+    .min(2, "Minimo de 2 Caracteres")
+    .max(50, "Maximo de 50 caracteres")
+    .regex(/^[\p{L}\s'-]+$/u,"Nome contém caracteres inválidos")
+})
+
+// #endregion
 
 const app = express();
 // Middlewares
@@ -10,60 +46,164 @@ app.use(cors());
 // Permite receber JSON direto no req.body
 app.use(express.json());
 
+// #region config
 const svc = config.ports.back
-const path = config.paths
+const paths = config.paths
 const PORT = svc.user
 const events = config.events
+const requests = config.requests
 
-const calbackUrl = `${config.url}:${PORT}${path.events.event}`
-const sendEvent = `${config.url}:${svc.eventBus}${path.events.event}`
+const calbackUrl = `${config.url}:${PORT}${paths.events.event}`
+const sendEvent = `${config.url}:${svc.eventBus}${paths.events.event}`
+const serverName = "user"
 
 // eventos para se inscrever
 const subscribe = [
-  events.user.register,
+  events.user.register
 ]
 
 // tratamento de eventos
 const eventFunctions = {
   [events.user.register]: async (payload) => {
+    const {id,email,nome} = payload
+    await User.create({
+      _id: id,
+      email,
+      nome
+    })
     await axios.post(sendEvent, {
         event: events.user.added,
-        payload: payload
+        payload: {
+          id: id
+        }
     })
-  },
+  }
 }
 
+const requestFunctions = {
+  [requests.user.name.valdate]: (payload) => {
+    const {nome} = payload
+    const validName = userSchemaZod.safeParse({nome})
+    if (!validName.success) {
+        const errosFormatados = z.treeifyError(validName.error).properties || {}
+        const errors = {}
 
-// endpoint de eventos
-app.post(path.events.event, (req, res) => {
+        for (const [tipo,erros] of Object.entries(errosFormatados)){
+          if(erros.errors.length > 0){
+            errors[tipo] = erros.errors
+          }
+        }
+        
+        return {
+          error: true,
+          status: 409,
+          message: errors
+        }
+      }
+      return {
+          error: false,
+        }
+  },
+  [requests.user.name.exits]: async (payload) => {
+    const {nome} = payload
+    try {
+      const nomeExiste = await User.findOne({nome: nome})
+    //console.log(nomeExiste)
+    if (nomeExiste) {
+      //console.log("deu erro no nome")
+      return { 
+        error: true,
+        status: 409,
+        message: {
+          email: "Nome já cadastrado"
+        } 
+      }
+    }
+    else {
+      return {
+        error: false
+      }
+    } 
+    } catch (e) {
+      //console.log(e)
+
+    return {
+      error: true,
+      message: e
+    }
+    }
+  }
+}
+// #endregion
+
+
+// #region endpoint de eventos
+app.post(paths.events.event, (req, res) => {
   const { event, payload } = req.body;
-  console.log(event)
-  console.log(payload)
-  eventFunctions[event](payload)
+  //console.log(event)
+  //console.log(payload)
+  try {
+    eventFunctions[event](payload)
+  } catch (e) {}
 
-  res.end()
+  return res.end()
 })
+// #endregion
 
+// #region endpoint de requisições
+app.post(paths.requests.request, async (req, res) => {
+  const {request, payload} = req.body
+     //console.log(payload)
+     //console.log(request)
 
-// Inicialização do servidor
+  try{
+    const result = await requestFunctions[request](payload)
+    //console.log(result)
+    //console.log(result)
+      return res.json({
+          content: result
+        })
+    
+    
+  } catch (e) {
+    return res.json({
+            error: true,
+            status: 404,
+            message: "Requisição desconhecida"
+        })
+  }
+})
+// # endregion
+// #region Inicialização do servidor
 const startServer = async () => {
   try {
+    //se for usar o .env e precisar de uma logica de verificacao
+        if (!process.env.MONGO_URI) {
+          throw new Error("MONGO_URI não definida no .env");
+        }
+        await mongoose.connect(process.env.MONGO_URI,
+          {
+            dbName: "userProfile"
+          }
+        );
+        console.log("Mongo conectado");
 
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(`Rodando em ${config.url}:${PORT}`)
 
       console.log(subscribe)
     });
 
     // registro no bus de eventos
-      await axios.post(`${config.url}:${svc.eventBus}${path.events.subscribe}`,{
+      await axios.post(`${config.url}:${svc.eventBus}${paths.events.subscribe}`,{
           calbackUrl: calbackUrl,
-          serviceName: "user",
+          serviceName: serverName,
           events: subscribe
       })
       
       console.log("Serviço de usuario inscrito")
 
+      return server
   } catch (err) {
     console.error("Falha ao iniciar servidor:", err);
     process.exit(1);
@@ -72,4 +212,29 @@ const startServer = async () => {
 
 
 
+let servidor
+
+async function gracefulShutdown(signal) {
+  await axios.post(`${config.url}:${svc.eventBus}${paths.events.unsubscribe}`,{
+          calbackUrl: calbackUrl,
+          serviceName: serverName,
+          events: subscribe
+      })
+  await servidor.close()
+  process.exit(0)
+}
+
+// sinais escutados para o fechamento
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM')) // solicitacao de fechamento generica
+process.on('SIGINT', () => gracefulShutdown('SIGINT')) // solicitacao interativa (Ctrl + C)
+process.once('SIGUSR2', function () {
+  gracefulShutdown('SIGUSR2')
+  process.kill(process.pid, 'SIGUSR2');
+}); // codigo do nodemon
+
 startServer()
+ .then(server => {
+   servidor = server
+ })
+// #endregion
+
