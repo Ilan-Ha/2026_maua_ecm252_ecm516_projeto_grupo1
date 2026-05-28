@@ -1,7 +1,7 @@
 import express from "express"
 import cors from "cors"
 import fetch from "node-fetch"
-import config from "../config.js";
+import config from "../utlis/config.js"
 import axios from "axios" 
 
 /* 
@@ -23,37 +23,35 @@ app.use(cors());
 app.use(express.json());
 
 // dados de retorno
-
 const returnData = (response) => {
-    const {content, message} = response.data
-    const status = response.status
+    const {error, content, message, status} = response.data
 
-    console.log(`Status: ${status}\nContent: ${content}\nMessage: ${message}`)
+    //console.log(`Erro?: ${error}\nStatus: ${status}\nContent: ${content}\nMessage: ${message}`)
 
-    return {status, content, message}
+    return {error, status, content, message}
 }
 
-// Rota de cadastro
+// #region Rota de cadastro
 app.post(path.auth.register, async (req, res) => {
     
-    const {event, payload} = req.body
-    console.log(event)
-    console.log(payload)
+    const {payload} = req.body
+    //console.log(payload)
 
     const response = await axios.post(`${config.url}:${svc.auth}${path.auth.register}`, {
-      event: event,
       payload: payload
     })
 
-    const {status, content, message} = returnData(response)
+    const {error, status, content, message} = returnData(response)
 
-    res.status(status).json({
+    return res.status(status).json({
+      error: error,
       content: content,
       message: message
     })
 });
+// #endregion
 
-// Inicialização do servidor
+// #region Inicialização do servidor
 const startServer = async () => {
   try {
     app.listen(PORT, () => {
@@ -65,3 +63,4 @@ const startServer = async () => {
   }
 };
 startServer();
+// #endregion
