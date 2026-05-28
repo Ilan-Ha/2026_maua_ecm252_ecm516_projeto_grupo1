@@ -1,7 +1,7 @@
 import axios from "axios" 
 import express from "express"
 import cors from "cors"
-import config from "../config.js";
+import config from "../utlis/config.js"
 
 const app = express()
 // Middlewares
@@ -70,29 +70,23 @@ app.post(paths.subscribe, (req, res) => {
     res.end()
 })
 
-// função legado de tentar fazer graceful shutdown funcionar
 
-// // Registro de desinscricao
-// app.post(paths.unsubscribe, (req, res) => {
-//     // recebe
-//     console.log("aa")
-//     // console.log("oi")
-//     // console.log(req)
+// Registro de desinscricao
+app.post(paths.unsubscribe, (req, res) => {
+    const { calbackUrl, serviceName, events} = req.body
 
-//     // const { calbackUrl, serviceName, events} = req.body
+    for (const eventName of events){
+        if(subscribers.has(eventName)){
+            let updateSubscribers = subscribers.get(eventName).filter(service => service.serviceName !== serviceName && service.calbackUrl !== calbackUrl)
 
-//     // for (const eventName of events){
-//     //     if(subscribers.has(eventName)){
-//     //         let updateSubscribers = subscribers.get(eventName).filter(service => service.serviceName !== serviceName && service.calbackUrl !== calbackUrl)
+            console.log(`${serviceName} se desinscreveu de ${eventName}`)
 
-//     //         console.log(`${serviceName} se desinscreveu de ${eventName}`)
+            subscribers.set(eventName,updateSubscribers)     
+        }
 
-//     //         subscribers.set(eventName,updateSubscribers)     
-//     //     }
-
-//     // }
-//     res.end()
-// })
+    }
+    res.end()
+})
 
 // eventos
  
@@ -118,13 +112,6 @@ app.post(paths.event, async (req, res) => {
 
 const startServer = async () => {
   try {
-    // se for usar o .env e precisar de uma logica de verificacao
-    // if (!process.env.MONGO_URI) {
-    //   throw new Error("MONGO_URI não definida no .env");
-    // }
-    // await mongoose.connect(process.env.MONGO_URI);
-    // console.log("Mongo conectado");
-    // await initSeed();
     app.listen(PORT, () => {
       console.log(`Rodando em ${config.url}:${PORT}`);
     });
