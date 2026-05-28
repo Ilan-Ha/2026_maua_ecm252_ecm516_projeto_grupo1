@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "path": "^0.12.7",
+    "url": "^0.11.4"
+  },
+  "name": "utlis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "config.js",
+  "devDependencies": {},
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
