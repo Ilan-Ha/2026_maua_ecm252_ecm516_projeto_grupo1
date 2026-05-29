@@ -16,7 +16,8 @@ import { timeStamp } from "node:console"
 
 loadEnv(getDirname(import.meta.url))
 
-// mongoDB
+
+// #region mongoDB
 
 const authSchemaMongoose = new mongoose.Schema({
   email: {
@@ -48,6 +49,10 @@ authSchemaMongoose.pre(
   }
 )
 
+const Auth = mongoose.model("Auth", authSchemaMongoose);
+// #endregion
+
+// #region zod
 const authSchemaZod = z.object({
   email: z.string().email("Formato de email invalido").trim().toLowerCase(),
   senha: z.string()
@@ -62,8 +67,7 @@ const authSchemaZod = z.object({
   message: "Senhas não são iguais",
   path: ['confirmarSenha']
 })
-
-const Auth = mongoose.model("Auth", authSchemaMongoose);
+// #endregion
 
 const app = express();
 // Middlewares
@@ -96,8 +100,8 @@ const subscribe = [
 // tratamento de eventos
 const eventFunctions = {
   [events.user.added]: async (payload) => {
-    const {id} = payload
-    const auth = await Auth.findById(id)
+    const {authId} = payload
+    const auth = await Auth.findById(authId)
     auth.usuarioCadastrado = true
     await auth.save()
   }
@@ -201,17 +205,14 @@ app.post(paths.auth.register, async (req, res) => {
   // #endregion
   
   // cria usuario
-  const sharedId = new mongoose.Types.ObjectId();
-
-  await Auth.create({
-    _id: sharedId,
+  const auth = await Auth.create({
     email,
     senha})
 
   await axios.post(sendEvent, {
     event: events.user.register,
     payload: {
-      id: sharedId,
+      authId: auth._id,
       nome: nome
     }
   })
@@ -223,6 +224,7 @@ app.post(paths.auth.register, async (req, res) => {
   })
 });
 // #endregion
+
 
 // #region endpoint de eventos
 app.post(paths.events.event, (req, res) => {

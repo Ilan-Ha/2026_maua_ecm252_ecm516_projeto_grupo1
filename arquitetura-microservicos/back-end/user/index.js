@@ -17,6 +17,11 @@ loadEnv(getDirname(import.meta.url))
 // mongoDB
 
 const userSchemaMongoose = new mongoose.Schema({
+  authId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    unique: true
+  },
   nome: {
     type: String,
     unique: true,
@@ -60,15 +65,15 @@ const subscribe = [
 // tratamento de eventos
 const eventFunctions = {
   [events.user.register]: async (payload) => {
-    const {id,nome} = payload
+    const {authId,nome} = payload
     await User.create({
-      _id: id,
+      authId,
       nome
     })
     await axios.post(sendEvent, {
         event: events.user.added,
         payload: {
-          id: id
+          authId: authId
         }
     })
   }
