@@ -212,7 +212,6 @@ app.post(paths.auth.register, async (req, res) => {
     event: events.user.register,
     payload: {
       id: sharedId,
-      email: email,
       nome: nome
     }
   })

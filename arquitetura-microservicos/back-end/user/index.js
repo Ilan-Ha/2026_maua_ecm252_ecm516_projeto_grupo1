@@ -22,11 +22,6 @@ const userSchemaMongoose = new mongoose.Schema({
     unique: true,
     required: true
   },
-  email: {
-    type: String,
-    unique: true,
-    required: true
-  },
 }, {timestamps: true, collection: 'user'})
 
 const User = mongoose.model("User", userSchemaMongoose);
@@ -65,10 +60,9 @@ const subscribe = [
 // tratamento de eventos
 const eventFunctions = {
   [events.user.register]: async (payload) => {
-    const {id,email,nome} = payload
+    const {id,nome} = payload
     await User.create({
       _id: id,
-      email,
       nome
     })
     await axios.post(sendEvent, {
