@@ -172,7 +172,8 @@ h2.title-departamentos {
 }
 
 .cadastro-page .auth-card,
-.login-page .auth-card {
+.login-page .auth-card,
+.perfil-page .auth-card {
   animation: auth-fade-in 0.35s ease-out;
 }
 
