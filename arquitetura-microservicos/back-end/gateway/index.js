@@ -1,84 +1,206 @@
-import express from "express"
-import cors from "cors"
-import fetch from "node-fetch"
-import config from "../utlis/config.js"
-import axios from "axios" 
+import express from "express";
+import cors from "cors";
+import axios from "axios";
+import config from "../utlis/config.js";
 
-/* 
-Falta
------
-fs
-catalogo
-dotenv -> env
-moongose
-*/
-const svc = config.ports.back
-const path = config.paths
-const PORT = svc.gateway
+const svc = config.ports.back;
+const paths = config.paths;
+const PORT = svc.gateway;
+const base = config.url;
 
 const app = express();
-// Middlewares
 app.use(cors());
-// Permite receber JSON direto no req.body
 app.use(express.json());
 
-// dados de retorno
-const returnData = (response) => {
-    const {error, content, message, status} = response.data
+function formatMessage(message) {
+  if (typeof message === "string") return message;
+  if (message && typeof message === "object") {
+    return Object.values(message)
+      .flat()
+      .filter(Boolean)
+      .join(". ");
+  }
+  return "Erro no servidor";
+}
 
-    //console.log(`Erro?: ${error}\nStatus: ${status}\nContent: ${content}\nMessage: ${message}`)
+async function proxyGet(targetBase, req, res) {
+  try {
+    const url = `${targetBase}${req.originalUrl}`;
+    const response = await axios.get(url, { validateStatus: () => true });
+    res.status(response.status).json(response.data);
+  } catch (err) {
+    console.error("[gateway] Erro no proxy GET:", err.message);
+    res.status(502).json({ error: "Serviço indisponível", target: targetBase });
+  }
+}
 
-    return {error, status, content, message}
+async function callAuth(path, payload) {
+  const response = await axios.post(`${base}:${svc.auth}${path}`, { payload });
+  return response.data;
 }
 
 const funcoesRequest = {
-  [path.auth.register]: async (payload) => {
-    const response = await axios.post(`${config.url}:${svc.auth}${path.auth.register}`, {
-      payload: payload
-    })
-    return response
-  },
-  [path.auth.login]: async (payload) => {
-    const response = await axios.post(`${config.url}:${svc.auth}${path.auth.login}`, {
-      payload: payload
-    })
-    return response
-  },
-  [path.auth.update.password]: async (payload) => {
-    const response = await axios.post(`${config.url}:${svc.auth}${path.auth.update.password}`, {
-      payload: payload
-    })
-    return response
-  }
-}
-// #region Rota de cadastro
-app.post(path.gateway.request, async (req, res) => {
-    
-    const {request,payload} = req.body
-    //console.log(payload)
+  [paths.auth.register]: (payload) =>
+    axios.post(`${base}:${svc.auth}${paths.auth.register}`, { payload }),
+  [paths.auth.login]: (payload) =>
+    axios.post(`${base}:${svc.auth}${paths.auth.login}`, { payload }),
+  [paths.auth.update.password]: (payload) =>
+    axios.post(`${base}:${svc.auth}${paths.auth.update.password}`, { payload }),
+};
 
-    const response = await funcoesRequest[request](payload)
+app.get("/health", async (req, res) => {
+  const checks = await Promise.allSettled([
+    axios.get(`${base}:${svc.catalog}/health`, { timeout: 3000 }),
+    axios.get(`${base}:${svc.auth}/health`, { timeout: 3000 }).catch(() => null),
+    axios.get(`${base}:${svc.user}/health`, { timeout: 3000 }).catch(() => null),
+  ]);
 
-    const {error, status, content, message} = returnData(response)
+  const catalogOk =
+    checks[0].status === "fulfilled" && checks[0].value?.data?.backend === true;
+  const catalogDb =
+    checks[0].status === "fulfilled" && checks[0].value?.data?.db === true;
 
-    return res.status(status).json({
-      error: error,
-      content: content,
-      message: message
-    })
+  res.json({
+    backend: true,
+    catalog: catalogOk,
+    db: catalogDb,
+    status: catalogOk && catalogDb ? "ok" : "degraded",
+  });
 });
-// #endregion
 
-// #region Inicialização do servidor
-const startServer = async () => {
+app.get("/health/db", async (req, res) => {
   try {
-    app.listen(PORT, () => {
-      console.log(`Rodando em ${config.url}:${PORT}`);
+    const response = await axios.get(`${base}:${svc.catalog}/health/db`, {
+      timeout: 3000,
+    });
+    res.json({
+      db: response.data?.db === true,
+      status: response.data?.db ? "ok" : "error",
+    });
+  } catch {
+    res.json({ db: false, status: "error" });
+  }
+});
+
+app.get(paths.catalog.catalog, (req, res) =>
+  proxyGet(`${base}:${svc.catalog}`, req, res)
+);
+
+app.get("/produto/:id", (req, res) =>
+  proxyGet(`${base}:${svc.catalog}`, req, res)
+);
+
+app.post(paths.auth.register, async (req, res) => {
+  try {
+    const { nome, email, senha, confirmarSenha } = req.body;
+    const data = await callAuth(paths.auth.register, {
+      nome,
+      email,
+      senha,
+      confirmarSenha: confirmarSenha || senha,
+    });
+
+    if (data.error) {
+      return res
+        .status(data.status || 400)
+        .json({ message: formatMessage(data.message) });
+    }
+
+    return res
+      .status(data.status || 201)
+      .json({ message: data.message || "Usuário cadastrado" });
+  } catch (err) {
+    console.error("[gateway] Erro no cadastro:", err.message);
+    res.status(500).json({ message: "Erro ao conectar com o servidor" });
+  }
+});
+
+app.post(paths.auth.login, async (req, res) => {
+  try {
+    const { email, senha } = req.body;
+    const data = await callAuth(paths.auth.login, { email, senha });
+
+    if (data.error) {
+      return res
+        .status(data.status || 401)
+        .json({ message: formatMessage(data.message) });
+    }
+
+    const usuario = data.content?.usuario || data.usuario;
+    return res.json({
+      message: data.message || "Login OK",
+      usuario,
     });
   } catch (err) {
-    console.error("Falha ao iniciar servidor:", err);
-    process.exit(1);
+    console.error("[gateway] Erro no login:", err.message);
+    res.status(500).json({ message: "Erro ao conectar com o servidor" });
   }
-};
-startServer();
-// #endregion
+});
+
+app.put(paths.user.perfil, async (req, res) => {
+  try {
+    const { email, nome, senha } = req.body;
+
+    if (senha) {
+      const data = await callAuth(paths.auth.update.password, {
+        email,
+        senha,
+        confirmarSenha: senha,
+      });
+
+      if (data.error) {
+        return res
+          .status(data.status || 400)
+          .json({ message: formatMessage(data.message) });
+      }
+    }
+
+    return res.json({
+      message: "Dados atualizados",
+      usuario: { email, nome },
+    });
+  } catch (err) {
+    console.error("[gateway] Erro no perfil:", err.message);
+    res.status(500).json({ message: "Erro ao atualizar" });
+  }
+});
+
+app.post(paths.gateway.request, async (req, res) => {
+  try {
+    const { request, payload } = req.body;
+    const handler = funcoesRequest[request];
+
+    if (!handler) {
+      return res.status(404).json({
+        error: true,
+        message: "Requisição desconhecida",
+      });
+    }
+
+    const response = await handler(payload);
+    const { error, content, message, status } = response.data;
+
+    return res.status(status || 200).json({
+      error,
+      content,
+      message,
+    });
+  } catch (err) {
+    console.error("[gateway] Erro em /requisicao:", err.message);
+    res.status(500).json({
+      error: true,
+      message: "Erro interno no gateway",
+    });
+  }
+});
+
+app.use((req, res) => {
+  res.status(404).json({ error: "Rota não encontrada" });
+});
+
+app.listen(PORT, () => {
+  console.log(`[gateway] Rodando em ${base}:${PORT}`);
+  console.log(`[gateway] Auth    → ${base}:${svc.auth}`);
+  console.log(`[gateway] User    → ${base}:${svc.user}`);
+  console.log(`[gateway] Catalog → ${base}:${svc.catalog}`);
+});

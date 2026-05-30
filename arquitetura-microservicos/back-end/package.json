@@ -1,0 +1,19 @@
+{
+  "name": "allforone-mss-back-end",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "install:all": "npm install && npm --prefix utlis install && npm --prefix event-bus install && npm --prefix request-bus install && npm --prefix user install && npm --prefix auth install && npm --prefix catalog install && npm --prefix gateway install",
+    "start:event-bus": "npm --prefix event-bus start",
+    "start:request-bus": "npm --prefix request-bus start",
+    "start:user": "npm --prefix user start",
+    "start:auth": "npm --prefix auth start",
+    "start:catalog": "npm --prefix catalog start",
+    "start:gateway": "npm --prefix gateway start",
+    "start": "concurrently -k -n event,request,user,auth,catalog,gateway -c blue,green,yellow,magenta,cyan,red \"npm run start:event-bus\" \"npm run start:request-bus\" \"sleep 3 && npm run start:user\" \"sleep 4 && npm run start:auth\" \"sleep 5 && npm run start:catalog\" \"sleep 6 && npm run start:gateway\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

@@ -53,36 +53,39 @@ Permitir que usuários:
 
 ## 🚀 Como Executar
 
-1. Clone o repositório:
+### Back-end (microserviços — recomendado)
+
+1. Clone o repositório e configure `.env` na **raiz** com `MONGO_URI`.
+
+2. Back-end MSS:
 ```bash
-git clone https://github.com/Ilan-Ha/2026_maua_ecm252_ecm516_projeto_grupo1
+cd arquitetura-microservicos/back-end
+cp ../../.env .env          # ou crie .env com MONGO_URI
+npm run install:all
+npm start
 ```
-2. Acesse a pasta do projeto.
 
-3. Instale as dependências pelo terminal:
+3. Front-end (outro terminal):
 ```bash
-cd FRONT-END
-
-cd project
-
+cd FRONT-END/project
 npm install
-```
-
-4. Execute Front-End:
-```bash
 npm run dev
 ```
-5. Abra outro terminal e execute Back-End:
+
+4. Acesse: http://localhost:5173
+
+O front fala com o **gateway** em `http://localhost:10000`.
+
+Documentação detalhada: [arquitetura-microservicos/back-end/README.md](arquitetura-microservicos/back-end/README.md)
+
+### Back-end legado (monólito — depreciado)
 
 ```bash
 cd BACK-END
-
-Node back.js
+node back.js
 ```
 
-6. Acesse no navegador:
-
-http://localhost:5173
+Use apenas para referência. Prefira a arquitetura microserviços acima.
 
  ---
 

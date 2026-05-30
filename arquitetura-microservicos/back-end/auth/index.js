@@ -216,6 +216,13 @@ app.post(paths.auth.register, async (req, res) => {
     }
   })
 
+  // Aguarda propagação do evento user.added antes de responder
+  for (let i = 0; i < 10; i++) {
+    const atualizado = await Auth.findById(auth._id);
+    if (atualizado?.usuarioCadastrado) break;
+    await new Promise((r) => setTimeout(r, 200));
+  }
+
   return res.json({
     error: false,
     status: 201,
@@ -344,14 +351,37 @@ app.post(paths.auth.update.password, async (req,res) => {
 })
 // #endregion
 
-// #region endpoint de eventos
-app.post(paths.events.event, (req, res) => {
-  const { event, payload } = req.body;
-  //console.log(event)
-  eventFunctions[event](payload)
+// #region health
+app.get("/health", (req, res) => {
+  const dbOk = mongoose.connection.readyState === 1;
+  res.json({
+    service: "auth",
+    backend: true,
+    db: dbOk,
+    status: dbOk ? "ok" : "degraded",
+  });
+});
 
-  res.end()
-})
+app.get("/health/db", (req, res) => {
+  const dbOk = mongoose.connection.readyState === 1;
+  res.json({
+    service: "auth",
+    db: dbOk,
+    status: dbOk ? "ok" : "error",
+  });
+});
+// #endregion
+
+// #region endpoint de eventos
+app.post(paths.events.event, async (req, res) => {
+  const { event, payload } = req.body;
+  try {
+    await eventFunctions[event](payload);
+  } catch (e) {
+    console.error("[auth] Erro ao processar evento:", event, e.message);
+  }
+  res.end();
+});
 // #endregion
 
 // #region Inicialização do servidor

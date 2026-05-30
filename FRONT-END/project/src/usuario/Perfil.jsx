@@ -1,8 +1,8 @@
 import { useState } from "react";
-import config from "../config";
+import config, { apiBase } from "../config";
 export default function Perfil({ usuario, setUsuario }) {
   const svc = config.services.user
-  const url = config.url +":" + String(svc.port) + String(svc.endpoints.perfil)
+  const url = apiBase + svc.endpoints.perfil
   // Hook de estado para armazenar dados do formulário
   const [form, setForm] = useState({
     email: usuario?.email || "",
@@ -36,6 +36,7 @@ export default function Perfil({ usuario, setUsuario }) {
       // Atualiza o usuario global e o form local
       if (data.usuario) {
         setUsuario(data.usuario);
+        localStorage.setItem("usuario", JSON.stringify(data.usuario));
         setForm({ ...form, nome: data.usuario.nome, email: data.usuario.email, senha: "" });
       }
     // Em caso de erro

@@ -1,96 +1,106 @@
 {
-    "url": "http://localhost",
+  "url": "http://localhost",
+  "start": "/",
+  "gateway": {
+    "port": 10000,
+    "baseUrl": "http://localhost:10000"
+  },
+  "requests": {
+    "user": {
+      "name": {
+        "exits": "user.name.exists",
+        "valdate": "user.name.validate",
+        "tell": "user.name.tell"
+      }
+    }
+  },
+  "events": {
+    "user": {
+      "register": "user.create",
+      "added": "user.added",
+      "not.register": "user.re.register"
+    }
+  },
+  "ports": {
+    "back": {
+      "requestBus": 10002,
+      "eventBus": 10001,
+      "gateway": 10000,
+      "images": 3000,
+      "auth": 3001,
+      "user": 3002,
+      "catalog": 3003
+    },
+    "front": {
+      "shell": 4000,
+      "auth": 4001,
+      "user": 4002,
+      "catalog": 4003
+    }
+  },
+  "paths": {
+    "start": "/",
     "requests": {
-        "user":{
-            "name":{
-                "exits": "user.name.exists",
-                "valdate": "user.name.validate",
-                "tell": "user.name.tell"
-            }
-        }
+      "request": "/requisicao"
+    },
+    "gateway": {
+      "request": "/requisicao"
     },
     "events": {
-        "user":{
-            "register": "user.create",
-            "added": "user.added",
-            "not.register": "user.re.register"
-        }
+      "event": "/eventos",
+      "subscribe": "/inscricao",
+      "unsubscribe": "/desinscricao"
     },
-    "ports":{
-        "back":{
-            "requestBus": 10002,
-            "eventBus":10001,
-            "gateway": 10000,
-            "images": 3000,
-            "auth": 3001,
-            "user": 3002,
-            "catalog": 3003
-        },
-        "front":{
-            "shell": 4000,
-            "auth": 4001,
-            "user": 4002,
-            "catalog": 4003
-        }
-        
+    "auth": {
+      "login": "/login",
+      "register": "/cadastro",
+      "update": {
+        "password": "/perfil/atualizar/senha"
+      }
     },
-    "paths":{
-        "start": "/",
-        "requests":{
-            "request": "/requisicao"
-        },
-        "gateway":{
-            "request": "/requisicao"
-        },
-        "events":{
-            "event": "/eventos",
-            "subscribe": "/inscricao",
-            "unsubscribe": "/desinscricao" 
-        },
-        "auth":{
-                "login": "/login",
-                "register": "/cadastro",
-                "update": {
-                    "password": "/perfil/atualizar/senha"  
-                } 
-            },
-        "user":{
-                "perfil": "/perfil",
-                "update": "/perfil/atualizar"
-            },
-        "catalog":{
-                "catalog": "/catalogo"    
-            },
-        "search":{
-                "search": "/comparar"
-            }
+    "user": {
+      "perfil": "/perfil",
+      "update": "/perfil/atualizar"
     },
-    "services":{
-        "auth":{
-            "port":3000,
-            "endpoints":{
-                "login": "/login",
-                "register": "/cadastro"
-            }
-        },
-        "user":{
-            "port":3000,
-            "endpoints":{
-                "perfil": "/perfil",
-                "update": "/perfil/atualizar"
-            }
-        },
-        "catalog":{
-            "port":3000,
-            "endpoints":{
-                "catalog": "/catalogo"
-            }
-        },
-        "search":{
-            "port":3000,
-            "endpoints":{
-                "search": "/comparar"
-            }
-        }
+    "catalog": {
+      "catalog": "/catalogo",
+      "produto": "/produto"
+    },
+    "search": {
+      "search": "/comparar"
     }
+  },
+  "services": {
+    "auth": {
+      "port": 10000,
+      "baseUrl": "http://localhost:10000",
+      "endpoints": {
+        "login": "/login",
+        "register": "/cadastro"
+      }
+    },
+    "user": {
+      "port": 10000,
+      "baseUrl": "http://localhost:10000",
+      "endpoints": {
+        "perfil": "/perfil",
+        "update": "/perfil/atualizar"
+      }
+    },
+    "catalog": {
+      "port": 10000,
+      "baseUrl": "http://localhost:10000",
+      "endpoints": {
+        "catalog": "/catalogo",
+        "produto": "/produto"
+      }
+    },
+    "search": {
+      "port": 10000,
+      "baseUrl": "http://localhost:10000",
+      "endpoints": {
+        "search": "/comparar"
+      }
+    }
+  }
 }

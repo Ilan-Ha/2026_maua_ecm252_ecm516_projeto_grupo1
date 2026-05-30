@@ -2,7 +2,7 @@ import ItemCard from "./CartaoDeItem.jsx";
 import Header from "../Header.jsx";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import config from "../config.jsx";
+import config, { apiBase } from "../config.jsx";
 // Componente da Página
 const Page = (props) => {
   return (
@@ -41,7 +41,7 @@ const Page = (props) => {
 // Componente Departamentos
 export default function Departamentos() {
   const svc = config.services.catalog;
-  const url = config.url + ":" + svc.port + svc.endpoints.catalog;
+  const url = apiBase + svc.endpoints.catalog;
   const [data, setData] = useState(null);
   const [tag, setTag] = useState(null);
   const [search, setSearch] = useState("");

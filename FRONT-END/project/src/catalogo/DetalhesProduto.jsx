@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "../Header.jsx";
-import config from "../config.jsx";
+import config, { apiBase } from "../config.jsx";
 
 // Salva o acesso ao produto no localStorage e no backend
 function registrarAcesso(produto) {
@@ -29,8 +29,10 @@ function registrarAcesso(produto) {
   // Persiste no backend (silencioso: falhas não afetam a experiência)
   try {
     const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
-    const svcHistory = config.services.history;
-    const url = config.url + ":" + svcHistory.port + svcHistory.endpoints.history;
+    const svcHistory = config.services?.history;
+    if (!svcHistory?.endpoints?.history) return;
+
+    const url = apiBase + svcHistory.endpoints.history;
     fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -50,7 +52,7 @@ function registrarAcesso(produto) {
 export default function DetalhesProduto() {
   const { id } = useParams();
   const svc = config.services.catalog;
-  const baseUrl = config.url + ":" + svc.port;
+  const baseUrl = apiBase;
   const [produto, setProduto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState(null);

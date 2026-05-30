@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiBase } from "./config.jsx";
 //componente que mostra o status do frontend, backend e banco de dados
 export default function StatusLed() {
     const BASE_URL = "http://localhost:3000";
@@ -10,7 +11,7 @@ export default function StatusLed() {
   //checagem do backend
   const checkBackend = async () => {
   try {
-    const res = await fetch("http://localhost:3000/health");
+    const res = await fetch(`${apiBase}/health`);
     const data = await res.json();
     return data.backend === true;
   } catch {
@@ -20,7 +21,7 @@ export default function StatusLed() {
 //checagem do banco de dados
 const checkDb = async () => {
   try {
-    const res = await fetch("http://localhost:3000/health/db");
+    const res = await fetch(`${apiBase}/health/db`);
     const data = await res.json();
     return data.db === true;
   } catch {

@@ -1,17 +1,17 @@
 import { useState } from "react";
 import Header from "../Header.jsx";
 import { Link } from "react-router-dom";
-import config from "../config";
+import config, { apiBase } from "../config";
 
 export default function Cadastro() {
   const svc = config.services.auth;
-  const url =
-    config.url + ":" + String(svc.port) + String(svc.endpoints.register);
+  const url = apiBase + svc.endpoints.register;
 
   const [form, setForm] = useState({
     nome: "",
     email: "",
     senha: "",
+    confirmarSenha: "",
   });
   const [loading, setLoading] = useState(false);
   const [mensagem, setMensagem] = useState({ tipo: "", texto: "" });
@@ -39,17 +39,18 @@ export default function Cadastro() {
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        setMensagem({
-          tipo: "danger",
-          texto: errorData.message || "Erro no servidor",
-        });
+        const errorData = await res.json().catch(() => ({}));
+        const msg =
+          typeof errorData.message === "string"
+            ? errorData.message
+            : "Erro no servidor";
+        setMensagem({ tipo: "danger", texto: msg });
         return;
       }
 
       const data = await res.json();
       setMensagem({ tipo: "success", texto: data.message });
-      setForm({ nome: "", email: "", senha: "" });
+      setForm({ nome: "", email: "", senha: "", confirmarSenha: "" });
     } catch {
       setMensagem({
         tipo: "danger",
@@ -114,7 +115,7 @@ export default function Cadastro() {
               />
             </div>
 
-            <div className="mb-4 text-start">
+            <div className="mb-3 text-start">
               <label htmlFor="senha" className="form-label auth-label">
                 Senha
               </label>
@@ -123,11 +124,29 @@ export default function Cadastro() {
                 className="form-control auth-input"
                 type="password"
                 name="senha"
-                placeholder="Mínimo 6 caracteres"
+                placeholder="Mín. 8 chars, maiúscula, número e especial"
                 value={form.senha}
                 onChange={handleChange}
                 required
-                minLength={6}
+                minLength={8}
+                autoComplete="new-password"
+              />
+            </div>
+
+            <div className="mb-4 text-start">
+              <label htmlFor="confirmarSenha" className="form-label auth-label">
+                Confirmar senha
+              </label>
+              <input
+                id="confirmarSenha"
+                className="form-control auth-input"
+                type="password"
+                name="confirmarSenha"
+                placeholder="Repita a senha"
+                value={form.confirmarSenha}
+                onChange={handleChange}
+                required
+                minLength={8}
                 autoComplete="new-password"
               />
             </div>

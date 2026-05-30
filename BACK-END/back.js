@@ -1,4 +1,5 @@
 import fs from "fs"
+// LEGADO: monólito depreciado. Use arquitetura-microservicos/back-end (npm start).
 import config from './config.js'
 import express from 'express'
 import cors from 'cors'

@@ -86,8 +86,8 @@ const eventFunctions = {
 
     // primeiro busca se já foi adicionado
       // nao
-    const usuarioExiste = User.exists({authId: id})
-    if(!usuarioExiste){
+    const usuarioExiste = await User.exists({ authId: id });
+    if (!usuarioExiste) {
       const tempBase = email.split("@")[0]
   
       let tempName = tempBase
@@ -183,18 +183,37 @@ const requestFunctions = {
 }
 // #endregion
 
+// #region health
+app.get("/health", (req, res) => {
+  const dbOk = mongoose.connection.readyState === 1;
+  res.json({
+    service: "user",
+    backend: true,
+    db: dbOk,
+    status: dbOk ? "ok" : "degraded",
+  });
+});
+
+app.get("/health/db", (req, res) => {
+  const dbOk = mongoose.connection.readyState === 1;
+  res.json({
+    service: "user",
+    db: dbOk,
+    status: dbOk ? "ok" : "error",
+  });
+});
+// #endregion
 
 // #region endpoint de eventos
-app.post(paths.events.event, (req, res) => {
+app.post(paths.events.event, async (req, res) => {
   const { event, payload } = req.body;
-  //console.log(event)
-  //console.log(payload)
   try {
-    eventFunctions[event](payload)
-  } catch (e) {}
-
-  return res.end()
-})
+    await eventFunctions[event](payload);
+  } catch (e) {
+    console.error("[user] Erro ao processar evento:", event, e.message);
+  }
+  return res.end();
+});
 // #endregion
 
 // #region endpoint de requisições

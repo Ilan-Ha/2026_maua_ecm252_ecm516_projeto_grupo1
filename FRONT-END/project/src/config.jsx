@@ -1,3 +1,6 @@
-import config from '../../../api-shared-config.json' with { type: 'json' }
-/// essa classe serve para que as outra só tenha que, se modificar o arquivo original de lugar, só precisa modificar o caminho aqui
-export default config
+import config from "../../../api-shared-config.json" with { type: "json" };
+
+/** URL base para o front (sempre via API Gateway MSS) */
+export const apiBase = config.gateway.baseUrl;
+
+export default config;
