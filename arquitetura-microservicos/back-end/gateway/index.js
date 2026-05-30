@@ -68,14 +68,14 @@ app.post(path.review.create, (req, res) =>
 
 // dados de retorno
 const returnData = (response) => {
-    const {error, content, message, status} = response.data
+  const {error, content, message, status} = response.data
 
-    //console.log(`Erro?: ${error}\nStatus: ${status}\nContent: ${content}\nMessage: ${message}`)
+    // console.log(`Erro?: ${error}\nStatus: ${status}\nContent: ${content}\nMessage: ${message}`)
 
     return {error, status, content, message}
 }
 
-const funcoesRequest = {
+const funcoesRequestPost = {
   [path.auth.register]: async (payload) => {
     const response = await axios.post(`${config.url}:${svc.auth}${path.auth.register}`, {
       payload: payload
@@ -95,14 +95,44 @@ const funcoesRequest = {
     return response
   }
 }
-// #region Rota de cadastro
+
+const funcoesRequestGet = {
+  [path.catalog.catalog]: async (payload) => {
+    const response = await axios.get(`${config.url}:${svc.catalog}${path.catalog.catalog}`, {
+    })
+    return response
+  },
+  [path.catalog.product]: async (payload) => {
+    const response = await axios.get(`${config.url}:${svc.catalog}${path.catalog.product}`, {
+      params: {
+        id: payload.id
+      }
+    })
+    return response
+  }
+}
+// #region Rota de padrao de post
 app.post(path.gateway.request, async (req, res) => {
     
     const {request,payload} = req.body
-    //console.log(payload)
 
-    const response = await funcoesRequest[request](payload)
+    const response = await funcoesRequestPost[request](payload)
+    const {error, status, content, message} = returnData(response)
 
+    return res.status(status).json({
+      error: error,
+      content: content,
+      message: message
+    })
+});
+// #endregion
+
+// #region Rota de padrao de get
+app.get(path.gateway.request, async (req, res) => {
+    
+    const {request} = req.query
+
+    const response = await funcoesRequestGet[request](req.query)
     const {error, status, content, message} = returnData(response)
 
     return res.status(status).json({

@@ -63,7 +63,8 @@
                 "update": "/perfil/atualizar"
             },
         "catalog":{
-                "catalog": "/catalogo"    
+                "catalog": "/catalogo",
+                "product": "/produto"    
             },
         "search":{
                 "search": "/comparar"
@@ -91,7 +92,8 @@
         "catalog":{
             "port":3000,
             "endpoints":{
-                "catalog": "/catalogo"
+                "catalog": "/catalogo",
+                "product": "/produto"
             }
         },
         "search":{

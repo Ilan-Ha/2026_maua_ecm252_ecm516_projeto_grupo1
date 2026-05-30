@@ -1,0 +1,21 @@
+{
+  "name": "history",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --signal SIGTERM index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^1.16.1",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "mongoose": "^9.6.3",
+    "node-fetch": "^3.3.2",
+    "nodemon": "^3.1.14"
+  }
+}
