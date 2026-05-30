@@ -31,15 +31,27 @@ const returnData = (response) => {
     return {error, status, content, message}
 }
 
-// #region Rota de cadastro
-app.post(path.auth.register, async (req, res) => {
-    
-    const {payload} = req.body
-    //console.log(payload)
-
+const funcoesRequest = {
+  [path.auth.register]: async (payload) => {
     const response = await axios.post(`${config.url}:${svc.auth}${path.auth.register}`, {
       payload: payload
     })
+    return response
+  },
+  [path.auth.login]: async (payload) => {
+    const response = await axios.post(`${config.url}:${svc.auth}${path.auth.login}`, {
+      payload: payload
+    })
+    return response
+  }
+}
+// #region Rota de cadastro
+app.post(path.gateway.request, async (req, res) => {
+    
+    const {request,payload} = req.body
+    //console.log(payload)
+
+    const response = await funcoesRequest[request](payload)
 
     const {error, status, content, message} = returnData(response)
 
