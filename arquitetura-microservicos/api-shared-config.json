@@ -4,14 +4,16 @@
         "user":{
             "name":{
                 "exits": "user.name.exists",
-                "valdate": "user.name.validate"
+                "valdate": "user.name.validate",
+                "tell": "user.name.tell"
             }
         }
     },
     "events": {
         "user":{
             "register": "user.create",
-            "added": "user.added"
+            "added": "user.added",
+            "not.register": "user.re.register"
         }
     },
     "ports":{
@@ -35,6 +37,9 @@
     "paths":{
         "start": "/",
         "requests":{
+            "request": "/requisicao"
+        },
+        "gateway":{
             "request": "/requisicao"
         },
         "events":{
