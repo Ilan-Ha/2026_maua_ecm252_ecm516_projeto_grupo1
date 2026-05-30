@@ -25,7 +25,8 @@ const copyCode = async (payload, req) => {
         const result = await axios.post(urls.user, {
             request: req,
             payload: payload})
-        return result.data.content
+            console.log(result)
+        return result.data.values
 }
 const requestFunctions = {
     [request.user.name.exits]: (payload) => {
@@ -33,6 +34,9 @@ const requestFunctions = {
     },
     [request.user.name.valdate]: (payload) => {
         return copyCode(payload, request.user.name.valdate)
+    },
+    [request.user.name.tell]: (payload) => {
+        return copyCode(payload, request.user.name.tell)
     }
 }
 
@@ -45,7 +49,7 @@ app.post(paths.request, async (req,res) => {
     try {
         const result = await requestFunctions[request](payload)
         .then((r) => {
-            //console.log(r)
+            console.log(r)
         const {error, message, status, content} = r
         // console.log(error)
         if (typeof(error) !== "boolean"){
