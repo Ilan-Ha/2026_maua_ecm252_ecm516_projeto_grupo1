@@ -29,6 +29,13 @@
                 "search": "/comparar"
             }
         },
+        "review": {
+            "port": 10000,
+            "endpoints": {
+                "list": "/reviews/produto",
+                "create": "/reviews"
+            }
+        },
         "history": {
             "port": 3000,
             "endpoints": {
