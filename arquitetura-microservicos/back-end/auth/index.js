@@ -120,7 +120,7 @@ const respostaErro = ({e,status,message}) => {
               // se sim retorn o status do erro se não retorna o erro 500
             message: message?
               message :
-              e.response?.data || "Erro interno de servidor"
+              e.response?.data || "Erro interno de servidor auth"
         }
 }
 // #endregion
@@ -137,7 +137,6 @@ app.post(paths.auth.register, async (req, res) => {
   // o try é para depois poder usar "const result" de novo
   try {
     const result = authSchemaZod.safeParse({email,senha,confirmarSenha})
-
   // checagem de formatação
   if (!result.success) {
     const errosFormatados = z.treeifyError(result.error).properties || {}
@@ -148,10 +147,10 @@ app.post(paths.auth.register, async (req, res) => {
         errors[tipo] = erros.errors
       }
     }
-    return res.json(respostaErro({status,message: errors}))
+    return res.json(respostaErro({status: 400,message: errors}))
   }
   } catch (e) {
-    return res.json(respostaErro(e))
+    return res.json(respostaErro({e}))
   }
   // #endregion
 
@@ -301,6 +300,47 @@ app.post(paths.auth.login, async (req,res) => {
     return res.json(respostaErro({e}))
   }
   // #endregion 
+})
+// #endregion
+
+// #region rota de atualizacao de senha
+app.post(paths.auth.update.password, async (req,res) => {
+  const {payload} = req.body
+  const {email, senha, confirmarSenha} = payload
+  // procura usuario pelo email
+  const usuario = await Auth.findOne({email})
+  // se nao achar retorna erro
+  if (!usuario) {
+    return res.json(respostaErro({
+      status: 404,
+    message: "Usuário não encontrado"}))
+  }
+  // verifica se a senha é valida
+  try {
+    const result = authSchemaZod.safeParse({email,senha,confirmarSenha})
+  // checagem de formatação
+  if (!result.success) {
+    const errosFormatados = z.treeifyError(result.error).properties || {}
+    const errors = {}
+
+    for (const [tipo,erros] of Object.entries(errosFormatados)){
+      if(erros.errors.length > 0){
+        errors[tipo] = erros.errors
+      }
+    }
+    return res.json(respostaErro({status: 400,message: errors}))
+  }
+  } catch (e) {
+    return res.json(respostaErro({e}))
+  }
+  // atualiza os dados do usuário
+  usuario.senha = senha
+  await usuario.save()
+  return res.json({
+    status: 200,
+    error: false,
+    message: "Senha atualizada"
+  })
 })
 // #endregion
 
