@@ -225,6 +225,84 @@ app.post(paths.auth.register, async (req, res) => {
 });
 // #endregion
 
+// #region Rota de login
+app.post(paths.auth.login, async (req,res) => {
+  const {payload} = req.body
+  const {email, senha} = payload
+
+  // procura usuario primeiro
+  const autentificacao = await Auth.findOne({email})
+
+  // #region encontrou o usuario?
+    // não
+  if(!autentificacao){
+    return res.json(
+      respostaErro({
+        status: 401,
+        message: "Email não encontrado"
+      }))
+  }
+  // #endregion
+    // sim
+  // #region já foi cadastrado no serviço de usuario?
+  const registered = autentificacao.usuarioCadastrado
+    // não
+  if(!registered){
+    // envia evento para serviço de usuario
+    // retorna erro
+    await axios.post(sendEvent, {
+      event: events.user["not.register"],
+      payload:{
+        id: autentificacao._id,
+        email: autentificacao.email
+      }
+    })
+    return res.json({
+      error: true,
+      status: 500,
+      message: "Erro durante cadastro. Por favor tente novamente."
+    })
+  }
+  // #endregion
+    // sim
+  // #region a senha está correta?
+  const senhaCorreta = await bcrypt.compare(senha,autentificacao.senha)
+    // não
+  if(!senhaCorreta){
+    return res.json(respostaErro({
+      status: 401,
+      message: "Senha inválida"}))
+  }
+  // #endregion
+    // sim
+  // #region retornando
+  // pedindo nome para server de usuario
+  const result = await axios.post(sendRequest, {
+        request: request.user.name.tell,  
+        payload: {
+            authId: autentificacao._id
+          }})
+  try{
+    const {content} = result.data
+    const {nome} = content
+
+    return res.json({
+      error: false,
+      status: 200,
+      message: "Login OK",
+      content: {
+        usuario: {
+          nome: nome,
+          email: autentificacao.email
+        }
+      }
+    })
+  }catch(e){
+    return res.json(respostaErro({e}))
+  }
+  // #endregion 
+})
+// #endregion
 
 // #region endpoint de eventos
 app.post(paths.events.event, (req, res) => {
