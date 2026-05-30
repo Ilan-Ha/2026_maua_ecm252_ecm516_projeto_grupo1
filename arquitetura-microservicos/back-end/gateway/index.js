@@ -43,6 +43,12 @@ const funcoesRequest = {
       payload: payload
     })
     return response
+  },
+  [path.auth.update.password]: async (payload) => {
+    const response = await axios.post(`${config.url}:${svc.auth}${path.auth.update.password}`, {
+      payload: payload
+    })
+    return response
   }
 }
 // #region Rota de cadastro
