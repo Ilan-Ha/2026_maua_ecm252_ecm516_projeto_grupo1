@@ -1,124 +1,136 @@
-🛒 AllForOne - Plataforma de Comparação e Reviews de Produtos
+# 🛒 AllForOne — Plataforma de Comparação e Reviews de Produtos
 
-Aplicação web em desenvolvimento para comparação, consulta e análise de produtos, permitindo que usuários naveguem por categorias, consultem especificações técnicas, comparem produtos e mantenham histórico de itens visualizados.
+![React](https://img.shields.io/badge/React-Frontend-61DAFB?logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?logo=node.js)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?logo=mongodb)
+![Microservices](https://img.shields.io/badge/Architecture-Microservices-blue)
+![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-orange)
 
-O projeto foi desenvolvido durante as disciplinas ECM252 e ECM516 do Instituto Mauá de Tecnologia, com foco em desenvolvimento web, integração front-end/back-end, persistência de dados e evolução para uma arquitetura baseada em microsserviços.
+Aplicação web desenvolvida durante as disciplinas **ECM252** e **ECM516** do **Instituto Mauá de Tecnologia**, com foco em desenvolvimento web full stack, persistência de dados, integração entre front-end e back-end e evolução para uma arquitetura baseada em microsserviços.
 
-⸻
+---
 
-📌 Objetivo do Projeto
+# 📌 Objetivo
 
-O objetivo da aplicação é oferecer uma plataforma simples e funcional para apoiar usuários na escolha de produtos, reunindo informações como:
+O **AllForOne** tem como objetivo auxiliar usuários na escolha de produtos por meio da consulta e comparação de informações relevantes, reunindo em um único ambiente:
 
-* categorias de produtos;
-* detalhes técnicos;
-* preço médio;
-* marca;
-* ano de lançamento;
-* imagens;
-* sites de compra;
-* comparação entre produtos;
-* histórico de produtos visualizados;
-* cadastro e login de usuários.
+- Categorias de produtos
+- Especificações técnicas
+- Preço médio
+- Marca
+- Ano de lançamento
+- Imagens
+- Sites de compra
+- Comparação entre produtos
+- Histórico de navegação
+- Cadastro e autenticação de usuários
 
-⸻
+---
 
-🌐 Funcionalidades Implementadas
+# 🌐 Funcionalidades
 
-👤 Usuário e Autenticação
+## 👤 Usuários e Autenticação
 
-* Cadastro de usuário.
-* Login de usuário.
-* Validação de e-mail.
-* Validação de senha.
-* Criptografia de senha com bcrypt na arquitetura de microsserviços.
-* Perfil do usuário.
-* Atualização de dados cadastrais.
-* Persistência de sessão no navegador por meio de localStorage.
+- Cadastro de usuários
+- Login de usuários
+- Validação de e-mail
+- Validação de senha
+- Criptografia de senha utilizando **bcrypt**
+- Perfil de usuário
+- Atualização de dados cadastrais
+- Persistência de sessão utilizando **localStorage**
 
-🛍️ Catálogo de Produtos
+---
 
-* Listagem de categorias.
-* Listagem de produtos por categoria.
-* Página de detalhes de produto.
-* Exibição de:
-    * nome;
-    * marca;
-    * descrição;
-    * preço médio;
-    * ano de lançamento;
-    * imagens;
-    * especificações técnicas;
-    * links de compra.
+## 🛍️ Catálogo de Produtos
 
-🔍 Comparação de Produtos
+- Listagem de categorias
+- Listagem de produtos por categoria
+- Página de detalhes do produto
 
-* Seleção de categoria.
-* Comparação entre dois ou mais produtos.
-* Exibição lado a lado das especificações.
-* Destaque para menor preço médio.
-* Comparação dinâmica com base nos produtos selecionados.
+### Informações exibidas
 
-🕘 Histórico
+- Nome
+- Marca
+- Descrição
+- Preço médio
+- Ano de lançamento
+- Imagens
+- Especificações técnicas
+- Links de compra
 
-* Registro de produtos acessados.
-* Armazenamento local do histórico no navegador.
-* Limite de até 50 produtos visualizados.
-* Opção para limpar histórico.
-* Preparação para persistência do histórico no back-end.
+---
 
-🟢 Monitoramento
+## 🔍 Comparação de Produtos
 
-* Componente visual de status para:
-    * front-end;
-    * back-end;
-    * banco de dados.
-* Rotas de health check no back-end.
+- Seleção de categoria
+- Comparação entre dois ou mais produtos
+- Exibição lado a lado
+- Destaque para o menor preço médio
+- Comparação dinâmica baseada nos itens selecionados
 
-⸻
+---
 
-🖥️ Telas Principais
+## 🕘 Histórico de Navegação
 
-* Página de login.
-* Página de cadastro.
-* Página de perfil.
-* Página de catálogo.
-* Página de detalhes do produto.
-* Página de comparação de produtos.
-* Página de histórico de produtos visualizados.
+- Registro de produtos acessados
+- Armazenamento local no navegador
+- Limite de até 50 produtos visualizados
+- Limpeza do histórico
+- Estrutura preparada para persistência em banco de dados
 
-⸻
+---
 
-🧱 Arquitetura do Projeto
+## 🟢 Monitoramento
 
-Atualmente, o repositório possui duas estruturas principais:
+- Indicador visual de status dos serviços:
+  - Front-end
+  - Back-end
+  - Banco de dados
+- Rotas de *health check*
 
+---
+
+# 🖥️ Telas Principais
+
+- 🔐 Login
+- 📝 Cadastro
+- 👤 Perfil
+- 🛒 Catálogo
+- 📦 Detalhes do Produto
+- ⚖️ Comparação de Produtos
+- 🕘 Histórico de Visualizações
+
+---
+
+# 🧱 Arquitetura do Projeto
+
+Atualmente o projeto possui duas arquiteturas disponíveis:
+
+## 1️⃣ Estrutura Original
+
+```text
 .
 ├── BACK-END/
 ├── FRONT-END/
-├── arquitetura-microservicos/
 ├── api-shared-config.json
 ├── .env.example
 └── README.md
+```
 
-1. Estrutura original
+Nesta versão:
 
-A estrutura original concentra a aplicação em:
+- Front-end React + Vite
+- Back-end Node.js + Express
+- MongoDB + Mongoose
 
-BACK-END/
-FRONT-END/
+---
 
-Essa versão possui um back-end Node.js/Express integrado ao MongoDB e um front-end React com Vite.
+## 2️⃣ Arquitetura de Microsserviços
 
-2. Arquitetura de microsserviços
-
-A versão mais recente do projeto está organizada na pasta:
-
+```text
 arquitetura-microservicos/
-
-Essa estrutura separa responsabilidades em serviços independentes, aproximando o projeto de uma arquitetura distribuída.
-
-arquitetura-microservicos/
+│
 ├── back-end/
 │   ├── auth/
 │   ├── catalog/
@@ -126,7 +138,7 @@ arquitetura-microservicos/
 │   ├── gateway/
 │   ├── request-bus/
 │   ├── user/
-│   └── utlis/
+│   └── utils/
 │
 ├── front-end/
 │   ├── auth/
@@ -137,461 +149,482 @@ arquitetura-microservicos/
 │
 ├── api-shared-config.json
 └── README.md
+```
 
-⸻
+Essa estrutura promove:
 
-🔙 Microsserviços de Back-end
+- Separação de responsabilidades
+- Escalabilidade
+- Baixo acoplamento
+- Comunicação síncrona e assíncrona entre serviços
 
-gateway
+---
 
-Serviço responsável por centralizar requisições externas e encaminhá-las para os microsserviços internos corretos.
+# 🔙 Microsserviços de Back-end
 
-Porta padrão:
+## Gateway
 
-10000
+Centraliza todas as requisições externas e as encaminha aos serviços responsáveis.
 
-event-bus
+**Porta:** `10000`
 
-Serviço responsável pela comunicação assíncrona entre microsserviços por meio de eventos.
+---
 
-Exemplos de eventos:
+## Event Bus
 
-user.create
-user.added
-user.re.register
+Responsável pela comunicação assíncrona baseada em eventos.
 
-Porta padrão:
+### Exemplos de eventos
 
-10001
+- `user.create`
+- `user.added`
+- `user.re.register`
 
-request-bus
+**Porta:** `10001`
 
-Serviço responsável pela comunicação síncrona do tipo request/reply entre microsserviços.
+---
 
-Porta padrão:
+## Request Bus
 
-10002
+Responsável pela comunicação síncrona (*request/reply*).
 
-auth
+**Porta:** `10002`
 
-Serviço responsável por autenticação e cadastro.
+---
 
-Principais responsabilidades:
+## Auth
 
-* cadastro;
-* login;
-* validação de e-mail;
-* validação de senha;
-* criptografia de senha com bcrypt;
-* emissão de eventos relacionados ao cadastro de usuário.
+Serviço responsável pela autenticação.
 
-Porta padrão:
+### Responsabilidades
 
-3001
+- Cadastro
+- Login
+- Validação de e-mail
+- Validação de senha
+- Criptografia de senha
+- Emissão de eventos
 
-user
+**Porta:** `3001`
 
-Serviço responsável pelos dados de perfil do usuário.
+---
 
-Principais responsabilidades:
+## User
 
-* criação de perfil a partir de eventos;
-* validação de nome;
-* verificação de nome já cadastrado;
-* retorno de dados do usuário para autenticação.
+Serviço responsável pelos dados dos usuários.
 
-Porta padrão:
+### Responsabilidades
 
-3002
+- Criação de perfil
+- Validação de nome
+- Verificação de duplicidade
+- Consulta de dados do usuário
 
-catalog
+**Porta:** `3002`
 
-Serviço responsável pelo catálogo de produtos.
+---
 
-Principais responsabilidades:
+## Catalog
 
-* inicialização de categorias padrão;
-* listagem de categorias;
-* listagem de produtos;
-* consulta de catálogo.
+Serviço responsável pelo catálogo.
 
-Porta padrão:
+### Responsabilidades
 
-3003
+- Inicialização de categorias
+- Listagem de categorias
+- Consulta de produtos
+- Gerenciamento do catálogo
 
-⸻
+**Porta:** `3003`
 
-🧭 Front-end em Microsserviços
+---
 
-A pasta arquitetura-microservicos/front-end está organizada por domínios:
+# 🧭 Front-end em Microsserviços
 
+```text
 front-end/
 ├── auth/
 ├── catalog/
 ├── shell/
 └── user/
+```
 
-shell
+## Shell
 
-Aplicação principal responsável por integrar os módulos do front-end.
+Aplicação principal responsável por integrar todos os módulos.
 
-Porta padrão:
+**Porta:** `4000`
 
-4000
+---
 
-auth
+## Auth
 
-Módulo de interface relacionado a login e cadastro.
+Módulo responsável pelas telas de autenticação.
 
-Porta padrão:
+**Porta:** `4001`
 
-4001
+---
 
-user
+## User
 
-Módulo de interface relacionado ao perfil do usuário.
+Módulo responsável pelo perfil do usuário.
 
-Porta padrão:
+**Porta:** `4002`
 
-4002
+---
 
-catalog
+## Catalog
 
-Módulo de interface relacionado ao catálogo e produtos.
+Módulo responsável pela visualização do catálogo.
 
-Porta padrão:
+**Porta:** `4003`
 
-4003
+---
 
-⸻
+# 🛠️ Tecnologias Utilizadas
 
-🛠️ Tecnologias Utilizadas
+## Front-end
 
-Front-end
+- React
+- Vite
+- React Router DOM
+- Bootstrap
+- Font Awesome
+- JavaScript ES Modules
+- CSS
 
-* React
-* Vite
-* React Router DOM
-* Bootstrap
-* Font Awesome
-* JavaScript ES Modules
-* CSS
+---
 
-Back-end
+## Back-end
 
-* Node.js
-* Express
-* MongoDB
-* Mongoose
-* CORS
-* Dotenv
-* Axios
-* Node Fetch
-* Nodemon
-* Zod
-* Bcrypt
+- Node.js
+- Express
+- MongoDB
+- Mongoose
+- Axios
+- Node Fetch
+- CORS
+- Dotenv
+- Zod
+- Bcrypt
+- Nodemon
 
-Ferramentas
+---
 
-* Git
-* GitHub
-* npm
-* MongoDB Atlas ou MongoDB local
+## Ferramentas
 
-⸻
+- Git
+- GitHub
+- npm
+- MongoDB Atlas
 
-⚙️ Configuração de Ambiente
+---
 
-O projeto utiliza variável de ambiente para conexão com o MongoDB.
+# ⚙️ Configuração do Ambiente
 
-Crie um arquivo .env com base no arquivo .env.example.
+O projeto utiliza variáveis de ambiente para conexão com o banco de dados.
 
-Exemplo:
+Crie um arquivo `.env` utilizando como base o `.env.example`.
 
+```env
 MONGO_URI=sua_string_de_conexao_mongodb
+```
 
-Na arquitetura de microsserviços, o arquivo .env.example está em:
+Na arquitetura de microsserviços:
 
-arquitetura-microservicos/back-end/.env.example
+```text
+arquitetura-microservicos/back-end/.env
+```
 
-⸻
+---
 
-🚀 Como Executar - Estrutura Original
+# 🚀 Executando a Estrutura Original
 
-1. Clone o repositório
+## 1. Clonar o repositório
 
+```bash
 git clone https://github.com/Ilan-Ha/2026_maua_ecm252_ecm516_projeto_grupo1
+```
 
-2. Acesse a pasta do projeto
+## 2. Entrar no projeto
 
+```bash
 cd 2026_maua_ecm252_ecm516_projeto_grupo1
+```
 
-3. Configure o .env
+## 3. Configurar o .env
 
-Crie um arquivo .env na raiz do projeto:
-
+```env
 MONGO_URI=sua_string_de_conexao_mongodb
+```
 
-4. Instale e execute o front-end
+## 4. Executar Front-end
 
+```bash
 cd FRONT-END/project
+
 npm install
 npm run dev
+```
 
-O front-end será executado em:
+Disponível em:
 
+```text
 http://localhost:5173
+```
 
-5. Em outro terminal, instale e execute o back-end
+## 5. Executar Back-end
 
+```bash
 cd BACK-END
+
 npm install
 node back.js
+```
 
-O back-end será executado em:
+Disponível em:
 
+```text
 http://localhost:3000
+```
 
-⸻
+---
 
-🚀 Como Executar - Arquitetura de Microsserviços
+# 🚀 Executando a Arquitetura de Microsserviços
 
-1. Clone o repositório
+## 1. Entrar na pasta
 
-git clone https://github.com/Ilan-Ha/2026_maua_ecm252_ecm516_projeto_grupo1
+```bash
+cd arquitetura-microservicos
+```
 
-2. Acesse a pasta da arquitetura de microsserviços
+## 2. Configurar o .env
 
-cd 2026_maua_ecm252_ecm516_projeto_grupo1/arquitetura-microservicos
-
-3. Configure o .env
-
-Crie um arquivo .env em:
-
-arquitetura-microservicos/back-end/
-
-Com o conteúdo:
-
+```env
 MONGO_URI=sua_string_de_conexao_mongodb
+```
 
-4. Instale as dependências dos serviços de back-end
+## 3. Instalar dependências
 
-Execute em cada serviço:
+Executar em cada serviço:
 
-cd back-end/event-bus
+```bash
 npm install
-cd ../request-bus
-npm install
-cd ../gateway
-npm install
-cd ../auth
-npm install
-cd ../user
-npm install
-cd ../catalog
-npm install
+```
 
-5. Execute os serviços de back-end
+---
 
-Recomenda-se iniciar primeiro os serviços de comunicação, depois os serviços de domínio.
+## 4. Iniciar Back-end
 
-Em terminais separados, execute:
+Ordem recomendada:
 
-cd arquitetura-microservicos/back-end/event-bus
+```bash
+event-bus
+request-bus
+gateway
+user
+auth
+catalog
+```
+
+Executar em terminais separados:
+
+```bash
 npm start
-cd arquitetura-microservicos/back-end/request-bus
-npm start
-cd arquitetura-microservicos/back-end/gateway
-npm start
-cd arquitetura-microservicos/back-end/user
-npm start
-cd arquitetura-microservicos/back-end/auth
-npm start
-cd arquitetura-microservicos/back-end/catalog
-npm start
+```
 
-6. Execute os módulos de front-end
+---
 
-Acesse cada módulo de front-end e instale as dependências conforme necessário:
+## 5. Iniciar Front-end
 
-cd arquitetura-microservicos/front-end/shell
+Para cada módulo:
+
+```bash
 npm install
 npm run dev
+```
 
-Repita o processo para os demais módulos, caso estejam sendo executados separadamente:
+---
 
-cd arquitetura-microservicos/front-end/auth
-npm install
-npm run dev
-cd arquitetura-microservicos/front-end/user
-npm install
-npm run dev
-cd arquitetura-microservicos/front-end/catalog
-npm install
-npm run dev
+# 🔌 Portas Utilizadas
 
-⸻
+## Back-end
 
-🔌 Portas Padrão
+| Serviço | Porta |
+|----------|--------|
+| Gateway | 10000 |
+| Event Bus | 10001 |
+| Request Bus | 10002 |
+| Auth | 3001 |
+| User | 3002 |
+| Catalog | 3003 |
+| Images | 3000 |
 
-Back-end
+---
 
-Serviço	Porta
-Gateway	10000
-Event Bus	10001
-Request Bus	10002
-Auth	3001
-User	3002
-Catalog	3003
-Images	3000
+## Front-end
 
-Front-end
+| Módulo | Porta |
+|---------|---------|
+| Shell | 4000 |
+| Auth | 4001 |
+| User | 4002 |
+| Catalog | 4003 |
 
-Módulo	Porta
-Shell	4000
-Auth	4001
-User	4002
-Catalog	4003
+---
 
-⸻
+# 📡 Principais Rotas
 
-📡 Principais Rotas
+## Gateway
 
-Gateway
+| Método | Rota |
+|----------|----------|
+| POST | `/requisicao` |
+| GET | `/requisicao` |
 
-POST /requisicao
-GET /requisicao
+---
 
-Auth
+## Auth
 
-POST /cadastro
-POST /login
-POST /perfil/atualizar/senha
+| Método | Rota |
+|----------|----------|
+| POST | `/cadastro` |
+| POST | `/login` |
+| POST | `/perfil/atualizar/senha` |
 
-User
+---
 
-POST /eventos
-POST /requisicao
+## User
 
-Catalog
+| Método | Rota |
+|----------|----------|
+| POST | `/eventos` |
+| POST | `/requisicao` |
 
-GET /catalogo
+---
 
-Event Bus
+## Catalog
 
-POST /eventos
-POST /inscricao
-POST /desinscricao
-GET /dados
+| Método | Rota |
+|----------|----------|
+| GET | `/catalogo` |
 
-Request Bus
+---
 
-POST /requisicao
+## Event Bus
 
-⸻
+| Método | Rota |
+|----------|----------|
+| POST | `/eventos` |
+| POST | `/inscricao` |
+| POST | `/desinscricao` |
+| GET | `/dados` |
 
-🗃️ Banco de Dados
+---
 
-O projeto utiliza MongoDB com Mongoose.
+## Request Bus
 
-Na arquitetura de microsserviços, há separação lógica por domínio:
+| Método | Rota |
+|----------|----------|
+| POST | `/requisicao` |
 
-* autenticação;
-* perfil de usuário;
-* catálogo de produtos.
+---
 
-Exemplos de coleções utilizadas:
+# 🗃️ Banco de Dados
 
-* auth;
-* user;
-* categorias;
-* produtos.
+O sistema utiliza **MongoDB** com **Mongoose**.
 
-⸻
+### Coleções principais
 
-✅ Status Atual do Projeto
+- `auth`
+- `user`
+- `categorias`
+- `produtos`
 
-Funcionalidades já presentes ou parcialmente implementadas:
+### Domínios separados
 
-* cadastro de usuários;
-* login de usuários;
-* validação de nome;
-* validação de senha;
-* criptografia de senha;
-* perfil de usuário;
-* catálogo de produtos;
-* detalhes de produto;
-* comparação entre produtos;
-* histórico local de visualização;
-* comunicação via gateway;
-* comunicação síncrona via request-bus;
-* comunicação assíncrona via event-bus;
-* organização inicial em microsserviços.
+- Autenticação
+- Usuários
+- Catálogo
 
-⸻
+---
 
-⚠️ Observações Técnicas
+# ✅ Status Atual
 
-* A estrutura original BACK-END/ e FRONT-END/ ainda existe no repositório.
-* A arquitetura mais recente está concentrada em arquitetura-microservicos/.
-* Alguns módulos ainda estão em evolução e podem exigir ajustes de integração.
-* A execução completa exige múltiplos terminais, pois cada microsserviço roda de forma independente.
-* É necessário configurar corretamente o MONGO_URI antes de iniciar os serviços que dependem do banco de dados.
-* A padronização das respostas entre serviços segue o modelo com campos como error, status, message e content.
+### Implementado
 
-⸻
+- Cadastro de usuários
+- Login
+- Validação de dados
+- Criptografia de senha
+- Perfil de usuário
+- Catálogo de produtos
+- Comparação de produtos
+- Histórico de visualização
+- Gateway
+- Event Bus
+- Request Bus
+- Organização em microsserviços
 
-💡 Melhorias Futuras
+---
 
-* Criar script único para instalar todas as dependências.
-* Criar script único para iniciar todos os microsserviços.
-* Adicionar Docker e Docker Compose.
-* Melhorar documentação das rotas.
-* Adicionar testes automatizados.
-* Implementar autenticação com token JWT.
-* Persistir histórico de produtos visualizados no banco de dados.
-* Adicionar sistema completo de reviews e comentários.
-* Implementar notas e avaliações de produtos.
-* Integrar APIs externas, como Amazon ou Mercado Livre.
-* Criar ranking de produtos mais bem avaliados.
-* Adicionar likes e dislikes em comentários.
-* Criar sistema de recomendação inteligente.
-* Melhorar tratamento global de erros.
-* Criar documentação de arquitetura com diagrama dos microsserviços.
+# 💡 Melhorias Futuras
 
-⸻
+- [ ] Script único de instalação
+- [ ] Script único de inicialização
+- [ ] Docker
+- [ ] Docker Compose
+- [ ] Testes automatizados
+- [ ] JWT
+- [ ] Persistência do histórico
+- [ ] Sistema de reviews
+- [ ] Avaliações por nota
+- [ ] Integração com APIs externas
+- [ ] Ranking de produtos
+- [ ] Likes e dislikes
+- [ ] Sistema de recomendação
+- [ ] Tratamento global de erros
+- [ ] Diagramas de arquitetura
 
-⚠️ Desafios e Aprendizados
+---
 
-Durante o desenvolvimento, o grupo trabalhou com:
+# 🎓 Desafios e Aprendizados
 
-* criação de interface web com React;
-* integração entre front-end e back-end;
-* persistência de dados com MongoDB;
-* validação de dados com Zod;
-* criptografia de senha;
-* separação de responsabilidades;
-* comunicação entre microsserviços;
-* uso de event bus;
-* uso de request bus;
-* padronização de configuração compartilhada;
-* organização de projeto em equipe;
-* versionamento com Git e GitHub.
+Durante o desenvolvimento foram aplicados conceitos de:
 
-⸻
+- Desenvolvimento Front-end com React
+- Desenvolvimento Back-end com Node.js
+- Integração cliente-servidor
+- Persistência com MongoDB
+- Validação com Zod
+- Criptografia com bcrypt
+- Microsserviços
+- Event-driven architecture
+- Request/Reply
+- Configuração compartilhada
+- Trabalho colaborativo
+- Git e GitHub
 
-📄 Licença
+---
 
-Este projeto está sem licença definida.
+# 📄 Licença
 
-⸻
+Este projeto atualmente **não possui licença definida**.
 
-👥 Integrantes
+---
 
-* Arthur Silva Correia - 23.00877-6
-* Bruno Ferreira Nishiya - 23.01020-7
-* Diego Mourão Oliveira - 23.01580-2
-* Felipe Kolanian Pasquini - 23.00118-6
-* Ilan Hameiry - 23.00981-0
-* Leonardo Luiz Seixas Iorio - 23.00847-7
-* Luca Lopes Martinho - 23.00064-3
+# 👥 Integrantes
+
+| Nome | RA |
+|--------|--------|
+| Arthur Silva Correia | 23.00877-6 |
+| Bruno Ferreira Nishiya | 23.01020-7 |
+| Diego Mourão Oliveira | 23.01580-2 |
+| Felipe Kolanian Pasquini | 23.00118-6 |
+| Ilan Hameiry | 23.00981-0 |
+| Leonardo Luiz Seixas Iorio | 23.00847-7 |
+| Luca Lopes Martinho | 23.00064-3 |
+
+---
+
+Desenvolvido no **Instituto Mauá de Tecnologia** durante as disciplinas **ECM252** e **ECM516**.
