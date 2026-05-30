@@ -3,7 +3,7 @@ import cors from "cors"
 import axios from "axios" 
 import mongoose from "mongoose"
 import config from "../utlis/config.js";
-import { initSeed, getCatalogo, getProdutoById } from "./productDBManager.js";
+
 // .env compartilhado e proprio
 import getDirname from "../utlis/getDirname.js";
 import loadEnv from "../utlis/loadEnv.js";
@@ -22,30 +22,42 @@ app.use(express.json());
 // #region configurações vindas do config.js
 const svc = config.ports.back
 const paths = config.paths
-const PORT = svc.catalog
+const PORT = svc.history
 const events = config.events
 const request = config.requests
 // #endregion
 
+// #region schemas
+const historySchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
+    productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+}, {timestamps: true, collection: 'history'})
+// chave primaria
+historySchema.index({userId: 1, productId: 1, cretedAt: 1}, {unique: true})
+
+const History = mongoose.model("History", historySchema)
+// #endregion
 // #region request-bus
 const sendRequest = `${config.url}:${svc.requestBus}${paths.requests.request}`
 
 // tratamento de eventos
-const requestFunctions = {
-  [request.catalog.product.exist]: async (payload) => {
-    const {productId} = payload
-    const produto = await getProdutoById(productId)
-    return {
-      error: false
-  }
-}
-}
+const requestFunctions = {}
 // #endregion
 
 // #region event-bus
 const sendEvent = `${config.url}:${svc.eventBus}${paths.events.event}`
 const calbackUrl = `${config.url}:${PORT}${paths.events.event}`
-const serverName = 'catalog'
+const serverName = 'product user search history'
 
 // eventos para se inscrever
 const subscribe = []
@@ -68,41 +80,59 @@ const respostaErro = ({e,status,message}) => {
 }
 // #endregion
 
-// #region rota de pegar catalogo
-app.get(paths.catalog.catalog, async (req,res) => {
-    try {
-        const data = await getCatalogo()
+// #region rota registro historico
+app.post(paths.history.history, async(req,res) => {
+    const {payload} = req.body
+    const{userId,productId} = payload
+    // pesquisa se o usuarios existe
+    try{
+        const result = await axios.post(sendRequest,
+            {
+                request: request.user.exist,
+                payload:{
+                    userId: userId
+                }
+            }
+        )
+        const {error, message, status} = result.data
+      // caso o servidor de usuario retorne que o nome é invalido
+      if(error){
+        return res.json(respostaErro({status,message}))
+      }
+    }catch(e){
+        return res.json(respostaErro({e}))
+    }
 
+    // pesquisa se o produto existe
+    try{
+        const result = await axios.post(sendRequest,
+            {
+                request: request.catalog.product.exist,
+                payload:{
+                    productId: productId
+                }
+            }
+        )
+        const {error, message, status} = result.data
+      // caso o servidor de usuario retorne que o nome é invalido
+      if(error){
+        return res.json(respostaErro({status,message}))
+      }
+    }catch(e){
+        return res.json(respostaErro({e}))
+    }
+    try {
+        const his = await History.create({
+            userId,
+            productId
+        })
         return res.json({
             error: false,
             status: 200,
-            content: data
+            message: "Acesso registrado"
         })
-
     } catch (e) {
-        return res.json(respostaErro({e, message: "Erro ao carregar catálogo"}))
-    }
-})
-// #endregion
-
-// #region rota de produto por ID
-app.get(paths.catalog.product, async (req, res) => {
-    const {id} = req.query
-
-    try {
-        const produto = await getProdutoById(id)
-        if(!produto){
-            return res.json(respostaErro({status: 404, message: "Produto não encontrado"}))
-        }
-        else{
-            return res.json({
-                error: false,
-                status: 200,
-                content: produto
-            })
-        }
-    } catch (e) {
-        return res.json(respostaErro({status: 400, message: "ID inválido"}))
+        return res.json(respostaErro({e, status: 400}))
     }
 })
 // #endregion
@@ -150,35 +180,32 @@ app.post(paths.requests.request, async (req, res) => {
 const startServer = async () => {
   try {
     //se for usar o .env e precisar de uma logica de verificacao
-    if (!process.env.MONGO_URI) {
-      throw new Error("MONGO_URI não definida no .env");
-    }
-    await mongoose.connect(process.env.MONGO_URI,
-      {
-        dbName: "test"
-      }
-    );
-    console.log("Mongo conectado");
-    await initSeed();
+        if (!process.env.MONGO_URI) {
+          throw new Error("MONGO_URI não definida no .env");
+        }
+        await mongoose.connect(process.env.MONGO_URI,
+          {
+            dbName: "userProductHistory"
+          }
+        );
+        console.log("Mongo conectado");
 
     const server = app.listen(PORT, () => {
       console.log(`Rodando em ${config.url}:${PORT}`)
 
-       console.log(subscribe)
+      console.log(subscribe)
     });
-      
 
-          // registro no bus de eventos
+    // registro no bus de eventos
       await axios.post(`${config.url}:${svc.eventBus}${paths.events.subscribe}`,{
           calbackUrl: calbackUrl,
           serviceName: serverName,
           events: subscribe
       })
-
-      console.log("Serviço de catalogo inscrito")
       
-      return server
+      console.log("Serviço de historico inscrito")
 
+      return server
   } catch (err) {
     console.error("Falha ao iniciar servidor:", err);
     process.exit(1);

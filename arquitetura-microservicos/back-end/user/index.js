@@ -179,10 +179,16 @@ const requestFunctions = {
     }
     //console.log(r)
     return r
+  },
+  [requests.user.exist]: async (payload) => {
+    const {userId} = payload
+    const usuario = await User.find(userId)
+    return {
+      error: false
+    }
   }
 }
 // #endregion
-
 
 // #region endpoint de eventos
 app.post(paths.events.event, (req, res) => {
@@ -200,8 +206,8 @@ app.post(paths.events.event, (req, res) => {
 // #region endpoint de requisições
 app.post(paths.requests.request, async (req, res) => {
   const {request, payload} = req.body
-     //console.log(payload)
-     //console.log(request)
+     console.log(payload)
+     console.log(request)
   try{
     const result = await requestFunctions[request](payload)
     //console.log(result)
@@ -221,7 +227,8 @@ app.post(paths.requests.request, async (req, res) => {
     })
   }
 })
-// # endregion
+// #endregion
+
 // #region Inicialização do servidor
 const startServer = async () => {
   try {

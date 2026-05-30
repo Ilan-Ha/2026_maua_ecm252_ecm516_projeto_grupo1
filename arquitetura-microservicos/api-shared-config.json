@@ -7,10 +7,16 @@
     },
     "requests": {
         "user":{
+            "exist": "user.exist",
             "name":{
                 "exits": "user.name.exists",
                 "valdate": "user.name.validate",
                 "tell": "user.name.tell"
+            }
+        },
+        "catalog":{
+            "product": {
+                "exist": "catalog.product.exist"
             }
         }
     },
@@ -33,13 +39,16 @@
             "auth": 3001,
             "user": 3002,
             "catalog": 3003,
-            "review": 3004
+            "review": 3004,
+            "history": 3005
         },
         "front":{
             "shell": 4000,
             "auth": 4001,
             "user": 4002,
-            "catalog": 4003
+            "catalog": 4003,
+            "review": 4004,
+            "history": 4005
         }
         
     },
@@ -71,6 +80,9 @@
                 "catalog": "/catalogo",
                 "product": "/produto"    
             },
+        "history":{
+            "history": "/historico"
+        },
         "search":{
                 "search": "/comparar"
             },

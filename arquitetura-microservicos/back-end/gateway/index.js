@@ -202,6 +202,8 @@ const funcoesRequestPost = {
     axios.post(`${base}:${svc.auth}${paths.auth.login}`, { payload }),
   [paths.auth.update.password]: (payload) =>
     axios.post(`${base}:${svc.auth}${paths.auth.update.password}`, { payload }),
+  [paths.history.history]: (payload) => 
+    axios.post(`${base}:${svc.history}${paths.history.history}`, { payload })
 };
 
 const funcoesRequestGet = {
@@ -217,7 +219,6 @@ app.post(paths.gateway.request, async (req, res) => {
   try {
     const { request, payload } = req.body;
     const handler = funcoesRequestPost[request];
-
     if (!handler) {
       return res.status(404).json({ error: true, message: "Requisição desconhecida" });
     }
