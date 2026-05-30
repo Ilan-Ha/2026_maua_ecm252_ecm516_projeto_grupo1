@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "../Header.jsx";
-import config from "../config.jsx";
+import config, { apiBase } from "../config.jsx";
 import ReviewSection from "./ReviewSection.jsx";
 
 // Salva o acesso ao produto no localStorage e no backend
@@ -50,8 +50,7 @@ function registrarAcesso(produto) {
 
 export default function DetalhesProduto() {
   const { id } = useParams();
-  const svc = config.services.catalog;
-  const baseUrl = config.url + ":" + svc.port;
+  const baseUrl = apiBase;
   const [produto, setProduto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState(null);

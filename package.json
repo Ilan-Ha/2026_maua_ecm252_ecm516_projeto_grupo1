@@ -1,0 +1,15 @@
+{
+  "name": "allforone",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && npm --prefix arquitetura-microservicos/back-end run install:all && npm --prefix FRONT-END/project install",
+    "start:back": "npm --prefix arquitetura-microservicos/back-end start",
+    "start:front": "npm --prefix FRONT-END/project run dev",
+    "start:legacy": "node BACK-END/back.js",
+    "start": "concurrently -k -n back,front -c green,cyan \"npm run start:back\" \"npm run start:front\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

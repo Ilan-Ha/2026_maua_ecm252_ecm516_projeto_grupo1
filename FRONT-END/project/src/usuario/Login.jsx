@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Header from "../Header.jsx";
-import config from "../config";
+import config, { apiBase } from "../config";
 
 export default function Login({ setUsuario }) {
   const svc = config.services.auth;
   const perfilPath = config.services.user.endpoints.perfil;
-  const url =
-    config.url + ":" + String(svc.port) + String(svc.endpoints.login);
+  const url = apiBase + svc.endpoints.login;
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -49,7 +48,13 @@ export default function Login({ setUsuario }) {
       }
 
       const data = await res.json();
-      setUsuario(data.usuario);
+      const usuario = data.usuario || data.content?.usuario;
+      if (!usuario) {
+        setMensagem({ tipo: "danger", texto: "Resposta inválida do servidor" });
+        return;
+      }
+      setUsuario(usuario);
+      localStorage.setItem("usuario", JSON.stringify(usuario));
       navigate(perfilPath);
     } catch {
       setMensagem({

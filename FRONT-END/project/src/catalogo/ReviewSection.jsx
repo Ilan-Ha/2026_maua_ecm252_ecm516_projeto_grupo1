@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import config from "../config.jsx";
+import config, { apiBase } from "../config.jsx";
 
 function Estrelas({ valor, max = 5, tamanho = "1.1rem", interativo = false, onChange }) {
   return (
@@ -43,7 +43,7 @@ function formatarData(iso) {
 export default function ReviewSection({ produtoId }) {
   const svc = config.services.review;
   const loginPath = config.services.auth.endpoints.login;
-  const reviewBase = config.url + ":" + svc.port;
+  const reviewBase = apiBase;
 
   const [dados, setDados] = useState({ mediaEstrelas: 0, total: 0, reviews: [] });
   const [loading, setLoading] = useState(true);

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Header from "../Header.jsx";
-import config from "../config.jsx";
+import { apiBase } from "../config.jsx";
 
 const Search = () => {
-  const svc = config.services.catalog;
-  const baseUrl = config.url + ":" + svc.port;
+  const baseUrl = apiBase;
 
   // Estado do Catálogo
   const [data, setData] = useState({ Categorias: [], Itens: {} });

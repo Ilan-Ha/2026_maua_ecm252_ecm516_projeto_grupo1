@@ -1,5 +1,10 @@
 {
     "url": "http://localhost",
+    "start": "/",
+    "gateway": {
+        "port": 10000,
+        "baseUrl": "http://localhost:10000"
+    },
     "requests": {
         "user":{
             "name":{
@@ -76,28 +81,28 @@
     },
     "services":{
         "auth":{
-            "port":3000,
+            "port": 10000,
             "endpoints":{
                 "login": "/login",
                 "register": "/cadastro"
             }
         },
         "user":{
-            "port":3000,
+            "port": 10000,
             "endpoints":{
                 "perfil": "/perfil",
                 "update": "/perfil/atualizar"
             }
         },
         "catalog":{
-            "port":3000,
+            "port": 10000,
             "endpoints":{
                 "catalog": "/catalogo",
                 "product": "/produto"
             }
         },
         "search":{
-            "port":3000,
+            "port": 10000,
             "endpoints":{
                 "search": "/comparar"
             }

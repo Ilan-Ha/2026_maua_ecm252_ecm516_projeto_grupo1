@@ -1,12 +1,11 @@
 import { useState } from "react";
 import Header from "../Header.jsx";
 import { Link } from "react-router-dom";
-import config from "../config";
+import config, { apiBase } from "../config";
 
 export default function Cadastro() {
   const svc = config.services.auth;
-  const url =
-    config.url + ":" + String(svc.port) + String(svc.endpoints.register);
+  const url = apiBase + svc.endpoints.register;
 
   const [form, setForm] = useState({
     nome: "",
