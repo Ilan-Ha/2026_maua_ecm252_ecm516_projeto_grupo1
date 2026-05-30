@@ -57,6 +57,14 @@ const funcoesRequestGet = {
     const response = await axios.get(`${config.url}:${svc.catalog}${path.catalog.catalog}`, {
     })
     return response
+  },
+  [path.catalog.product]: async (payload) => {
+    const response = await axios.get(`${config.url}:${svc.catalog}${path.catalog.product}`, {
+      params: {
+        id: payload.id
+      }
+    })
+    return response
   }
 }
 // #region Rota de padrao de post
@@ -78,9 +86,9 @@ app.post(path.gateway.request, async (req, res) => {
 // #region Rota de padrao de get
 app.get(path.gateway.request, async (req, res) => {
     
-    const {request, payload} = req.body
+    const {request} = req.query
 
-    const response = await funcoesRequestGet[request](payload)
+    const response = await funcoesRequestGet[request](req.query)
     const {error, status, content, message} = returnData(response)
 
     return res.status(status).json({
