@@ -49,7 +49,10 @@
         },
         "auth":{
                 "login": "/login",
-                "register": "/cadastro"   
+                "register": "/cadastro",
+                "update": {
+                    "password": "/perfil/atualizar/senha"  
+                } 
             },
         "user":{
                 "perfil": "/perfil",
