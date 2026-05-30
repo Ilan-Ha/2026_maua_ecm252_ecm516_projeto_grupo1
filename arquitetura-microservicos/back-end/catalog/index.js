@@ -58,6 +58,28 @@ app.get(paths.catalog.catalog, async (req,res) => {
 })
 // #endregion
 
+// #region rota de produto por ID
+app.get(paths.catalog.product, async (req, res) => {
+    const {id} = req.query
+
+    try {
+        const produto = await getProdutoById(id)
+        if(!produto){
+            return res.json(respostaErro({status: 404, message: "Produto não encontrado"}))
+        }
+        else{
+            return res.json({
+                error: false,
+                status: 200,
+                content: produto
+            })
+        }
+    } catch (e) {
+        return res.json(respostaErro({status: 400, message: "ID inválido"}))
+    }
+})
+// #endregion
+
 // #region Inicialização do servidor
 const startServer = async () => {
   try {
