@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "../Header.jsx";
 import config from "../config.jsx";
+import ReviewSection from "./ReviewSection.jsx";
 
 // Salva o acesso ao produto no localStorage e no backend
 function registrarAcesso(produto) {
@@ -251,6 +252,8 @@ export default function DetalhesProduto() {
             </div>
           </div>
         </div>
+
+        <ReviewSection produtoId={id} />
       </div>
     </div>
   );

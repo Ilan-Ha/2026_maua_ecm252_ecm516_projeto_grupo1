@@ -22,6 +22,50 @@ app.use(cors());
 // Permite receber JSON direto no req.body
 app.use(express.json());
 
+async function proxyToReview(method, targetPath, req, res) {
+  try {
+    const url = `${config.url}:${svc.review}${targetPath}`;
+    const response = await axios({
+      method,
+      url,
+      data: method === "POST" ? req.body : undefined,
+      validateStatus: () => true,
+    });
+    res.status(response.status).json(response.data);
+  } catch (err) {
+    console.error("[gateway] Erro no proxy review:", err.message);
+    res.status(502).json({ error: "Serviço de avaliações indisponível" });
+  }
+}
+
+app.get("/health", async (req, res) => {
+  try {
+    const response = await axios.get(`${config.url}:${svc.review}/health`, {
+      timeout: 3000,
+      validateStatus: () => true,
+    });
+    const reviewOk =
+      response.status === 200 && response.data?.backend === true;
+    const reviewDb = response.data?.db === true;
+    res.json({
+      backend: true,
+      review: reviewOk,
+      db: reviewDb,
+      status: reviewOk && reviewDb ? "ok" : "degraded",
+    });
+  } catch {
+    res.json({ backend: true, review: false, db: false, status: "degraded" });
+  }
+});
+
+app.get(`${path.review.list}/:produtoId`, (req, res) =>
+  proxyToReview("GET", `${path.review.list}/${req.params.produtoId}`, req, res)
+);
+
+app.post(path.review.create, (req, res) =>
+  proxyToReview("POST", path.review.create, req, res)
+);
+
 // dados de retorno
 const returnData = (response) => {
     const {error, content, message, status} = response.data

@@ -14,6 +14,9 @@
             "register": "user.create",
             "added": "user.added",
             "not.register": "user.re.register"
+        },
+        "review": {
+            "created": "review.created"
         }
     },
     "ports":{
@@ -24,7 +27,8 @@
             "images": 3000,
             "auth": 3001,
             "user": 3002,
-            "catalog": 3003
+            "catalog": 3003,
+            "review": 3004
         },
         "front":{
             "shell": 4000,
@@ -63,7 +67,11 @@
             },
         "search":{
                 "search": "/comparar"
-            }
+            },
+        "review": {
+            "list": "/reviews/produto",
+            "create": "/reviews"
+        }
     },
     "services":{
         "auth":{
@@ -90,6 +98,13 @@
             "port":3000,
             "endpoints":{
                 "search": "/comparar"
+            }
+        },
+        "review": {
+            "port": 10000,
+            "endpoints": {
+                "list": "/reviews/produto",
+                "create": "/reviews"
             }
         }
     }

@@ -28,6 +28,13 @@
             "endpoints":{
                 "search": "/comparar"
             }
+        },
+        "review": {
+            "port": 10000,
+            "endpoints": {
+                "list": "/reviews/produto",
+                "create": "/reviews"
+            }
         }
     }
 }
