@@ -594,4 +594,4 @@ Este projeto está sem licença definida.
 * Felipe Kolanian Pasquini - 23.00118-6
 * Ilan Hameiry - 23.00981-0
 * Leonardo Luiz Seixas Iorio - 23.00847-7
-* Luca Lopes Martinho - 23.0
+* Luca Lopes Martinho - 23.00064-3
