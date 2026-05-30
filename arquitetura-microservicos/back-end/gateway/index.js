@@ -53,7 +53,7 @@ const funcoesRequestPost = {
 }
 
 const funcoesRequestGet = {
-  [path.catalog.catalog]: async () => {
+  [path.catalog.catalog]: async (payload) => {
     const response = await axios.get(`${config.url}:${svc.catalog}${path.catalog.catalog}`, {
     })
     return response
@@ -78,9 +78,9 @@ app.post(path.gateway.request, async (req, res) => {
 // #region Rota de padrao de get
 app.get(path.gateway.request, async (req, res) => {
     
-    const {request} = req.body
+    const {request, payload} = req.body
 
-    const response = await funcoesRequestGet[request]()
+    const response = await funcoesRequestGet[request](payload)
     const {error, status, content, message} = returnData(response)
 
     return res.status(status).json({
