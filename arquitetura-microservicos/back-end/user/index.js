@@ -56,15 +56,17 @@ const requests = config.requests
 const calbackUrl = `${config.url}:${PORT}${paths.events.event}`
 const sendEvent = `${config.url}:${svc.eventBus}${paths.events.event}`
 const serverName = "user"
+// #endregion
 
-// eventos para se inscrever
+// #region eventos para se inscrever
 const subscribe = [
-  events.user.register
+  events.user.register,
+  events.user["not.register"]
 ]
 
 // tratamento de eventos
-const eventFunctions = {
-  [events.user.register]: async (payload) => {
+// essa função é usada mais de uma vez então é armazenada em uma constante
+const registerUser = async (payload) => {
     const {authId,nome} = payload
     await User.create({
       authId,
@@ -77,6 +79,39 @@ const eventFunctions = {
         }
     })
   }
+const eventFunctions = {
+  [events.user.register]: registerUser,
+  [events.user["not.register"]]: async (payload) => {
+    const {id,email} = payload
+
+    // primeiro busca se já foi adicionado
+      // nao
+    const usuarioExiste = User.exists({authId: id})
+    if(!usuarioExiste){
+      const tempBase = email.split("@")[0]
+  
+      let tempName = tempBase
+      let i = 0
+  
+      while (await User.exists({nome: tempName})){
+        i++
+        tempName = `${tempBase}${i}`
+      }
+      // mesma chamada (é o mesmo processo a partir de agora)
+      await registerUser({
+        authId: id,
+        nome: tempName})
+      }
+        // sim
+      else{
+        await axios.post(sendEvent, {
+          event: events.user.added,
+            payload: {
+              authId: id
+            }
+        })
+      }
+    }
 }
 
 const requestFunctions = {
@@ -131,6 +166,19 @@ const requestFunctions = {
       message: e
     }
     }
+  },
+  [requests.user.name.tell]: async (payload) => {
+    const {authId} = payload
+
+    const nome = await User.findOne({authId})
+    const r = {
+      error: false,
+      content: {
+        nome: nome.nome
+      }
+    }
+    //console.log(r)
+    return r
   }
 }
 // #endregion
@@ -154,22 +202,23 @@ app.post(paths.requests.request, async (req, res) => {
   const {request, payload} = req.body
      //console.log(payload)
      //console.log(request)
-
   try{
     const result = await requestFunctions[request](payload)
     //console.log(result)
     //console.log(result)
       return res.json({
-          content: result
+          values: result
         })
     
     
   } catch (e) {
     return res.json({
+      content: {
             error: true,
             status: 404,
             message: "Requisição desconhecida"
-        })
+        }
+    })
   }
 })
 // # endregion
