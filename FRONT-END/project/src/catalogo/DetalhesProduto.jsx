@@ -30,21 +30,20 @@ function registrarAcesso(produto) {
   // Persiste no backend (silencioso: falhas não afetam a experiência)
   try {
     const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
-    const svcHistory = config.services.history;
-    const url = config.url + ":" + svcHistory.port + svcHistory.endpoints.history;
-    fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: usuario?.email || "anonimo",
-        _id: produto._id,
-        nome: produto.nome,
-        marca: produto.marca || "",
-        imagem: produto.imagem || "",
-        precoMedio: produto.precoMedio || 0,
-        categoriaTag: produto.categoriaTag || ""
-      })
-    }).catch(() => {}); // Ignora erros de rede silenciosamente
+    if (usuario && usuario._id) {
+      const url = config.gateway.baseUrl + "/requisicao";
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          request: "/historico",
+          payload: {
+            userId: usuario._id,
+            productId: produto._id
+          }
+        })
+      }).catch(() => {}); // Ignora erros de rede silenciosamente
+    }
   } catch { /* Ignora */ }
 }
 

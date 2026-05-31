@@ -6,16 +6,34 @@ export default function Historico() {
   const [historicoVistos, setHistoricoVistos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Carrega os dados salvos do localStorage
+  // Carrega os dados salvos do localStorage ou do backend
   useEffect(() => {
     setLoading(true);
-    try {
-      const vistosLocais = JSON.parse(localStorage.getItem("allforone_history_produtos") || "[]");
-      setHistoricoVistos(vistosLocais);
-    } catch (err) {
-      console.error("Erro ao ler histórico do localStorage", err);
-    } finally {
-      setLoading(false);
+    const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
+
+    if (usuario && usuario._id) {
+      // Busca do backend usando GET na /requisicao do gateway
+      const url = `http://localhost:10000/requisicao?request=/historico&userId=${usuario._id}`;
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.error && data.content) {
+            setHistoricoVistos(data.content);
+          } else {
+            console.error("Erro ao buscar histórico do backend", data.message);
+          }
+        })
+        .catch(err => console.error("Erro na requisição de histórico", err))
+        .finally(() => setLoading(false));
+    } else {
+      try {
+        const vistosLocais = JSON.parse(localStorage.getItem("allforone_history_produtos") || "[]");
+        setHistoricoVistos(vistosLocais);
+      } catch (err) {
+        console.error("Erro ao ler histórico do localStorage", err);
+      } finally {
+        setLoading(false);
+      }
     }
   }, []);
 
@@ -23,8 +41,33 @@ export default function Historico() {
   const handleLimparHistorico = () => {
     const confirmar = window.confirm("Tem certeza que deseja limpar o histórico de produtos vistos?");
     if (!confirmar) return;
-    localStorage.removeItem("allforone_history_produtos");
-    setHistoricoVistos([]);
+
+    const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
+
+    if (usuario && usuario._id) {
+      // Limpa no backend
+      const url = `http://localhost:10000/requisicao`;
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          request: "/historico/limpar",
+          payload: { userId: usuario._id }
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error) {
+          setHistoricoVistos([]);
+        } else {
+          console.error("Erro ao limpar histórico do backend", data.message);
+        }
+      })
+      .catch(err => console.error("Erro na requisição para limpar histórico", err));
+    } else {
+      localStorage.removeItem("allforone_history_produtos");
+      setHistoricoVistos([]);
+    }
   };
 
   return (

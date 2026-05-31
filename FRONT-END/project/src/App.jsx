@@ -10,6 +10,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState } from "react";
 import config from "./config";
 import Search from "./busca/Busca";
+import Comparacao from "./comparacao/Comparacao";
 
 function App() {
   const svc = config.services;
@@ -34,7 +35,8 @@ function App() {
         <Route path="/" element={<Departamentos />} />
         <Route path="/produto/:id" element={<DetalhesProduto />} />
         <Route path="/historico" element={<Historico />} />
-        <Route path={svc.search.endpoints.search} element={<Search />}></Route>
+        <Route path={svc.search.endpoints.search} element={<Comparacao />}></Route>
+        <Route path="/busca" element={<Search />}></Route>
         <Route path={svc.auth.endpoints.register} element={<Cadastro />} />
         <Route path={svc.auth.endpoints.login} element={<Login setUsuario={setUsuario} />} />
         <Route path={svc.user.endpoints.perfil} element={<Perfil usuario={usuario} setUsuario={setUsuario} />} />

@@ -203,7 +203,9 @@ const funcoesRequestPost = {
   [paths.auth.update.password]: (payload) =>
     axios.post(`${base}:${svc.auth}${paths.auth.update.password}`, { payload }),
   [paths.history.history]: (payload) => 
-    axios.post(`${base}:${svc.history}${paths.history.history}`, { payload })
+    axios.post(`${base}:${svc.history}${paths.history.history}`, { payload }),
+  [paths.history.clear]: (payload) =>
+    axios.post(`${base}:${svc.history}${paths.history.clear}`, { payload })
 };
 
 const funcoesRequestGet = {
@@ -212,6 +214,14 @@ const funcoesRequestGet = {
   [paths.catalog.product]: (payload) =>
     axios.get(`${base}:${svc.catalog}${paths.catalog.product}`, {
       params: { id: payload.id },
+    }),
+  [paths.history.history]: (payload) =>
+    axios.get(`${base}:${svc.history}${paths.history.history}`, {
+      params: { userId: payload.userId },
+    }),
+  [paths.search.search]: (payload) =>
+    axios.get(`${base}:${svc.search}${paths.search.search}`, {
+      params: { ids: payload.ids },
     }),
 };
 

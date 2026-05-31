@@ -137,6 +137,66 @@ app.post(paths.history.history, async(req,res) => {
 })
 // #endregion
 
+// #region rota listar historico
+app.get(paths.history.history, async (req, res) => {
+    const { userId } = req.query;
+    if (!userId) {
+        return res.json(respostaErro({ status: 400, message: "userId é obrigatório" }));
+    }
+
+    try {
+        // Busca o histórico ordenado pelos mais recentes (limite de 50)
+        const userHistory = await History.find({ userId })
+            .sort({ createdAt: -1 })
+            .limit(50);
+
+        const result = [];
+        // Busca os detalhes de cada produto no catálogo
+        for (const item of userHistory) {
+            try {
+                const prodRes = await axios.get(`${config.url}:${svc.catalog}${paths.catalog.product}?id=${item.productId}`);
+                if (prodRes.data && !prodRes.data.error && prodRes.data.content) {
+                    result.push({
+                        ...prodRes.data.content,
+                        acessadoEm: item.createdAt
+                    });
+                }
+            } catch (err) {
+                console.error(`Erro ao buscar produto ${item.productId}:`, err.message);
+            }
+        }
+
+        return res.json({
+            error: false,
+            status: 200,
+            content: result
+        });
+    } catch (e) {
+        return res.json(respostaErro({ e, status: 500, message: "Erro ao buscar histórico" }));
+    }
+});
+
+// #region rota limpar historico
+app.post(paths.history.clear, async (req, res) => {
+    const { payload } = req.body;
+    const { userId } = payload;
+    if (!userId) {
+        return res.json(respostaErro({ status: 400, message: "userId é obrigatório" }));
+    }
+
+    try {
+        await History.deleteMany({ userId });
+        return res.json({
+            error: false,
+            status: 200,
+            message: "Histórico limpo com sucesso"
+        });
+    } catch (e) {
+        return res.json(respostaErro({ e, status: 500, message: "Erro ao limpar histórico" }));
+    }
+});
+// #endregion
+
 // #region endpoint de eventos
 app.post(paths.events.event, (req, res) => {
   const { event, payload } = req.body;

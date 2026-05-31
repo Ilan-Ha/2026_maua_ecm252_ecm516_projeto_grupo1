@@ -40,7 +40,8 @@
             "user": 3002,
             "catalog": 3003,
             "review": 3004,
-            "history": 3005
+            "history": 3005,
+            "search": 3006
         },
         "front":{
             "shell": 4000,
@@ -81,7 +82,8 @@
                 "product": "/produto"    
             },
         "history":{
-            "history": "/historico"
+            "history": "/historico",
+            "clear": "/historico/limpar"
         },
         "search":{
                 "search": "/comparar"
