@@ -3,9 +3,9 @@ import cors from "cors";
 import axios from "axios";
 import mongoose from "mongoose";
 import { z } from "zod";
-import config from "../../utlis/config.js";
-import getDirname from "../../utlis/getDirname.js";
-import loadEnv from "../../utlis/loadEnv.js";
+import config from "../../shared/utlis/config.js";
+import getDirname from "../../shared/utlis/getDirname.js";
+import loadEnv from "../../shared/utlis/loadEnv.js";
 
 loadEnv(getDirname(import.meta.url));
 mongoose.set("strictQuery", true);

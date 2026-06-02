@@ -1,14 +1,11 @@
 class EntityInvalidParameterError extends Error {
-// TODO: fazer um enum para os codigos de erro na entidade
     constructor(
         message: string,
-        public readonly campo: string,
-        public readonly codigo: string
+        public readonly campo: string
     ) {
         super(message);
-        this.name = "EntityInvalidParameterError"
+        this.name = "EntityInvalidParameterError";
     }
-
 }
 
-export { EntityInvalidParameterError }
+export { EntityInvalidParameterError };

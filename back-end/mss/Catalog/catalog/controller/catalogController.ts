@@ -1,18 +1,19 @@
+// esse arquivo representa o velho index que tinhamos
+
 import express from "express"
 import cors from "cors"
 import axios from "axios" 
 import mongoose from "mongoose"
-import config from "../../utlis/config.js";
-import { initSeed, getCatalogo, getProdutoById } from "./productDBManager.js";
+import config from "../../../shared/utlis/config.js"
+import { initSeed, getCatalogo, getProdutoById } from "../db/catalogDBManager.ts";
 // .env compartilhado e proprio
-import getDirname from "../../utlis/getDirname.js";
-import loadEnv from "../../utlis/loadEnv.js";
-import { timeStamp } from "node:console"
+import getDirname from "../../../shared/utlis/getDirname.js";
+import loadEnv from "../../../shared/utlis/loadEnv.js";
 
 loadEnv(getDirname(import.meta.url))
 
 // #region app
-const app = express();
+const app: any = express();
 // Middlewares
 app.use(cors());
 // Permite receber JSON direto no req.body
@@ -55,7 +56,7 @@ const eventFunctions = {}
 // #endregion
 
 // #region padrão de resposta de erro interno e externo
-const respostaErro = ({e,status,message}) => {
+const respostaErro = ({e,status,message}: {e?: any; status?: number; message?: string;}) => {
   return {  
             error: true,
             status: status? 

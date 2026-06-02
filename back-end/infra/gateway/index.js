@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import config from "../../mss/utlis/config.js";
+import config from "../../mss/shared/utlis/config.js";
 import axios from "axios";
 
 const svc = config.ports.back;

@@ -1,7 +1,7 @@
 import axios from "axios" 
 import express from "express"
 import cors from "cors"
-import config from "../../mss/utlis/config.js"
+import config from "../../mss/shared/utlis/config.js"
 
 const app = express()
 // Middlewares

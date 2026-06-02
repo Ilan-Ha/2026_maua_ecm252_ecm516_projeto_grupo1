@@ -2,11 +2,11 @@ import express from "express"
 import cors from "cors"
 import axios from "axios" 
 import mongoose from "mongoose"
-import config from "../../utlis/config.js";
+import config from "../../shared/utlis/config.js";
 
 // .env compartilhado e proprio
-import getDirname from "../../utlis/getDirname.js";
-import loadEnv from "../../utlis/loadEnv.js";
+import getDirname from "../../shared/utlis/getDirname.js";
+import loadEnv from "../../shared/utlis/loadEnv.js";
 import { timeStamp } from "node:console"
 
 loadEnv(getDirname(import.meta.url))
