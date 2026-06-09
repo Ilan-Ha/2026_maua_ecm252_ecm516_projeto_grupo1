@@ -2,7 +2,7 @@
   "name": "review",
   "version": "1.0.0",
   "description": "Microserviço de avaliações de produtos",
-  "main": "index.js",
+  "main": "controller/reviewController.ts",
   "type": "module",
   "scripts": {
     "start": "nodemon --signal SIGTERM --exec tsx ./controller/reviewController.ts"

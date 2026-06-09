@@ -12,7 +12,7 @@
   "name": "user",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "controller/userController.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --signal SIGTERM --exec tsx ./controller/userController.ts"

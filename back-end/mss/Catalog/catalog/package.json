@@ -11,7 +11,7 @@
   "name": "catalog",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "controller/catalogController.ts",
   "scripts": {
     "start": "nodemon --signal SIGTERM --exec tsx ./controller/catalogController.ts"
   },
