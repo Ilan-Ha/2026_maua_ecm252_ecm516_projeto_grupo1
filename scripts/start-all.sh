@@ -59,6 +59,7 @@ for required in "$EVENT_BUS_DIR" "$REQUEST_BUS_DIR" "$GATEWAY_DIR" "$AUTH_DIR" "
 done
 
 echo "Instalando dependências (se necessário)..."
+npm --prefix "$BACK_MSS_DIR" install
 npm --prefix "$EVENT_BUS_DIR" install
 npm --prefix "$REQUEST_BUS_DIR" install
 npm --prefix "$AUTH_DIR" install
