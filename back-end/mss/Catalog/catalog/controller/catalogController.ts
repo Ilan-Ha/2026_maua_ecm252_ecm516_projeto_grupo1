@@ -6,9 +6,18 @@ import axios from "axios"
 import mongoose from "mongoose"
 import config from "../../../shared/utlis/config.js"
 import { initSeed, getCatalogo, getProdutoById } from "../db/catalogDBManager.ts";
-// .env compartilhado e proprio
 import getDirname from "../../../shared/utlis/getDirname.js";
 import loadEnv from "../../../shared/utlis/loadEnv.js";
+import {
+    handleRouteError,
+    logAppError,
+    respostaErroApp,
+} from "../../../shared/errors/index.ts";
+import {
+    validarCampoObrigatorio,
+    validarObjectId,
+    validarPayload,
+} from "../../../shared/utlis/routeValidation.ts";
 
 loadEnv(getDirname(import.meta.url))
 
@@ -26,6 +35,7 @@ const paths = config.paths
 const PORT = svc.catalog
 const events = config.events
 const request = config.requests
+const serverName = 'catalog'
 // #endregion
 
 // #region request-bus
@@ -34,19 +44,33 @@ const sendRequest = `${config.url}:${svc.requestBus}${paths.requests.request}`
 // tratamento de eventos
 const requestFunctions = {
   [request.catalog.product.exist]: async (payload) => {
-    const {productId} = payload
-    const produto = await getProdutoById(productId)
-    return {
-      error: false
+    try {
+      const dados = validarPayload(payload)
+      const productId = validarObjectId(dados.productId, "productId")
+      const produto = await getProdutoById(productId)
+      if (!produto) {
+        return {
+          error: true,
+          status: 404,
+          message: "Produto não encontrado",
+        }
+      }
+      return { error: false }
+    } catch (e) {
+      logAppError(e, { service: serverName, operation: request.catalog.product.exist })
+      try {
+        return respostaErroApp(e)
+      } catch {
+        return { error: true, status: 500, message: "Erro interno de servidor catalog" }
+      }
+    }
   }
-}
 }
 // #endregion
 
 // #region event-bus
 const sendEvent = `${config.url}:${svc.eventBus}${paths.events.event}`
 const calbackUrl = `${config.url}:${PORT}${paths.events.event}`
-const serverName = 'catalog'
 
 // eventos para se inscrever
 const subscribe = []
@@ -81,29 +105,30 @@ app.get(paths.catalog.catalog, async (req,res) => {
         })
 
     } catch (e) {
-        return res.json(respostaErro({e, message: "Erro ao carregar catálogo"}))
+        return res.json(handleRouteError(e, { service: serverName, route: paths.catalog.catalog }, () =>
+            respostaErro({ e, message: "Erro ao carregar catálogo" })
+        ))
     }
 })
 // #endregion
 
 // #region rota de produto por ID
 app.get(paths.catalog.product, async (req, res) => {
-    const {id} = req.query
-
     try {
+        const id = validarObjectId(req.query.id, "id")
         const produto = await getProdutoById(id)
-        if(!produto){
-            return res.json(respostaErro({status: 404, message: "Produto não encontrado"}))
+        if (!produto) {
+            return res.json(respostaErro({ status: 404, message: "Produto não encontrado" }))
         }
-        else{
-            return res.json({
-                error: false,
-                status: 200,
-                content: produto
-            })
-        }
+        return res.json({
+            error: false,
+            status: 200,
+            content: produto,
+        })
     } catch (e) {
-        return res.json(respostaErro({status: 400, message: "ID inválido"}))
+        return res.json(handleRouteError(e, { service: serverName, route: paths.catalog.product }, () =>
+            respostaErro({ status: 400, message: "ID inválido" })
+        ))
     }
 })
 // #endregion
@@ -123,11 +148,19 @@ app.post(paths.events.event, (req, res) => {
 
 // #region endpoint de requisições
 app.post(paths.requests.request, async (req, res) => {
-  const {request, payload} = req.body
-     //console.log(payload)
-     //console.log(request)
-  try{
-    const result = await requestFunctions[request](payload)
+  const { request: reqName, payload } = req.body
+  try {
+    validarCampoObrigatorio(reqName, "request")
+    if (!requestFunctions[reqName]) {
+      return res.json({
+        content: {
+          error: true,
+          status: 404,
+          message: "Requisição desconhecida",
+        },
+      })
+    }
+    const result = await requestFunctions[reqName](payload)
     //console.log(result)
     //console.log(result)
       return res.json({

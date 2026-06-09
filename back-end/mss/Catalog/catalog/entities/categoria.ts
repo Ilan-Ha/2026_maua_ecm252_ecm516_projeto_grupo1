@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { EntityInvalidParameterError } from "../../../shared/errors/entityErrors";
+import { EntityInvalidParameterError } from "../../../shared/errors/entityErrors.ts";
 
 interface CategoriaProps {
     nome: string;

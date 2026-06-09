@@ -1,84 +1,86 @@
 import mongoose from "mongoose";
-import { Produto } from "../entities/produto";
-import { Categoria } from "../entities/categoria";
+import { Produto } from "../entities/produto.ts";
+import { Categoria } from "../entities/categoria.ts";
+import { wrapDbOperation } from "../../../shared/errors/index.ts";
 
-let produtoSchema = Produto.toMongoseSchema()
-let categoriaSchema = Categoria.toMongoseSchema()
+const produtoSchema = Produto.toMongoseSchema();
+const categoriaSchema = Categoria.toMongoseSchema();
+const CATEGORIA_COLLECTION = Categoria.collection;
+const PRODUTO_COLLECTION = Produto.collection;
 
-//Categoria
 const categoriaModel =
-  mongoose.models.Categoria || mongoose.model("Categoria", categoriaSchema);
-//Produto
+    mongoose.models.Categoria || mongoose.model("Categoria", categoriaSchema);
 const produtoModel =
-  mongoose.models.Produto || mongoose.model("Produto", produtoSchema);
+    mongoose.models.Produto || mongoose.model("Produto", produtoSchema);
 
-// Categorias padrão
 const categorias = [
     {
         nome: "Celulares",
         tag: "Celular",
-        imagem: "https://static.vecteezy.com/system/resources/previews/000/576/831/original/smartphone-icon-vector-illustration.jpg"
+        imagem: "https://static.vecteezy.com/system/resources/previews/000/576/831/original/smartphone-icon-vector-illustration.jpg",
     },
     {
         nome: "Placas de Vídeo",
         tag: "GPU",
-        imagem: "https://tse1.mm.bing.net/th/id/OIP.HMW3NgXewMev1TjuoaKQuAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"
+        imagem: "https://tse1.mm.bing.net/th/id/OIP.HMW3NgXewMev1TjuoaKQuAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",
     },
     {
         nome: "Geladeiras",
         tag: "Geladeira",
-        imagem: "https://img.freepik.com/vetores-premium/vetor-de-icone-de-geladeira-em-design-moderno_777568-2353.jpg"
+        imagem: "https://img.freepik.com/vetores-premium/vetor-de-icone-de-geladeira-em-design-moderno_777568-2353.jpg",
     },
     {
         nome: "Bicicletas",
         tag: "Bike",
-        imagem: "https://th.bing.com/th/id/R.001d09dd02871412d7a578e3331f4084?rik=4HmPB4l%2fmd5JKw&pid=ImgRaw&r=0"
-    }
+        imagem: "https://th.bing.com/th/id/R.001d09dd02871412d7a578e3331f4084?rik=4HmPB4l%2fmd5JKw&pid=ImgRaw&r=0",
+    },
 ];
-  
-// Inicializa categorias (caso não existam) — produtos são gerenciados pelo a.js
+
 export async function initSeed() {
-    for (const cat of categorias) {
-        await categoriaModel.updateOne(
-        { tag: cat.tag },
-        { $setOnInsert: cat },
-        { upsert: true }
-        );
-    }
-    console.log("Categorias verificadas/inseridas");
+    return wrapDbOperation("upsert", CATEGORIA_COLLECTION, async () => {
+        for (const cat of categorias) {
+            await categoriaModel.updateOne(
+                { tag: cat.tag },
+                { $setOnInsert: cat },
+                { upsert: true }
+            );
+        }
+        console.log("Categorias verificadas/inseridas");
+    });
 }
 
 export async function getCatalogo() {
-    const [categorias, produtos] = await Promise.all([
-        categoriaModel.find(),
-        produtoModel.find()
-    ]);
+    return wrapDbOperation("find", CATEGORIA_COLLECTION, async () => {
+        const [categoriasDb, produtos] = await Promise.all([
+            categoriaModel.find(),
+            produtoModel.find(),
+        ]);
 
-    const itens = {};
+        const itens: Record<string, unknown[]> = {};
 
-    for (const cat of categorias) {
-        itens[cat.tag.trim()] = [];
-    }
-
-    for (const prod of produtos) {
-        const key = prod.categoriaTag?.trim();
-
-        if (!key) continue;
-
-        if (!itens[key]) {
-        itens[key] = [];
+        for (const cat of categoriasDb) {
+            itens[cat.tag.trim()] = [];
         }
 
-        itens[key].push(prod);
-    }
+        for (const prod of produtos) {
+            const key = prod.categoriaTag?.trim();
 
-    return {
-        Categorias: categorias,
-        Itens: itens
-    };
+            if (!key) continue;
+
+            if (!itens[key]) {
+                itens[key] = [];
+            }
+
+            itens[key].push(prod);
+        }
+
+        return {
+            Categorias: categoriasDb,
+            Itens: itens,
+        };
+    });
 }
 
-// Produto por ID
-export async function getProdutoById(id) {
-    return await produtoModel.findById(id);
+export async function getProdutoById(id: string) {
+    return wrapDbOperation("findById", PRODUTO_COLLECTION, () => produtoModel.findById(id));
 }
