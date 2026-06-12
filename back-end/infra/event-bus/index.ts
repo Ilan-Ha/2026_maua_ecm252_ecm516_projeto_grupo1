@@ -2,6 +2,7 @@ import axios from "axios"
 import express from "express"
 import cors from "cors"
 import config from "../../mss/shared/utlis/config.js"
+import EventBus from "./eventBus.js"
 
 const app = express()
 // Middlewares
@@ -9,22 +10,15 @@ app.use(cors());
 // Permite receber JSON direto no req.body
 app.use(express.json());
 
-const svc = config.ports.back
+const eventBus = new EventBus()
 const paths = config.paths.events
-const PORT = svc.eventBus
-const url = `${config.url}`
+const PORT = config.ports.back.eventBus;
 
-// mapa de inscricoes dos eventos
-const subscribers = new Map()
-
-// rota de debbug
+// rota de debbug TODO trocar o nome dessa rota
 
 app.get("/dados", (req,res) => {
-    console.log(subscribers)
-    res.json({
-        subscribers: JSON.stringify(Object.fromEntries(subscribers))
-    })
-})
+    res.json(eventBus.snapshot());
+});
 
 
 // Registro de inscricoes
