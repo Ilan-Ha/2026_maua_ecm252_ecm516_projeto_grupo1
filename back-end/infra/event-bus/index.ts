@@ -1,8 +1,7 @@
-import axios from "axios" 
 import express from "express"
 import cors from "cors"
 import config from "../../mss/shared/utlis/config.js"
-import EventBus from "./eventBus.js"
+import EventBus from "./EventBus.js"
 
 const app = express()
 // Middlewares
@@ -24,83 +23,51 @@ app.get("/dados", (req,res) => {
 // Registro de inscricoes
 
 app.post(paths.subscribe, (req, res) => {
-    console.log(req.body)
-    const { calbackUrl, serviceName, events} = req.body
 
-    for ( const eventName of events) {
-        /* 
-        - quando um servidor for se inscrever em um evento
-        - se o evento não foi cadastrado no mapa de eventos do bus
-        -> adiciona uma coleção para o evento no mapa
-        */
+  const { calbackUrl, serviceName, events } = req.body
 
-        if(!subscribers.has(eventName)){
-        subscribers.set(eventName, [])
-        }
-
-        // checagem devido a graceful shutdown não funcionar
-
-        const clientes = subscribers.get(eventName)
-        
-        const isThere = clientes.some(client => client.serviceName === serviceName && client.calbackUrl === calbackUrl)
-
-        // se o servidor ja havia se inscrito
-        // teve que desligar 
-        // e re-ligou
-        // não se re-inscreve
-        if(!isThere){
-          clientes.push({
-            serviceName,
-            calbackUrl
-          })
-          
-          console.log(`${serviceName} escutando ${eventName}`)
-        }
-        else {
-          console.log(`${serviceName} não se inscreveu em ${eventName} por já estar inscrito.`)
-        }
-        
+    if (!serviceName || !calbackUrl || !Array.isArray(events)) {
+      return res.status(400).json({ error: true, message: "Body inválido"})
     }
-    res.end()
-})
+
+    eventBus.subscribe(serviceName, calbackUrl, events);
+    return res.status(204).end();
+
+});
 
 
 // Registro de desinscricao
+
 app.post(paths.unsubscribe, (req, res) => {
-    const { calbackUrl, serviceName, events} = req.body
+    
+  const { calbackUrl, serviceName, events } = req.body
 
-    for (const eventName of events){
-        if(subscribers.has(eventName)){
-            let updateSubscribers = subscribers.get(eventName).filter(service => service.serviceName !== serviceName && service.calbackUrl !== calbackUrl)
+  if (!serviceName || !calbackUrl || !Array.isArray(events)) {
+    return res.status(400).json({ error: true, message: "Body inválido"})
+  }
 
-            console.log(`${serviceName} se desinscreveu de ${eventName}`)
-
-            subscribers.set(eventName,updateSubscribers)     
-        }
-
-    }
-    res.end()
+  eventBus.unsubscribe(serviceName, calbackUrl, events)
+  return res.status(204).end()
+  
 })
 
 // eventos
  
 app.post(paths.event, async (req, res) => {
-    const {event, payload} = req.body
-    console.log(event)
 
-    const targets = subscribers.get(event) || [];
-    
-    for( const socket of targets){
-        try {
-            await axios.post(socket.calbackUrl, {
-                event,
-                payload
-            })
-            console.log(`Evento enviado para ${socket.serviceName}`)
+    const { event, payload } = req.body
 
-        } catch (e) {}
+    // Só aceita um evento por vez (event obrigatoriamente string) e se payload existe
+    if (
+      !event ||
+      typeof event !== 'string' ||
+      payload == null
+    ) {
+      return res.status(400).json({ error: true, message: "Body inválido" });
     }
-    res.end()
+
+    await eventBus.publish(event, payload);
+    return res.status(202).end();
 })
 
 
@@ -111,7 +78,6 @@ const startServer = async () => {
     });
   } catch (err) {
     console.error("Falha ao iniciar servidor:", err);
-    process.exit(1);
   }
 };
 
