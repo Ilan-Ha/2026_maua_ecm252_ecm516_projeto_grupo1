@@ -5,6 +5,8 @@ import bcrypt from 'bcrypt'
 interface AuthProps {
     email: string;
     senha_hash: string;
+    /** @deprecated legado — hash bcrypt ficava no campo `senha` */
+    senha?: string;
     usuarioCadastrado?: boolean;
 }
 
@@ -58,7 +60,11 @@ class Auth {
                 },
                 senha_hash: {
                     type: String,
-                    required: true,
+                    required: false,
+                },
+                senha: {
+                    type: String,
+                    required: false,
                 },
                 usuarioCadastrado: {
                     type: Boolean,

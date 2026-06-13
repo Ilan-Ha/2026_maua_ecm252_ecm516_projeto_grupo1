@@ -18,6 +18,15 @@ authSchema.pre("save", async function () {
 
 const authModel = mongoose.models.Auth || mongoose.model("Auth", authSchema);
 
+/** Hash bcrypt no campo novo (`senha_hash`) ou legado (`senha`). */
+export function resolveSenhaHash(doc: {
+    senha_hash?: string;
+    senha?: string;
+} | null): string | undefined {
+    if (!doc) return undefined;
+    return doc.senha_hash ?? doc.senha;
+}
+
 export async function findAuthByEmail(email: string) {
     return wrapDbOperation("findOne", COLLECTION, () =>
         authModel.findOne({ email: email.trim().toLowerCase() })
