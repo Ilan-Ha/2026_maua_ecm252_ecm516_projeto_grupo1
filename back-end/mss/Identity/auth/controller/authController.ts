@@ -12,6 +12,7 @@ import {
     createAuth,
     findAuthByEmail,
     markUsuarioCadastrado,
+    resolveSenhaHash,
     updateSenhaByEmail,
 } from "../db/authDBManager.ts";
 import { User } from "../../user/entities/user.ts";
@@ -185,7 +186,17 @@ app.post(paths.auth.login, async (req, res) => {
             });
         }
 
-        const senhaCorreta = await bcrypt.compare(senha, autentificacao.senha_hash);
+        const senhaHash = resolveSenhaHash(autentificacao);
+        if (!senhaHash) {
+            return res.json(
+                respostaErro({
+                    status: 500,
+                    message: "Conta com dados de autenticação inválidos",
+                })
+            );
+        }
+
+        const senhaCorreta = await bcrypt.compare(senha, senhaHash);
         if (!senhaCorreta) {
             return res.json(
                 respostaErro({
