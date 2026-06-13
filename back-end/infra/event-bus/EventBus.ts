@@ -1,5 +1,4 @@
 import axios from "axios";
-import cors from "cors"
 
 interface Subscriber {
     serviceName: string;
