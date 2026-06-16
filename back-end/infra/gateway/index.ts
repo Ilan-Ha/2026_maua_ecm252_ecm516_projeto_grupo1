@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import config from "../../mss/shared/utlis/config.js";
 import axios from "axios";
+import Gateway from "./Gateway.js";
+import { formatMssMessage, parseMssResponse } from "../../shared/utils/gateway/mssResponse.js";
 
 const svc = config.ports.back;
 const paths = config.paths;
@@ -11,6 +13,60 @@ const base = config.url;
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+const gateway = new Gateway();
+
+// registro dos endpoints no gateway
+
+const endpoints = {
+  authLogin:    `${base}:${svc.auth}${paths.auth.login}`,
+  authRegister: `${base}:${svc.auth}${paths.auth.register}`,
+  authPassword: `${base}:${svc.auth}${paths.auth.update.password}`,
+  catalogList:  `${base}:${svc.catalog}${paths.catalog.catalog}`,
+  catalogProduct: `${base}:${svc.catalog}${paths.catalog.product}`,
+  reviewList:   `${base}:${svc.review}${paths.review.list}`,
+  reviewCreate: `${base}:${svc.review}${paths.review.create}`,
+  history:      `${base}:${svc.history}${paths.history.history}`,
+} as const;
+
+// descricao genérica
+for (const [name, url] of Object.entries(endpoints)) {
+  gateway.registerEndpoint({ name, description: name, url });
+}
+
+app.post(paths.auth.login, async (req, res) => {
+  try {
+    const { email, senha } = req.body;
+    const result = await gateway.makeRequest({
+      method: "POST",
+      endpointName: "authLogin",
+      body: { payload: { email, senha } },
+      query: {},
+      params: {},
+      headers: {},
+    });
+    if (result.status === 404 || result.status === 502) {
+      return res.status(result.status).json({
+        message: "Erro ao conectar com o servidor",
+      });
+    }
+    const data = parseMssResponse(result.data);
+    if (data.error) {
+      return res
+        .status(data.status || 401)
+        .json({ message: formatMssMessage(data.message) });
+    }
+    const content = data.content as Record<string, unknown> | undefined;
+    return res.json({
+      message: data.message || "Login OK",
+      usuario: content?.usuario ?? content,
+    });
+  } catch (err) {
+    console.error("[gateway] Erro no login:", err);
+    res.status(500).json({ message: "Erro ao conectar com o servidor" });
+  }
+});
+
 
 function formatMessage(message) {
   if (typeof message === "string") return message;
@@ -137,27 +193,27 @@ app.post(paths.auth.register, async (req, res) => {
   }
 });
 
-app.post(paths.auth.login, async (req, res) => {
-  try {
-    const { email, senha } = req.body;
-    const data = await callAuth(paths.auth.login, { email, senha });
+// app.post(paths.auth.login, async (req, res) => {
+//   try {
+//     const { email, senha } = req.body;
+//     const data = await callAuth(paths.auth.login, { email, senha });
 
-    if (data.error) {
-      return res
-        .status(data.status || 401)
-        .json({ message: formatMessage(data.message) });
-    }
+//     if (data.error) {
+//       return res
+//         .status(data.status || 401)
+//         .json({ message: formatMessage(data.message) });
+//     }
 
-    const usuario = data.content?.usuario || data.usuario;
-    return res.json({
-      message: data.message || "Login OK",
-      usuario,
-    });
-  } catch (err) {
-    console.error("[gateway] Erro no login:", err.message);
-    res.status(500).json({ message: "Erro ao conectar com o servidor" });
-  }
-});
+//     const usuario = data.content?.usuario || data.usuario;
+//     return res.json({
+//       message: data.message || "Login OK",
+//       usuario,
+//     });
+//   } catch (err) {
+//     console.error("[gateway] Erro no login:", err.message);
+//     res.status(500).json({ message: "Erro ao conectar com o servidor" });
+//   }
+// });
 
 app.put(paths.user.perfil, async (req, res) => {
   try {

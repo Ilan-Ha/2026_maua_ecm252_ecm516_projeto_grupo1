@@ -1,7 +1,7 @@
 import express from "express"
 import cors from "cors"
 import config from "../../mss/shared/utlis/config.js"
-import EventBus from "./EventBus.js"
+import EventBus from "./eventBus.ts"
 
 const app = express()
 // Middlewares
