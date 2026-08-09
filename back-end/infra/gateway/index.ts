@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import config from "../../mss/shared/utlis/config.js";
+import config from "../../mss/shared/utils/config.js";
 import axios from "axios";
 import Gateway from "./Gateway.js";
 import { formatMssMessage, parseMssResponse } from "../../shared/utils/gateway/mssResponse.js";
@@ -249,6 +249,38 @@ app.get(`${paths.review.list}/:produtoId`, (req, res) =>
 
 app.post(paths.review.create, (req, res) =>
   proxyToReview("POST", paths.review.create, req, res)
+);
+
+async function proxyToHistory(method: string, targetPath: string, req: any, res: any, queryParams?: Record<string, string>) {
+  try {
+    const url = `${base}:${svc.history}${targetPath}`;
+    const response = await axios({
+      method,
+      url,
+      params: queryParams,
+      data: method === "POST" ? req.body : undefined,
+      validateStatus: () => true,
+    });
+    res.status(response.status).json(response.data);
+  } catch (err) {
+    console.error("[gateway] Erro no proxy history:", err.message);
+    res.status(502).json({ error: "Serviço de histórico indisponível" });
+  }
+}
+
+// GET /historico?authId=... — lista histórico do usuário
+app.get(paths.history.history, (req, res) =>
+  proxyToHistory("GET", paths.history.history, req, res, { authId: String(req.query.authId || "") })
+);
+
+// POST /historico — registra acesso a um produto
+app.post(paths.history.history, (req, res) =>
+  proxyToHistory("POST", paths.history.history, req, res)
+);
+
+// DELETE /historico?authId=... — limpa histórico do usuário
+app.delete(paths.history.history, (req, res) =>
+  proxyToHistory("DELETE", paths.history.history, req, res, { authId: String(req.query.authId || "") })
 );
 
 const funcoesRequestPost = {

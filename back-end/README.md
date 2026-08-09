@@ -1,141 +1,142 @@
-# 🛒 Plataforma de Reviews de Produtos
+# ⚙️ Back-end — AllForOne
 
-![Web](https://img.shields.io/badge/Web-Platform-blue?style=for-the-badge) ![Build](https://img.shields.io/badge/Build-Passing-brightgreen)
-
-Aplicação web em desenvolvimento para **busca e análise de avaliações de produtos**, permitindo que usuários encontrem opiniões confiáveis antes de realizar compras.  
-O sistema reúne reviews, notas e comentários de diferentes usuários em uma interface simples e eficiente.
-
-Projeto desenvolvido pelos integrantes da equipe durante o curso, com foco em aplicar conceitos de desenvolvimento web e experiência do usuário.
+Arquitetura de **microsserviços** com Node.js + TypeScript + MongoDB.
 
 ---
 
-## 🌐 Funcionalidade Principal
+## 📁 Estrutura de Pastas
 
-Permitir que usuários:
- 
-- Façam cadastro
-- Façam login
-- Façam alterações de dados cadastrados
-
---- 
-
-## 🖥️ Telas principais
-
-- Página de login
-- Página de cadastro 
-- Página de perfil
-
----
-
-## ⚙️ Como usar
-
-1. Acesse o site.  
-2. Faça cadastro.  
-3. Faça login.  
-
----
-
-## ⚙️ Funcionalidades
-
-- 🔍 Criação de cadatro  
-- ⭐ Login do usuário
-
----
-
-## 🛠 Tecnologias
-
-- **Front-end:** React
-- **Back-end:** Node.js (JavaScript)
-- **Gerenciador de pacotes:** npm
-- **Versionamento:** Git / GitHub  
-
----
-
-## 🚀 Como Executar
-
-1. Clone o repositório:
-```bash
-git clone https://github.com/Ilan-Ha/2026_maua_ecm252_ecm516_projeto_grupo1
 ```
-2. Acesse a pasta do projeto.
-
-3. Instale as dependências pelo terminal:
-```bash
-cd FRONT-END
-
-cd project
-
-npm install
+back-end/
+│
+├── infra/                   ← Infraestrutura de comunicação entre serviços
+│   ├── gateway/             ← Ponto de entrada único (porta 10000)
+│   ├── event-bus/           ← Comunicação assíncrona por eventos (porta 10001)
+│   └── request-bus/         ← Comunicação síncrona request/reply (porta 10002)
+│
+├── mss/                     ← Microsserviços de domínio (negócio)
+│   ├── Identity/
+│   │   ├── auth/            ← Autenticação: login, cadastro, senha (porta 3001)
+│   │   └── user/            ← Perfil de usuário (porta 3002)
+│   ├── Catalog/
+│   │   └── catalog/         ← Catálogo de produtos e categorias (porta 3003)
+│   └── Engagment/
+│       ├── review/          ← Avaliações de produtos (porta 3004)
+│       └── history/         ← Histórico de produtos visitados (porta 3005)
+│
+├── shared/                  ← Código TypeScript compartilhado entre serviços
+│   ├── interfaces/          ← Interfaces e tipos compartilhados
+│   ├── types/               ← Enums e tipos auxiliares
+│   └── utils/               ← Funções utilitárias (gateway, etc.)
+│
+└── api-shared-config.json   ← Contrato central: portas, rotas e nomes de eventos
 ```
 
-4. Execute Front-End:
-```bash
-npm run dev
+---
+
+## 🌐 Portas
+
+| Serviço | Porta | Descrição |
+|---------|-------|-----------|
+| Gateway | 10000 | Entrada única para o front-end |
+| Event Bus | 10001 | Eventos assíncronos entre serviços |
+| Request Bus | 10002 | Queries síncronas entre serviços |
+| Auth | 3001 | Login e cadastro |
+| User | 3002 | Perfil de usuário |
+| Catalog | 3003 | Catálogo de produtos |
+| Review | 3004 | Avaliações |
+| History | 3005 | Histórico de visualizações |
+
+---
+
+## 🔄 Como os serviços se comunicam
+
 ```
-5. Abra outro terminal e execute Back-End:
-
-```bash
-cd BACK-END
-
-Node back.js
+Front-end
+    │
+    ▼ HTTP (tudo vai pelo Gateway)
+Gateway :10000
+    │
+    ├─► Auth :3001      (login, cadastro, senha)
+    ├─► Catalog :3003   (categorias, produtos)
+    ├─► Review :3004    (avaliações)
+    └─► History :3005   (histórico)
+          │
+          ├─► Request Bus :10002  (perguntas síncronas)
+          │         └─► User :3002 / Catalog :3003
+          │
+          └─► Event Bus :10001   (eventos assíncronos)
+                    └─► User :3002 / Auth :3001
 ```
 
-6. Acesse no navegador:
+---
 
-http://localhost:5173
+## 📋 Cada serviço tem a mesma estrutura interna
 
- ---
-
-## 💡 Melhorias Futuras
-
-- Página inicial (Seleção de categoria)  
-- Pesquisem produtos 
-- Especificações de produtos
-- Comentários de produtos no site
-- Autenticação de usuários
-- Histórico de produtos vistos
-- Histórico de avaliações do usuário
-- Integração com APIs externas (ex: Amazon, Mercado Livre)
-- Sistema de recomendação inteligente
-- Likes/dislikes em comentários
-- Ranking de produtos mais bem avaliados
+```
+<servico>/
+├── controller/   → Servidor Express completo (rotas + boot + shutdown)
+├── db/           → Conexão com MongoDB e funções de acesso ao banco
+└── entities/     → Schemas, regras de validação da entidade
+```
 
 ---
 
-## ⚠️ Desafios e Aprendizados
+## ⚙️ Configuração Centralizada
 
-- Criação de interface intuitiva
-- Integração entre front-end e back-end
-- Trabalho em equipe
-- Padronização de código
+O arquivo [`api-shared-config.json`](./api-shared-config.json) é o **contrato único** do projeto.  
+Contém todas as portas, rotas e nomes de eventos — nunca use strings hardcoded no código.
+
+```js
+// Exemplo de uso nos serviços:
+import config from "../../../shared/utils/config.js"
+
+const PORT = config.ports.back.auth           // → 3001
+const EVENT_BUS = `${config.url}:${config.ports.back.eventBus}${config.paths.events.event}`
+```
 
 ---
 
-## 📄 Licença
+## 🗄️ Banco de Dados
 
-Este projeto está sem licença definida.
+Todos os serviços usam **MongoDB** (via Mongoose) com a mesma `MONGO_URI`, mas em bancos separados:
+
+| Serviço | dbName |
+|---------|--------|
+| Auth | `autentification` |
+| User | `userProfile` |
+| Catalog | `test` |
+| Review | `reviews` |
+| History | `userProductHistory` |
 
 ---
 
-## 👥 Integrantes
+## 🚀 Ordem de Inicialização
 
-Arthur Silva Correia
-23.00877-6
+Sempre iniciar nesta ordem para evitar erros de conexão:
 
-Bruno Ferreira Nishiya
-23.01020-7
+```
+1. event-bus      ← todos os outros dependem dele no boot
+2. request-bus    ← auth e history dependem dele
+3. user           ← precisa do event-bus e request-bus
+4. auth           ← precisa do event-bus, request-bus e user
+5. catalog        ← precisa do event-bus
+6. review         ← independente (só usa event-bus)
+7. history        ← precisa de user, catalog, request-bus
+8. gateway        ← iniciar por último (ponto de entrada do front)
+```
 
-Diego Mourão Oliveira
-23.01580-2
+---
 
-Felipe Kolanian Pasquini
-23.00118-6 
+## 📄 READMEs individuais
 
-Ilan Hameiry
-23.00981-0
+Cada serviço tem seu próprio README com detalhes de rotas, eventos e banco:
 
-Leonardo Luiz Seixas Iorio
-23.00847-7
-
-Luca Lopes Martinho
-23.00064-3
+- [Auth README](./mss/Identity/auth/README.md)
+- [User README](./mss/Identity/user/README.md)
+- [Catalog README](./mss/Catalog/catalog/README.md)
+- [Review README](./mss/Engagment/review/README.md)
+- [History README](./mss/Engagment/history/README.md)
+- [Gateway README](./infra/gateway/README.md)
+- [Event Bus README](./infra/event-bus/README.md)
+- [Request Bus README](./infra/request-bus/README.md)

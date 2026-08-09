@@ -3,7 +3,7 @@
 import axios from "axios" 
 import express from "express"
 import cors from "cors"
-import config from "../../mss/shared/utlis/config.js"
+import config from "../../mss/shared/utils/config.js"
 
 const app = express()
 // Middlewares
@@ -41,6 +41,9 @@ const requestFunctions = {
     },
     [request.user.exist]: (payload) => {
         return copyCode(payload, request.user.exist, urls.user)
+    },
+    [request.user.byAuthId]: (payload) => {
+        return copyCode(payload, request.user.byAuthId, urls.user)
     },
     [request.catalog.product.exist]: (payload) => {
         return copyCode(payload, request.catalog.product.exist, urls.catalog)

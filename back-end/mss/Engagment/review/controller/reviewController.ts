@@ -3,9 +3,9 @@ import cors from "cors";
 import axios from "axios";
 import process from "node:process";
 import mongoose from "mongoose";
-import config from "../../../shared/utlis/config.js";
-import getDirname from "../../../shared/utlis/getDirname.js";
-import loadEnv from "../../../shared/utlis/loadEnv.js";
+import config from "../../../shared/utils/config.js";
+import getDirname from "../../../shared/utils/getDirname.js";
+import loadEnv from "../../../shared/utils/loadEnv.js";
 import {
     findReviewsByProduto,
     getReviewStatsByProduto,
@@ -13,7 +13,7 @@ import {
 } from "../db/reviewDBManager.ts";
 import { Review } from "../entities/review.ts";
 import { logAppError, mapErrorToReviewResponse } from "../../../shared/errors/index.ts";
-import { validarPayload } from "../../../shared/utlis/routeValidation.ts";
+import { validarPayload } from "../../../shared/utils/routeValidation.ts";
 
 loadEnv(getDirname(import.meta.url));
 mongoose.set("strictQuery", true);

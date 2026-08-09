@@ -3,19 +3,23 @@ import cors from "cors";
 import axios from "axios";
 import process from "node:process";
 import mongoose from "mongoose";
-import config from "../../../shared/utlis/config.js";
-import getDirname from "../../../shared/utlis/getDirname.js";
-import loadEnv from "../../../shared/utlis/loadEnv.js";
-import { createHistoryEntry } from "../db/historyDBManager.ts";
+import config from "../../../shared/utils/config.js";
+import getDirname from "../../../shared/utils/getDirname.js";
+import loadEnv from "../../../shared/utils/loadEnv.js";
+import { createHistoryEntry, getHistoryByUserId, clearHistoryByUserId } from "../db/historyDBManager.ts";
 import { History } from "../entities/history.ts";
 import { handleRouteError } from "../../../shared/errors/index.ts";
 import {
     validarCampoObrigatorio,
     validarObjectId,
     validarPayload,
-} from "../../../shared/utlis/routeValidation.ts";
+} from "../../../shared/utils/routeValidation.ts";
 
 loadEnv(getDirname(import.meta.url));
+
+// =============================================================
+// #region SETUP EXPRESS
+// =============================================================
 
 const app: any = express();
 app.use(cors());
@@ -34,6 +38,13 @@ const subscribe: string[] = [];
 const eventFunctions: Record<string, (payload: any) => void> = {};
 const requestFunctions: Record<string, (payload: any) => Promise<any>> = {};
 
+// #endregion
+
+// =============================================================
+// #region HELPERS
+// Funções auxiliares internas usadas pelas rotas
+// =============================================================
+
 const respostaErro = ({
     e,
     status,
@@ -46,31 +57,74 @@ const respostaErro = ({
     return {
         error: true,
         status: status ? status : e?.response?.status || 500,
-        message: message ? message : e?.response?.data || "Erro interno de servidor auth",
+        message: message ? message : e?.response?.data || "Erro interno de servidor history",
     };
 };
 
+// Resolve userId a partir do authId via Request Bus → User service
+async function resolveUserId(authId: string): Promise<string> {
+    const result = await axios.post(sendRequest, {
+        request: request.user.byAuthId,
+        payload: { authId },
+    });
+    // O Request Bus retorna { error, status, message, content } diretamente no result.data
+    const data = result.data?.content ? result.data : result.data?.values || result.data;
+    const { error, message, status, content } = data;
+    if (error || !content?.userId) {
+        const err: any = new Error(message || "Usuário não encontrado");
+        err.status = status || 404;
+        throw err;
+    }
+    return content.userId;
+}
+
+// Busca dados do produto via Catalog service
+async function getProdutoData(productId: string): Promise<any> {
+    try {
+        const response = await axios.get(
+            `${config.url}:${svc.catalog}${paths.catalog.product}`,
+            { params: { id: productId }, timeout: 3000 }
+        );
+        const { error, content } = response.data;
+        if (error || !content) return null;
+        return content;
+    } catch {
+        return null;
+    }
+}
+
+// #endregion
+
+
+// =============================================================
+// #region ROTAS HTTP
+// POST   /historico          — registra acesso a produto
+// GET    /historico?authId=  — retorna histórico populado
+// DELETE /historico?authId=  — limpa histórico do usuário
+// POST   /eventos            — recebe eventos do Event Bus
+// POST   /requisicao         — responde queries do Request Bus
+// =============================================================
+
+// POST /historico — registra acesso a um produto
 app.post(paths.history.history, async (req, res) => {
     try {
-        const payload = validarPayload(req.body?.payload);
-        const userId = validarObjectId(payload.userId, "userId");
-        const productId = validarObjectId(payload.productId, "productId");
-        new History({ userId, productId });
+        // Aceita tanto body direto quanto com wrapper { payload }
+        const body = req.body?.payload ?? req.body;
+        const authId = validarCampoObrigatorio(body?.authId, "authId");
+        const productId = validarCampoObrigatorio(body?._id ?? body?.productId, "productId");
 
-        const userResult = await axios.post(sendRequest, {
-            request: request.user.exist,
-            payload: { userId },
-        });
-        const { error: userError, message: userMessage, status: userStatus } = userResult.data;
-        if (userError) {
-            return res.json(respostaErro({ status: userStatus, message: userMessage }));
-        }
+        validarObjectId(productId, "productId");
 
+        // Resolve userId a partir do authId
+        const userId = await resolveUserId(authId);
+
+        // Verifica se o produto existe
         const productResult = await axios.post(sendRequest, {
             request: request.catalog.product.exist,
             payload: { productId },
         });
-        const { error: productError, message: productMessage, status: productStatus } = productResult.data;
+        const productData = productResult.data?.content ? productResult.data : productResult.data?.values || productResult.data;
+        const { error: productError, message: productMessage, status: productStatus } = productData;
         if (productError) {
             return res.json(respostaErro({ status: productStatus, message: productMessage }));
         }
@@ -81,9 +135,63 @@ app.post(paths.history.history, async (req, res) => {
             status: 200,
             message: "Acesso registrado",
         });
-    } catch (e) {
+    } catch (e: any) {
         return res.json(handleRouteError(e, { service: serverName, route: paths.history.history }, () =>
-            respostaErro({ e, status: 400 })
+            respostaErro({ e, status: e.status || 400 })
+        ));
+    }
+});
+
+// GET /historico?authId=... — retorna histórico populado do usuário
+app.get(paths.history.history, async (req, res) => {
+    try {
+        const authId = validarCampoObrigatorio(req.query?.authId, "authId");
+
+        // Resolve userId
+        const userId = await resolveUserId(String(authId));
+
+        // Busca registros do banco
+        const registros = await getHistoryByUserId(userId);
+        if (!registros || registros.length === 0) {
+            return res.json({ error: false, status: 200, content: [] });
+        }
+
+        // Popula dados dos produtos em paralelo
+        const produtos = await Promise.all(
+            registros.map(async (r: any) => {
+                const produto = await getProdutoData(String(r.productId));
+                if (!produto) return null;
+                return {
+                    _id: String(r.productId),
+                    nome: produto.nome || "",
+                    marca: produto.marca || "",
+                    imagem: produto.imagem || "",
+                    precoMedio: produto.precoMedio || 0,
+                    categoriaTag: produto.categoriaTag || "",
+                    acessadoEm: r.createdAt,
+                };
+            })
+        );
+
+        const resultado = produtos.filter(Boolean);
+        return res.json({ error: false, status: 200, content: resultado });
+    } catch (e: any) {
+        return res.json(handleRouteError(e, { service: serverName, route: paths.history.history }, () =>
+            respostaErro({ e, status: e.status || 500 })
+        ));
+    }
+});
+
+// DELETE /historico?authId=... — limpa o histórico do usuário
+app.delete(paths.history.history, async (req, res) => {
+    try {
+        const authId = validarCampoObrigatorio(req.query?.authId, "authId");
+        const userId = await resolveUserId(String(authId));
+        await clearHistoryByUserId(userId);
+        return res.json({ error: false, status: 200, message: "Histórico limpo" });
+    } catch (e: any) {
+        return res.json(handleRouteError(e, { service: serverName, route: paths.history.history }, () =>
+            respostaErro({ e, status: e.status || 500 })
         ));
     }
 });
@@ -121,6 +229,13 @@ app.post(paths.requests.request, async (req, res) => {
         });
     }
 });
+
+// #endregion
+
+// =============================================================
+// #region INICIALIZAÇÃO DO SERVIDOR
+// Conecta ao MongoDB, sobe o Express e se inscreve no Event Bus
+// =============================================================
 
 const startServer = async () => {
     try {

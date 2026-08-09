@@ -6,12 +6,11 @@ import ReviewSection from "./ReviewSection.jsx";
 
 // Salva o acesso ao produto no localStorage e no backend
 function registrarAcesso(produto) {
+  // 1. Sempre salva no localStorage (funciona sem login)
   try {
     const CHAVE = "allforone_history_produtos";
     const historico = JSON.parse(localStorage.getItem(CHAVE) || "[]");
-    // Remove entrada anterior do mesmo produto para não duplicar
     const filtrado = historico.filter(item => item._id !== produto._id);
-    // Insere no início com timestamp
     filtrado.unshift({
       _id: produto._id,
       nome: produto.nome,
@@ -21,32 +20,36 @@ function registrarAcesso(produto) {
       categoriaTag: produto.categoriaTag || "",
       acessadoEm: new Date().toISOString()
     });
-    // Mantém no máximo 50 itens
     localStorage.setItem(CHAVE, JSON.stringify(filtrado.slice(0, 50)));
   } catch (err) {
     console.error("Erro ao salvar histórico local:", err);
   }
 
-  // Persiste no backend (silencioso: falhas não afetam a experiência)
+  // 2. Persiste no banco se o usuário estiver logado (silencioso)
   try {
     const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
-    const svcHistory = config.services.history;
-    const url = config.url + ":" + svcHistory.port + svcHistory.endpoints.history;
-    fetch(url, {
+    if (!usuario?.authId) return; // Só envia se tiver authId
+    fetch(`${apiBase}/historico`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: usuario?.email || "anonimo",
+        authId: usuario.authId,
+        productId: produto._id,
         _id: produto._id,
-        nome: produto.nome,
-        marca: produto.marca || "",
-        imagem: produto.imagem || "",
-        precoMedio: produto.precoMedio || 0,
-        categoriaTag: produto.categoriaTag || ""
+      }),
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const text = await res.text();
+          console.warn("Falha ao registrar histórico no backend:", res.status, text);
+        }
       })
-    }).catch(() => {}); // Ignora erros de rede silenciosamente
-  } catch { /* Ignora */ }
+      .catch((err) => console.warn("Erro na requisição do histórico:", err));
+  } catch (err) {
+    console.warn("Erro ao ler usuário para o histórico:", err);
+  }
 }
+
 
 export default function DetalhesProduto() {
   const { id } = useParams();

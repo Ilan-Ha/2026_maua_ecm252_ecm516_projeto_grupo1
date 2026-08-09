@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "install:all": "./scripts/install-all.sh",
-    "start": "./scripts/start-all.sh",
+    "install:all": "node ./scripts/install-all.js",
+    "start": "node ./scripts/start-all.js",
     "typecheck": "npm --prefix back-end/mss run typecheck"
   },
   "devDependencies": {

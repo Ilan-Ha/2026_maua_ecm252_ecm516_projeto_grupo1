@@ -5,9 +5,9 @@ import process from "node:process";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import { z } from "zod";
-import config from "../../../shared/utlis/config.js";
-import getDirname from "../../../shared/utlis/getDirname.js";
-import loadEnv from "../../../shared/utlis/loadEnv.js";
+import config from "../../../shared/utils/config.js";
+import getDirname from "../../../shared/utils/getDirname.js";
+import loadEnv from "../../../shared/utils/loadEnv.js";
 import {
     createAuth,
     findAuthByEmail,
@@ -21,9 +21,14 @@ import {
     validarCampoObrigatorio,
     validarObjectId,
     validarPayload,
-} from "../../../shared/utlis/routeValidation.ts";
+} from "../../../shared/utils/routeValidation.ts";
 
 loadEnv(getDirname(import.meta.url));
+
+// =============================================================
+// #region CONFIGURAÇÃO DO SERVIDOR
+// Express + middlewares básicos (CORS e JSON)
+// =============================================================
 
 const authSchemaZod = z
     .object({
@@ -43,6 +48,12 @@ const authSchemaZod = z
         path: ["confirmarSenha"],
     });
 
+// #endregion
+
+// =============================================================
+// #region SETUP EXPRESS
+// =============================================================
+
 const app: any = express();
 app.use(cors());
 app.use(express.json());
@@ -58,6 +69,13 @@ const sendEvent = `${config.url}:${svc.eventBus}${paths.events.event}`;
 const calbackUrl = `${config.url}:${PORT}${paths.events.event}`;
 const serverName = "auth";
 
+// #endregion
+
+// =============================================================
+// #region EVENTOS — funções executadas ao receber um evento do Event Bus
+// O Auth escuta "user.added" para marcar o usuário como cadastrado
+// =============================================================
+
 const subscribe = [events.user.added];
 
 const eventFunctions: Record<string, (payload: any) => Promise<void>> = {
@@ -66,6 +84,12 @@ const eventFunctions: Record<string, (payload: any) => Promise<void>> = {
         await markUsuarioCadastrado(authId);
     },
 };
+
+// #endregion
+
+// =============================================================
+// #region HELPER — formata objeto de resposta de erro
+// =============================================================
 
 const respostaErro = ({
     e,
@@ -82,6 +106,14 @@ const respostaErro = ({
         message: message ? message : e?.response?.data || "Erro interno de servidor auth",
     };
 };
+
+// =============================================================
+// #region ROTAS HTTP
+// POST /cadastro — cria credenciais e dispara evento user.create
+// POST /login    — autentica e retorna { nome, email, authId }
+// POST /perfil/atualizar/senha — atualiza senha com validação
+// POST /eventos  — recebe eventos do Event Bus
+// =============================================================
 
 app.post(paths.auth.register, async (req, res) => {
     try {
@@ -222,6 +254,7 @@ app.post(paths.auth.login, async (req, res) => {
                 usuario: {
                     nome,
                     email: autentificacao.email,
+                    authId: String(autentificacao._id),
                 },
             },
         });
@@ -282,6 +315,14 @@ app.post(paths.events.event, (req, res) => {
     res.end();
 });
 
+// #endregion
+
+// =============================================================
+// #region INICIALIZAÇÃO DO SERVIDOR
+// Conecta ao MongoDB, sobe o Express e se inscreve no Event Bus
+// Ordem: MongoDB → listen → inscrição no Event Bus
+// =============================================================
+
 const startServer = async () => {
     try {
         if (!process.env.MONGO_URI) {
@@ -331,6 +372,8 @@ process.once("SIGUSR2", function () {
     gracefulShutdown("SIGUSR2");
     process.kill(process.pid, "SIGUSR2");
 });
+
+// #endregion
 
 startServer().then((server) => {
     servidor = server;

@@ -4,10 +4,10 @@ import express from "express"
 import cors from "cors"
 import axios from "axios" 
 import mongoose from "mongoose"
-import config from "../../../shared/utlis/config.js"
+import config from "../../../shared/utils/config.js"
 import { initSeed, getCatalogo, getProdutoById } from "../db/catalogDBManager.ts";
-import getDirname from "../../../shared/utlis/getDirname.js";
-import loadEnv from "../../../shared/utlis/loadEnv.js";
+import getDirname from "../../../shared/utils/getDirname.js";
+import loadEnv from "../../../shared/utils/loadEnv.js";
 import {
     handleRouteError,
     logAppError,
@@ -17,7 +17,7 @@ import {
     validarCampoObrigatorio,
     validarObjectId,
     validarPayload,
-} from "../../../shared/utlis/routeValidation.ts";
+} from "../../../shared/utils/routeValidation.ts";
 
 loadEnv(getDirname(import.meta.url))
 

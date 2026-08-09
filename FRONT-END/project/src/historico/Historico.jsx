@@ -1,29 +1,68 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Header from "../Header.jsx";
+import { apiBase } from "../config.jsx";
 
 export default function Historico() {
   const [historicoVistos, setHistoricoVistos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fonte, setFonte] = useState("local"); // "banco" ou "local"
 
-  // Carrega os dados salvos do localStorage
   useEffect(() => {
+    carregarHistorico();
+  }, []);
+
+  async function carregarHistorico() {
     setLoading(true);
     try {
+      const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
+
+      // Se o usuário está logado e tem authId, busca do banco
+      if (usuario?.authId) {
+        try {
+          const res = await fetch(`${apiBase}/historico?authId=${encodeURIComponent(usuario.authId)}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (!data.error && Array.isArray(data.content)) {
+              setHistoricoVistos(data.content);
+              setFonte("banco");
+              return;
+            }
+          }
+        } catch (err) {
+          console.warn("Falha ao buscar histórico do banco, usando localStorage:", err);
+        }
+      }
+
+      // Fallback: localStorage (usuário não logado ou backend indisponível)
       const vistosLocais = JSON.parse(localStorage.getItem("allforone_history_produtos") || "[]");
       setHistoricoVistos(vistosLocais);
+      setFonte("local");
     } catch (err) {
-      console.error("Erro ao ler histórico do localStorage", err);
+      console.error("Erro ao carregar histórico:", err);
+      setHistoricoVistos([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }
 
-  // Limpa o histórico de produtos
-  const handleLimparHistorico = () => {
+  const handleLimparHistorico = async () => {
     const confirmar = window.confirm("Tem certeza que deseja limpar o histórico de produtos vistos?");
     if (!confirmar) return;
+
+    // Limpa localStorage sempre
     localStorage.removeItem("allforone_history_produtos");
+
+    // Se logado, limpa também no banco
+    try {
+      const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
+      if (usuario?.authId) {
+        await fetch(`${apiBase}/historico?authId=${encodeURIComponent(usuario.authId)}`, {
+          method: "DELETE",
+        }).catch(() => {});
+      }
+    } catch { /* Ignora */ }
+
     setHistoricoVistos([]);
   };
 
@@ -40,6 +79,11 @@ export default function Historico() {
             </h2>
             <p className="text-muted mb-0">
               Revise os produtos que você acessou recentemente
+              {fonte === "banco" && (
+                <span className="badge bg-success-subtle text-success ms-2" style={{ fontSize: "0.72rem" }}>
+                  💾 Sincronizado
+                </span>
+              )}
             </p>
           </div>
           {historicoVistos.length > 0 && (
@@ -98,6 +142,13 @@ export default function Historico() {
                           R$ {item.precoMedio.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                         </p>
                       )}
+                      {item.acessadoEm && (
+                        <small className="text-muted d-block" style={{ fontSize: "0.72rem" }}>
+                          {new Date(item.acessadoEm).toLocaleDateString("pt-BR", {
+                            day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit"
+                          })}
+                        </small>
+                      )}
                       <Link
                         to={`/produto/${item._id}`}
                         className="btn btn-link text-success p-0 fw-semibold text-decoration-none"
@@ -117,4 +168,3 @@ export default function Historico() {
     </div>
   );
 }
-

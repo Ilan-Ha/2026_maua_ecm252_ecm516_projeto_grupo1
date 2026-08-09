@@ -1,6 +1,6 @@
 import express from "express"
 import cors from "cors"
-import config from "../../mss/shared/utlis/config.js"
+import config from "../../mss/shared/utils/config.js"
 import EventBus from "./eventBus.ts"
 
 const app = express()

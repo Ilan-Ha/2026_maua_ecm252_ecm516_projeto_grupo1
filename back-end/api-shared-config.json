@@ -8,6 +8,8 @@
     "requests": {
         "user":{
             "exist": "user.exist",
+            "byEmail": "user.byEmail",
+            "byAuthId": "user.byAuthId",
             "name":{
                 "exits": "user.name.exists",
                 "valdate": "user.name.validate",
@@ -16,7 +18,8 @@
         },
         "catalog":{
             "product": {
-                "exist": "catalog.product.exist"
+                "exist": "catalog.product.exist",
+                "get": "catalog.product.get"
             }
         }
     },

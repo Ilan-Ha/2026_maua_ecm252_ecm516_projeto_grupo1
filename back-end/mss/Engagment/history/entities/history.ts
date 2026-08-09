@@ -63,10 +63,10 @@ class History {
                     default: Date.now,
                 },
             },
-            { timestamps: true, collection: "history" }
+            { collection: "history" }
         );
 
-        schema.index({ userId: 1, productId: 1, cretedAt: 1 }, { unique: true });
+        schema.index({ userId: 1, productId: 1 }, { unique: true });
         return schema;
     }
 }

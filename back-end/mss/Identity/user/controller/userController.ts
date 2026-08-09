@@ -3,9 +3,9 @@ import cors from "cors";
 import axios from "axios";
 import process from "node:process";
 import mongoose from "mongoose";
-import config from "../../../shared/utlis/config.js";
-import getDirname from "../../../shared/utlis/getDirname.js";
-import loadEnv from "../../../shared/utlis/loadEnv.js";
+import config from "../../../shared/utils/config.js";
+import getDirname from "../../../shared/utils/getDirname.js";
+import loadEnv from "../../../shared/utils/loadEnv.js";
 import {
     createUser,
     existsByAuthId,
@@ -20,9 +20,13 @@ import {
     validarCampoObrigatorio,
     validarObjectId,
     validarPayload,
-} from "../../../shared/utlis/routeValidation.ts";
+} from "../../../shared/utils/routeValidation.ts";
 
 loadEnv(getDirname(import.meta.url));
+
+// =============================================================
+// #region SETUP EXPRESS
+// =============================================================
 
 const app: any = express();
 app.use(cors());
@@ -37,6 +41,14 @@ const requests = config.requests;
 const calbackUrl = `${config.url}:${PORT}${paths.events.event}`;
 const sendEvent = `${config.url}:${svc.eventBus}${paths.events.event}`;
 const serverName = "user";
+
+// #endregion
+
+// =============================================================
+// #region EVENTOS — funções executadas ao receber um evento do Event Bus
+// O User escuta "user.create" para criar o perfil
+// e "user.re.register" para recuperar cadastros com falha
+// =============================================================
 
 const subscribe = [events.user.register, events.user["not.register"]];
 
@@ -84,6 +96,14 @@ const eventFunctions: Record<string, (payload: any) => Promise<void>> = {
         }
     },
 };
+
+// #endregion
+
+// =============================================================
+// #region REQUISIÇÕES (Request Bus)
+// Respostas para queries síncronas vindas de outros microsserviços
+// Cada chave mapeia um tipo de request para uma função
+// =============================================================
 
 const requestFunctions: Record<string, (payload: any) => Promise<any>> = {
     [requests.user.name.valdate]: async (payload) => {
@@ -144,7 +164,32 @@ const requestFunctions: Record<string, (payload: any) => Promise<any>> = {
             return respostaErroApp(e);
         }
     },
+    [requests.user.byAuthId]: async (payload) => {
+        try {
+            const dados = validarPayload(payload);
+            const authId = validarObjectId(dados.authId, "authId");
+            const usuario = await findUserByAuthId(authId);
+            if (!usuario) {
+                return { error: true, status: 404, message: "Usuário não encontrado" };
+            }
+            return {
+                error: false,
+                content: { userId: String(usuario._id) },
+            };
+        } catch (e) {
+            logAppError(e, { service: serverName, operation: requests.user.byAuthId });
+            return respostaErroApp(e);
+        }
+    },
 };
+
+// #endregion
+
+// =============================================================
+// #region ROTAS HTTP
+// POST /eventos    — recebe eventos do Event Bus
+// POST /requisicao — recebe queries do Request Bus e responde
+// =============================================================
 
 app.post(paths.events.event, (req, res) => {
     const { event, payload } = req.body;
@@ -184,6 +229,13 @@ app.post(paths.requests.request, async (req, res) => {
         }
     }
 });
+
+// #endregion
+
+// =============================================================
+// #region INICIALIZAÇÃO DO SERVIDOR
+// Conecta ao MongoDB, sobe o Express e se inscreve no Event Bus
+// =============================================================
 
 const startServer = async () => {
     try {

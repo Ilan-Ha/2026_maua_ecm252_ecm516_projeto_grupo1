@@ -48,7 +48,10 @@ export default function Departamentos() {
   // Hook para carregar o catálogo
   useEffect(() => {
     fetch(url)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`Erro ao carregar catálogo: ${res.status}`);
+        return res.json();
+      })
       .then((json) => setData(json))
       .catch((err) => console.error("Erro ao carregar catálogo:", err));
   }, []);
