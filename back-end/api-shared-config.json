@@ -60,9 +60,6 @@
         "requests":{
             "request": "/requisicao"
         },
-        "gateway":{
-            "request": "/requisicao"
-        },
         "events":{
             "event": "/eventos",
             "subscribe": "/inscricao",
@@ -127,6 +124,12 @@
             "endpoints": {
                 "list": "/reviews/produto",
                 "create": "/reviews"
+            }
+        },
+        "history": {
+            "port": 10000,
+            "endpoints": {
+                "history": "/historico"
             }
         }
     }

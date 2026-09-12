@@ -46,12 +46,16 @@ export default class Gateway {
             };
         }
         try {
-            const response = await axios ({
+            const targetUrl = request.pathSuffix
+                ? `${endpoint.url.replace(/\/$/, "")}/${request.pathSuffix}`
+                : endpoint.url;
+
+            const response = await axios({
                 method: request.method,
-                url: endpoint.url,
+                url: targetUrl,
                 data: request.body,
-                params: request.query,
-                headers: request.headers,
+                params: request.query ?? {},
+                headers: request.headers ?? {},
                 validateStatus: () => true,
             });
 

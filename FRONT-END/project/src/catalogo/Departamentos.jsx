@@ -45,25 +45,73 @@ export default function Departamentos() {
   const [data, setData] = useState(null);
   const [tag, setTag] = useState(null);
   const [search, setSearch] = useState("");
-  // Hook para carregar o catálogo
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState(null);
+
   useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setErro(null);
+
     fetch(url)
-      .then((res) => {
-        if (!res.ok) throw new Error(`Erro ao carregar catálogo: ${res.status}`);
-        return res.json();
+      .then(async (res) => {
+        const json = await res.json().catch(() => null);
+        if (!res.ok) {
+          throw new Error(json?.error || json?.message || "Catálogo indisponível");
+        }
+        if (!json || !Array.isArray(json.Categorias)) {
+          throw new Error("Resposta inválida do catálogo");
+        }
+        return json;
       })
-      .then((json) => setData(json))
-      .catch((err) => console.error("Erro ao carregar catálogo:", err));
-  }, []);
-  // Mostra enquanto carrega os dados
-  if (!data) {
+      .then((json) => {
+        if (!cancelled) {
+          setData({
+            Categorias: json.Categorias,
+            Itens: json.Itens && typeof json.Itens === "object" ? json.Itens : {},
+          });
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.error("Erro ao carregar catálogo:", err);
+        if (!cancelled) {
+          setData(null);
+          setErro(err.message || "Erro ao carregar catálogo");
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [url]);
+
+  if (loading) {
     return (
       <Page search={search} onSearchChange={(e) => setSearch(e.target.value)}>
         <p>Carregando catálogo...</p>
       </Page>
     );
   }
-  // Renderiza o catálogo
+
+  if (erro || !data) {
+    return (
+      <Page search={search} onSearchChange={(e) => setSearch(e.target.value)}>
+        <div className="col-12 text-center py-4">
+          <p className="text-muted mb-2">{erro || "Catálogo indisponível"}</p>
+          <button
+            type="button"
+            className="btn btn-outline-success btn-sm"
+            onClick={() => window.location.reload()}
+          >
+            Tentar novamente
+          </button>
+        </div>
+      </Page>
+    );
+  }
+
   const renderCatalog = () => {
     if (tag !== null) {
       const items = data.Itens?.[tag] || [];
@@ -78,11 +126,20 @@ export default function Departamentos() {
         </>
       );
     }
-    // Filtra os departamentos
-    const filtered = data.Categorias.filter((item) =>
-      item.nome.toLowerCase().includes(search.toLowerCase())
+
+    const categorias = data.Categorias || [];
+    const filtered = categorias.filter((item) =>
+      (item.nome || "").toLowerCase().includes(search.toLowerCase())
     );
-    // Renderiza os departamentos
+
+    if (filtered.length === 0) {
+      return (
+        <div className="col-12">
+          <p className="text-muted">Nenhuma categoria encontrada.</p>
+        </div>
+      );
+    }
+
     return filtered.map((item, i) => (
       <div className="col" key={i}>
         <div onClick={() => setTag(item.tag)}>
@@ -91,7 +148,7 @@ export default function Departamentos() {
       </div>
     ));
   };
-  // Retorna a página
+
   return (
     <Page search={search} onSearchChange={(e) => setSearch(e.target.value)}>
       {renderCatalog()}

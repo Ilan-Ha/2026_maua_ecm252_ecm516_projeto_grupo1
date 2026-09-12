@@ -41,3 +41,21 @@ export function formatMssMessage(
 
   return "Erro no servidor";
 }
+
+/** Defaults para campos opcionais de GatewayRequest */
+export const emptyGatewayFields = {
+  query: {},
+  params: {},
+  headers: {},
+} as const;
+
+/** 404 = endpoint não registrado; 502 = MSS inacessível */
+export function isGatewayTransportError(status: number): boolean {
+  return status === 404 || status === 502;
+}
+
+/** Auth devolve content.usuario; fallback para o content inteiro */
+export function extractUsuario(content: unknown): unknown {
+  const record = content as Record<string, unknown> | undefined;
+  return record?.usuario ?? content;
+}

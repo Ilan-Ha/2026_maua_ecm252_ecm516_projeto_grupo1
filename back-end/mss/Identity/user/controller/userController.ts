@@ -146,7 +146,10 @@ const requestFunctions: Record<string, (payload: any) => Promise<any>> = {
             const usuario = await findUserByAuthId(authId);
             return {
                 error: false,
-                content: { nome: usuario.nome },
+                content: {
+                    nome: usuario.nome,
+                    userId: String(usuario._id),
+                },
             };
         } catch (e) {
             logAppError(e, { service: serverName, operation: requests.user.name.tell });

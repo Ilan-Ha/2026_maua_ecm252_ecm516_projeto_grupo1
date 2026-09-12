@@ -17,9 +17,11 @@ export interface GatewayRequest<
   endpointName: string;
   method: HttpMethod;
   body?: TBody;
-  query: TQuery;
-  params: TParams;
-  headers: Record<string, string>;
+  query?: TQuery;
+  params?: TParams;
+  headers?: Record<string, string>;
+  /** Anexa segmento ao final da URL registrada (ex.: produtoId em reviews) */
+  pathSuffix?: string;
 }
 
 export interface GatewayResponse<TData = unknown> {
