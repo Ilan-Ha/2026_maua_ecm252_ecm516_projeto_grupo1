@@ -13,7 +13,7 @@
 ├── docs/                        # documentação (agentes + time)
 ├── scripts/                     # install-all.js, start-all.js
 ├── .cursor/rules/               # regras Cursor (sempre ler docs-maintenance)
-└── migracao_mss_nestjs_*.plan.md
+└── docs/planos/                 # planos de migração (Nest/domínio)
 ```
 
 ## Back-end MSS (layout flat)
