@@ -1,15 +1,25 @@
 //'request-bus' / padrão 'request-reply'
 
-import axios from "axios" 
+import axios from "axios"
 import express from "express"
 import cors from "cors"
+import dotenv from "dotenv"
+import path from "path"
+import { fileURLToPath } from "url"
 import config from "../../mss/shared/utils/config.js"
+import {
+  correlationMiddleware,
+  httpLoggingMiddleware,
+} from "../../shared/logging/express.mjs"
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+dotenv.config({ path: path.join(__dirname, "../../../.env"), override: true, quiet: true })
 
 const app = express()
-// Middlewares
-app.use(cors());
-// Permite receber JSON direto no req.body
+app.use(cors({ origin: [/localhost/, /127\.0\.0\.1/] }));
 app.use(express.json());
+app.use(correlationMiddleware);
+app.use(httpLoggingMiddleware("request-bus"));
 
 const svc = config.ports.back
 const PORT = svc.requestBus
@@ -26,7 +36,6 @@ const copyCode = async (payload, req, urlString) => {
         const result = await axios.post(urlString, {
             request: req,
             payload: payload})
-            //console.log(result)
         return result.data.values
 }
 const requestFunctions = {
@@ -50,22 +59,13 @@ const requestFunctions = {
     }
 }
 
-// rota de requisição
-
 app.post(paths.request, async (req,res) => {
     const {request, payload} = req.body
-    console.log(payload)
-    console.log(request)
     try {
-        const result = await requestFunctions[request](payload)
+        await requestFunctions[request](payload)
         .then((r) => {
-            //console.log(r)
         const {error, message, status, content} = r
-        // console.log(error)
         if (typeof(error) !== "boolean"){
-            // console.log(error)
-            //console.log(typeof(error))
-
             return res.json({
                 error: true,
                 status: 500,

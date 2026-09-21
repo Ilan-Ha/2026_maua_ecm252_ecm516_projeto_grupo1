@@ -13,6 +13,10 @@ import {
   isGatewayTransportError,
   parseMssResponse,
 } from "../../shared/utils/gateway/mssResponse.js";
+import {
+  correlationMiddleware,
+  httpLoggingMiddleware,
+} from "../../shared/logging/express.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 for (const envPath of [
@@ -29,8 +33,10 @@ const PORT = svc.gateway;
 const base = config.url;
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: [/localhost/, /127\.0\.0\.1/] }));
 app.use(express.json());
+app.use(correlationMiddleware);
+app.use(httpLoggingMiddleware("gateway"));
 
 const gateway = new Gateway();
 
@@ -46,6 +52,7 @@ const endpoints = {
   reviewCreate: `${base}:${svc.review}${paths.review.create}`,
   reviewHealth: `${base}:${svc.review}/health`,
   history: `${base}:${svc.history}${paths.history.history}`,
+  logsList: `${base}:${svc.logs}${paths.logs.list}`,
 } as const;
 
 for (const [name, url] of Object.entries(endpoints)) {
@@ -465,14 +472,51 @@ app.get("/health/db", async (_req, res) => {
   }
 });
 
+app.get(paths.logs.list, async (req, res) => {
+  try {
+    const result = await gateway.makeRequest({
+      method: "GET",
+      endpointName: "logsList",
+      ...emptyGatewayFields,
+      query: req.query as Record<string, string>,
+    });
+    if (isGatewayTransportError(result.status)) {
+      return res.status(502).json({ error: "Serviço de logs indisponível" });
+    }
+    return res.status(result.status).json(result.data);
+  } catch (err) {
+    console.error("[gateway] Erro no proxy logs:", err);
+    res.status(502).json({ error: "Serviço de logs indisponível" });
+  }
+});
+
+app.get(`${paths.logs.byId}/:id`, async (req, res) => {
+  try {
+    const result = await gateway.makeRequest({
+      method: "GET",
+      endpointName: "logsList",
+      pathSuffix: req.params.id,
+      ...emptyGatewayFields,
+    });
+    if (isGatewayTransportError(result.status)) {
+      return res.status(502).json({ error: "Serviço de logs indisponível" });
+    }
+    return res.status(result.status).json(result.data);
+  } catch (err) {
+    console.error("[gateway] Erro no proxy logs/:id:", err);
+    res.status(502).json({ error: "Serviço de logs indisponível" });
+  }
+});
+
 app.use((_req, res) => {
   res.status(404).json({ error: "Rota não encontrada" });
 });
 
 app.listen(PORT, () => {
-  console.log(`[gateway] Rodando em ${base}:${PORT}`);
+  console.log(`[gateway] Rodando em ${base}:${PORT} (localhost)`);
   console.log(`[gateway] Auth    → ${base}:${svc.auth}`);
   console.log(`[gateway] Catalog → ${base}:${svc.catalog}`);
   console.log(`[gateway] Review  → ${base}:${svc.review}`);
   console.log(`[gateway] History → ${base}:${svc.history}`);
+  console.log(`[gateway] Logs    → ${base}:${svc.logs}`);
 });

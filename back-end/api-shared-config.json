@@ -79,7 +79,8 @@
       "userAccount": 3001,
       "priceOffer": 3006,
       "comparison": 3007,
-      "notification": 3008
+      "notification": 3008,
+      "logs": 3009
     },
     "front": {
       "shell": 4000,
@@ -87,7 +88,8 @@
       "user": 4002,
       "catalog": 4003,
       "review": 4004,
-      "history": 4005
+      "history": 4005,
+      "logs": 5174
     }
   },
   "paths": {
@@ -142,6 +144,10 @@
     },
     "notification": {
       "inbox": "/notificacoes"
+    },
+    "logs": {
+      "list": "/logs",
+      "byId": "/logs"
     }
   },
   "services": {
@@ -217,6 +223,13 @@
       "endpoints": {
         "inbox": "/notificacoes"
       }
+    },
+    "logs": {
+      "port": 10000,
+      "endpoints": {
+        "list": "/logs",
+        "byId": "/logs"
+      }
     }
   },
   "ownership": {
@@ -225,6 +238,7 @@
     "comparison": "matriz spec-a-spec + vencedores + preco atual",
     "userAccount": "auth + perfil + historico + favoritos + listas salvas",
     "notification": "so consome eventos; sem rota de negocio obrigatoria no gateway",
-    "review": "avaliacoes (legado Nest ate fase 2 analytics)"
+    "review": "avaliacoes (legado Nest ate fase 2 analytics)",
+    "logs": "consulta read-only de app_logs (console localhost)"
   }
 }

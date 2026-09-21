@@ -24,9 +24,12 @@ const directories = [
   path.join(root, 'back-end', 'mss', 'catalog'),
   path.join(root, 'back-end', 'mss', 'review'),
   path.join(root, 'back-end', 'mss', 'history'),
+  path.join(root, 'back-end', 'mss', 'logs'),
+  path.join(root, 'back-end', 'shared', 'logging'),
   fs.existsSync(path.join(root, 'front-end', 'project')) 
     ? path.join(root, 'front-end', 'project')
-    : path.join(root, 'FRONT-END', 'project')
+    : path.join(root, 'FRONT-END', 'project'),
+  path.join(root, 'front-end', 'logs'),
 ];
 
 for (const dir of directories) {

@@ -9,7 +9,8 @@
 │   ├── infra/                   # gateway, event-bus, request-bus
 │   ├── mss/                     # microsserviços (layout flat)
 │   └── shared/                  # utilitários compartilhados do gateway
-├── front-end/project/           # React + Vite (macOS: FRONT-END ≡ front-end)
+├── front-end/project/           # React + Vite (site AllForOne)
+├── front-end/logs/              # Console de logs (Vite :5174, localhost)
 ├── docs/                        # documentação (agentes + time)
 ├── scripts/                     # install-all.js, start-all.js
 ├── .cursor/rules/               # regras Cursor (sempre ler docs-maintenance)
@@ -27,7 +28,8 @@ Cada serviço fica **lado a lado** em `back-end/mss/` — sem pastas de contexto
 | `catalog` | 3003 | NestJS | Produtos (catálogo) |
 | `review` | 3004 | NestJS | Avaliações |
 | `history` | 3005 | NestJS | Histórico de visualização |
-| `shared/` | — | TS | Config helpers usados pelos MSS |
+| `logs` | 3009 | NestJS | Query read-only de `app_logs` (console) |
+| `shared/` | — | TS | Config helpers + kit de logging Nest |
 
 Reservadas no contrato (ainda sem pasta implementada como Nest standalone):
 
@@ -37,12 +39,15 @@ Reservadas no contrato (ainda sem pasta implementada como Nest standalone):
 | `comparison` | 3007 | Planejado (`modernizacao/03-*`) |
 | `notification` | 3008 | Planejado (`modernizacao/05-*`) — só consumidor de eventos |
 
+Logging compartilhado: `back-end/shared/logging/` (writer Mongo + middleware Express) e cópia Nest em cada `src/common/logging/`. DB Mongo dedicada: `allforone_logs.app_logs` (TTL).
+
 ## Front-end
 
-- App React em `front-end/project/src/`
-- Consome **somente o gateway** (`apiBase` → porta 10000)
-- Auth: `src/auth/` (`AuthContext`, `apiFetch`, `RequireAuth`, `session`)
-- Rotas protegidas: `/historico`, `/perfil` (+ POST review exige Bearer)
+- App React em `front-end/project/src/` (produto)
+- Console de logs em `front-end/logs/` (debug CloudWatch-like, porta 5174)
+- Ambos consomem o gateway (`:10000`)
+- Auth (site): `src/auth/` (`AuthContext`, `apiFetch`, `RequireAuth`, `session`)
+- Rotas protegidas (site): `/historico`, `/perfil` (+ POST review exige Bearer)
 
 ## Contrato compartilhado
 

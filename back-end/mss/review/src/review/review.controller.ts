@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { ReviewService } from './review.service';
+import { AuditLog } from '../common/logging/audit-log.decorator';
 
 @Controller()
 export class ReviewController {
@@ -17,6 +18,7 @@ export class ReviewController {
 
   @Post('reviews')
   @HttpCode(201)
+  @AuditLog({ message: 'Review criada/atualizada', kind: 'manual' })
   create(@Body() body: unknown) {
     return this.reviewService.createOrUpdate(body);
   }
