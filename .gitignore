@@ -147,4 +147,10 @@ vite.config.ts.timestamp-*
 .vite/
 
 # cursor files
-.cursor
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
+
+# macOS
+.DS_Store
+**/.DS_Store

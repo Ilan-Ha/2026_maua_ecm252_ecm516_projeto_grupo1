@@ -19,11 +19,11 @@ const directories = [
   path.join(root, 'back-end', 'infra', 'event-bus'),
   path.join(root, 'back-end', 'infra', 'request-bus'),
   path.join(root, 'back-end', 'infra', 'gateway'),
-  path.join(root, 'back-end', 'mss', 'Identity', 'auth'),
-  path.join(root, 'back-end', 'mss', 'Identity', 'user'),
-  path.join(root, 'back-end', 'mss', 'Catalog', 'catalog'),
-  path.join(root, 'back-end', 'mss', 'Engagment', 'review'),
-  path.join(root, 'back-end', 'mss', 'Engagment', 'history'),
+  path.join(root, 'back-end', 'mss', 'auth'),
+  path.join(root, 'back-end', 'mss', 'user'),
+  path.join(root, 'back-end', 'mss', 'catalog'),
+  path.join(root, 'back-end', 'mss', 'review'),
+  path.join(root, 'back-end', 'mss', 'history'),
   fs.existsSync(path.join(root, 'front-end', 'project')) 
     ? path.join(root, 'front-end', 'project')
     : path.join(root, 'FRONT-END', 'project')

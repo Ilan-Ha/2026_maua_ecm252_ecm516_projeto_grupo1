@@ -22,11 +22,11 @@ const frontDir = fs.existsSync(path.join(root, 'front-end', 'project'))
 const services = [
   { name: 'event', path: path.join(root, 'back-end', 'infra', 'event-bus'), color: 'blue' },
   { name: 'request', path: path.join(root, 'back-end', 'infra', 'request-bus'), color: 'green' },
-  { name: 'auth', path: path.join(root, 'back-end', 'mss', 'Identity', 'auth'), color: 'magenta' },
-  { name: 'user', path: path.join(root, 'back-end', 'mss', 'Identity', 'user'), color: 'yellow' },
-  { name: 'catalog', path: path.join(root, 'back-end', 'mss', 'Catalog', 'catalog'), color: 'cyan' },
-  { name: 'review', path: path.join(root, 'back-end', 'mss', 'Engagment', 'review'), color: 'white' },
-  { name: 'history', path: path.join(root, 'back-end', 'mss', 'Engagment', 'history'), color: 'red' },
+  { name: 'auth', path: path.join(root, 'back-end', 'mss', 'auth'), color: 'magenta' },
+  { name: 'user', path: path.join(root, 'back-end', 'mss', 'user'), color: 'yellow' },
+  { name: 'catalog', path: path.join(root, 'back-end', 'mss', 'catalog'), color: 'cyan' },
+  { name: 'review', path: path.join(root, 'back-end', 'mss', 'review'), color: 'white' },
+  { name: 'history', path: path.join(root, 'back-end', 'mss', 'history'), color: 'red' },
   { name: 'gateway', path: path.join(root, 'back-end', 'infra', 'gateway'), color: 'brightBlue' },
   { name: 'front', path: frontDir, color: 'brightGreen', cmd: 'run dev' }
 ];

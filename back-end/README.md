@@ -1,46 +1,40 @@
-# ⚙️ Back-end — AllForOne
+# Back-end — AllForOne
 
-Arquitetura de **microsserviços** com Node.js + TypeScript + MongoDB.
+Arquitetura de **microsserviços** com Node.js + TypeScript + MongoDB + **NestJS**.
 
 ---
 
-## 📁 Estrutura de Pastas
+## Estrutura de pastas
 
 ```
 back-end/
 │
-├── infra/                   ← Infraestrutura de comunicação entre serviços
-│   ├── gateway/             ← Ponto de entrada único (porta 10000)
-│   ├── event-bus/           ← Comunicação assíncrona por eventos (porta 10001)
-│   └── request-bus/         ← Comunicação síncrona request/reply (porta 10002)
+├── infra/                   ← Comunicação entre serviços
+│   ├── gateway/             ← Entrada única (porta 10000)
+│   ├── event-bus/           ← Eventos assíncronos (porta 10001)
+│   └── request-bus/         ← Request/reply síncrono (porta 10002)
 │
-├── mss/                     ← Microsserviços de domínio (negócio)
-│   ├── Identity/
-│   │   ├── auth/            ← Autenticação: login, cadastro, senha (porta 3001)
-│   │   └── user/            ← Perfil de usuário (porta 3002)
-│   ├── Catalog/
-│   │   └── catalog/         ← Catálogo de produtos e categorias (porta 3003)
-│   └── Engagment/
-│       ├── review/          ← Avaliações de produtos (porta 3004)
-│       └── history/         ← Histórico de produtos visitados (porta 3005)
+├── mss/                     ← Microsserviços (lado a lado)
+│   ├── auth/                ← Login, cadastro, senha (3001)
+│   ├── user/                ← Perfil de usuário (3002)
+│   ├── catalog/             ← Catálogo e categorias (3003)
+│   ├── review/              ← Avaliações (3004)
+│   ├── history/             ← Histórico de visitas (3005)
+│   └── shared/              ← Utilitários legados (em transição)
 │
-├── shared/                  ← Código TypeScript compartilhado entre serviços
-│   ├── interfaces/          ← Interfaces e tipos compartilhados
-│   ├── types/               ← Enums e tipos auxiliares
-│   └── utils/               ← Funções utilitárias (gateway, etc.)
-│
-└── api-shared-config.json   ← Contrato central: portas, rotas e nomes de eventos
+├── shared/                  ← Tipos/helpers do gateway
+└── api-shared-config.json   ← Contrato: portas, rotas, eventos
 ```
 
 ---
 
-## 🌐 Portas
+## Portas
 
 | Serviço | Porta | Descrição |
 |---------|-------|-----------|
 | Gateway | 10000 | Entrada única para o front-end |
-| Event Bus | 10001 | Eventos assíncronos entre serviços |
-| Request Bus | 10002 | Queries síncronas entre serviços |
+| Event Bus | 10001 | Eventos assíncronos |
+| Request Bus | 10002 | Queries síncronas |
 | Auth | 3001 | Login e cadastro |
 | User | 3002 | Perfil de usuário |
 | Catalog | 3003 | Catálogo de produtos |
@@ -49,57 +43,55 @@ back-end/
 
 ---
 
-## 🔄 Como os serviços se comunicam
+## Comunicação
 
 ```
 Front-end
     │
-    ▼ HTTP (tudo vai pelo Gateway)
+    ▼ HTTP (tudo pelo Gateway)
 Gateway :10000
-    │
-    ├─► Auth :3001      (login, cadastro, senha)
-    ├─► Catalog :3003   (categorias, produtos)
-    ├─► Review :3004    (avaliações)
-    └─► History :3005   (histórico)
-          │
-          ├─► Request Bus :10002  (perguntas síncronas)
-          │         └─► User :3002 / Catalog :3003
-          │
-          └─► Event Bus :10001   (eventos assíncronos)
-                    └─► User :3002 / Auth :3001
+    ├─► Auth :3001
+    ├─► Catalog :3003
+    ├─► Review :3004
+    └─► History :3005
+          ├─► Request Bus :10002  → User / Catalog
+          └─► Event Bus :10001    → User / Auth / ...
 ```
 
 ---
 
-## 📋 Cada serviço tem a mesma estrutura interna
+## Estrutura interna (NestJS)
+
+Cada MSS em `mss/<servico>/` segue o mesmo padrão:
 
 ```
 <servico>/
-├── controller/   → Servidor Express completo (rotas + boot + shutdown)
-├── db/           → Conexão com MongoDB e funções de acesso ao banco
-└── entities/     → Schemas, regras de validação da entidade
+├── nest-cli.json
+├── package.json
+├── src/
+│   ├── main.ts              ← bootstrap NestFactory
+│   ├── app.module.ts        ← root module
+│   ├── common/              ← config, filters, helpers
+│   ├── database/            ← MongooseModule + seed
+│   ├── <dominio>/           ← controller + service
+│   ├── request-bus/         ← adapter POST /requisicao
+│   └── event-bus/           ← adapter POST /eventos + subscribe
+└── dist/                    ← build
 ```
+
+`npm start` → `nest start --watch`
 
 ---
 
-## ⚙️ Configuração Centralizada
+## Configuração
 
-O arquivo [`api-shared-config.json`](./api-shared-config.json) é o **contrato único** do projeto.  
-Contém todas as portas, rotas e nomes de eventos — nunca use strings hardcoded no código.
-
-```js
-// Exemplo de uso nos serviços:
-import config from "../../../shared/utils/config.js"
-
-const PORT = config.ports.back.auth           // → 3001
-const EVENT_BUS = `${config.url}:${config.ports.back.eventBus}${config.paths.events.event}`
-```
+[`api-shared-config.json`](./api-shared-config.json) é o contrato único (portas, paths, nomes de eventos/requests).
 
 ---
 
-## 🗄️ Banco de Dados
+## Banco de Dados
 
-Todos os serviços usam **MongoDB** (via Mongoose) com a mesma `MONGO_URI`, mas em bancos separados:
+Mesma `MONGO_URI`, databases separados:
 
 | Serviço | dbName |
 |---------|--------|
@@ -111,32 +103,30 @@ Todos os serviços usam **MongoDB** (via Mongoose) com a mesma `MONGO_URI`, mas 
 
 ---
 
-## 🚀 Ordem de Inicialização
-
-Sempre iniciar nesta ordem para evitar erros de conexão:
+## Ordem de boot
 
 ```
-1. event-bus      ← todos os outros dependem dele no boot
-2. request-bus    ← auth e history dependem dele
-3. user           ← precisa do event-bus e request-bus
-4. auth           ← precisa do event-bus, request-bus e user
-5. catalog        ← precisa do event-bus
-6. review         ← independente (só usa event-bus)
-7. history        ← precisa de user, catalog, request-bus
-8. gateway        ← iniciar por último (ponto de entrada do front)
+1. event-bus
+2. request-bus
+3. user
+4. auth
+5. catalog
+6. review
+7. history
+8. gateway
 ```
+
+Ou: `npm start` na raiz (usa `scripts/start-all.js`).
 
 ---
 
-## 📄 READMEs individuais
+## READMEs
 
-Cada serviço tem seu próprio README com detalhes de rotas, eventos e banco:
-
-- [Auth README](./mss/Identity/auth/README.md)
-- [User README](./mss/Identity/user/README.md)
-- [Catalog README](./mss/Catalog/catalog/README.md)
-- [Review README](./mss/Engagment/review/README.md)
-- [History README](./mss/Engagment/history/README.md)
-- [Gateway README](./infra/gateway/README.md)
-- [Event Bus README](./infra/event-bus/README.md)
-- [Request Bus README](./infra/request-bus/README.md)
+- [Auth](./mss/auth/README.md)
+- [User](./mss/user/README.md)
+- [Catalog](./mss/catalog/README.md)
+- [Review](./mss/review/README.md)
+- [History](./mss/history/README.md)
+- [Gateway](./infra/gateway/README.md)
+- [Event Bus](./infra/event-bus/README.md)
+- [Request Bus](./infra/request-bus/README.md)
