@@ -3,51 +3,27 @@ import { useParams, Link } from "react-router-dom";
 import Header from "../Header.jsx";
 import config, { apiBase } from "../config.jsx";
 import ReviewSection from "./ReviewSection.jsx";
+import { apiFetch } from "../auth/api.js";
+import { isAuthenticated } from "../auth/session.js";
 
-// Salva o acesso ao produto no localStorage e no backend
+// Persiste acesso no backend quando logado
 function registrarAcesso(produto) {
-  // 1. Sempre salva no localStorage (funciona sem login)
-  try {
-    const CHAVE = "allforone_history_produtos";
-    const historico = JSON.parse(localStorage.getItem(CHAVE) || "[]");
-    const filtrado = historico.filter(item => item._id !== produto._id);
-    filtrado.unshift({
-      _id: produto._id,
-      nome: produto.nome,
-      marca: produto.marca || "",
-      imagem: produto.imagem || "",
-      precoMedio: produto.precoMedio || 0,
-      categoriaTag: produto.categoriaTag || "",
-      acessadoEm: new Date().toISOString()
-    });
-    localStorage.setItem(CHAVE, JSON.stringify(filtrado.slice(0, 50)));
-  } catch (err) {
-    console.error("Erro ao salvar histórico local:", err);
-  }
+  if (!isAuthenticated()) return;
 
-  // 2. Persiste no banco se o usuário estiver logado (silencioso)
-  try {
-    const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
-    if (!usuario?.authId) return; // Só envia se tiver authId
-    fetch(`${apiBase}/historico`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        authId: usuario.authId,
-        productId: produto._id,
-        _id: produto._id,
-      }),
+  apiFetch("/historico", {
+    method: "POST",
+    body: JSON.stringify({
+      productId: produto._id,
+      _id: produto._id,
+    }),
+  })
+    .then(async (res) => {
+      if (!res.ok) {
+        const text = await res.text();
+        console.warn("Falha ao registrar histórico no backend:", res.status, text);
+      }
     })
-      .then(async (res) => {
-        if (!res.ok) {
-          const text = await res.text();
-          console.warn("Falha ao registrar histórico no backend:", res.status, text);
-        }
-      })
-      .catch((err) => console.warn("Erro na requisição do histórico:", err));
-  } catch (err) {
-    console.warn("Erro ao ler usuário para o histórico:", err);
-  }
+    .catch((err) => console.warn("Erro na requisição do histórico:", err));
 }
 
 

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Header from "../Header.jsx";
-import { apiBase } from "../config.jsx";
+import { apiFetch } from "../auth/api.js";
 
 export default function Historico() {
   const [historicoVistos, setHistoricoVistos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [fonte, setFonte] = useState("local"); // "banco" ou "local"
+  const [fonte, setFonte] = useState("banco");
 
   useEffect(() => {
     carregarHistorico();
@@ -15,29 +15,13 @@ export default function Historico() {
   async function carregarHistorico() {
     setLoading(true);
     try {
-      const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
-
-      // Se o usuário está logado e tem authId, busca do banco
-      if (usuario?.authId) {
-        try {
-          const res = await fetch(`${apiBase}/historico?authId=${encodeURIComponent(usuario.authId)}`);
-          if (res.ok) {
-            const data = await res.json();
-            if (!data.error && Array.isArray(data.content)) {
-              setHistoricoVistos(data.content);
-              setFonte("banco");
-              return;
-            }
-          }
-        } catch (err) {
-          console.warn("Falha ao buscar histórico do banco, usando localStorage:", err);
-        }
+      const res = await apiFetch("/historico");
+      if (!res.ok) {
+        throw new Error("Falha ao carregar histórico");
       }
-
-      // Fallback: localStorage (usuário não logado ou backend indisponível)
-      const vistosLocais = JSON.parse(localStorage.getItem("allforone_history_produtos") || "[]");
-      setHistoricoVistos(vistosLocais);
-      setFonte("local");
+      const data = await res.json();
+      setHistoricoVistos(Array.isArray(data.content) ? data.content : []);
+      setFonte("banco");
     } catch (err) {
       console.error("Erro ao carregar histórico:", err);
       setHistoricoVistos([]);
@@ -47,21 +31,16 @@ export default function Historico() {
   }
 
   const handleLimparHistorico = async () => {
-    const confirmar = window.confirm("Tem certeza que deseja limpar o histórico de produtos vistos?");
+    const confirmar = window.confirm(
+      "Tem certeza que deseja limpar o histórico de produtos vistos?",
+    );
     if (!confirmar) return;
 
-    // Limpa localStorage sempre
-    localStorage.removeItem("allforone_history_produtos");
-
-    // Se logado, limpa também no banco
     try {
-      const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
-      if (usuario?.authId) {
-        await fetch(`${apiBase}/historico?authId=${encodeURIComponent(usuario.authId)}`, {
-          method: "DELETE",
-        }).catch(() => {});
-      }
-    } catch { /* Ignora */ }
+      await apiFetch("/historico", { method: "DELETE" });
+    } catch {
+      /* Ignora */
+    }
 
     setHistoricoVistos([]);
   };

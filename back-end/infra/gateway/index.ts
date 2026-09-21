@@ -1,7 +1,11 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import config from "../../mss/shared/utils/config.js";
 import Gateway from "./Gateway.js";
+import { requireAuth } from "./auth.js";
 import {
   emptyGatewayFields,
   extractUsuario,
@@ -9,6 +13,15 @@ import {
   isGatewayTransportError,
   parseMssResponse,
 } from "../../shared/utils/gateway/mssResponse.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+for (const envPath of [
+  path.join(__dirname, "../../../.env"),
+  path.join(__dirname, "../../.env"),
+  path.join(__dirname, "../.env"),
+]) {
+  dotenv.config({ path: envPath, override: true, quiet: true });
+}
 
 const svc = config.ports.back;
 const paths = config.paths;
@@ -24,6 +37,8 @@ const gateway = new Gateway();
 const endpoints = {
   authLogin: `${base}:${svc.auth}${paths.auth.login}`,
   authRegister: `${base}:${svc.auth}${paths.auth.register}`,
+  authRefresh: `${base}:${svc.auth}${paths.auth.refresh}`,
+  authLogout: `${base}:${svc.auth}${paths.auth.logout}`,
   authPassword: `${base}:${svc.auth}${paths.auth.update.password}`,
   catalogList: `${base}:${svc.catalog}${paths.catalog.catalog}`,
   catalogProduct: `${base}:${svc.catalog}${paths.catalog.product}`,
@@ -39,6 +54,17 @@ for (const [name, url] of Object.entries(endpoints)) {
 
 function transportErrorResponse(res: express.Response, status: number) {
   return res.status(status).json({ message: "Erro ao conectar com o servidor" });
+}
+
+function sessionFromContent(content: unknown) {
+  const raw = (content ?? {}) as Record<string, unknown>;
+  return {
+    usuario: extractUsuario(raw),
+    accessToken: raw.accessToken,
+    refreshToken: raw.refreshToken,
+    expiresIn: raw.expiresIn,
+    tokenType: raw.tokenType || "Bearer",
+  };
 }
 
 app.post(paths.auth.login, async (req, res) => {
@@ -64,11 +90,63 @@ app.post(paths.auth.login, async (req, res) => {
 
     return res.json({
       message: data.message || "Login OK",
-      usuario: extractUsuario(data.content),
+      ...sessionFromContent(data.content),
     });
   } catch (err) {
     console.error("[gateway] Erro no login:", err);
     res.status(500).json({ message: "Erro ao conectar com o servidor" });
+  }
+});
+
+app.post(paths.auth.refresh, async (req, res) => {
+  try {
+    const refreshToken = req.body?.refreshToken;
+    const result = await gateway.makeRequest({
+      method: "POST",
+      endpointName: "authRefresh",
+      body: { payload: { refreshToken } },
+      ...emptyGatewayFields,
+    });
+
+    if (isGatewayTransportError(result.status)) {
+      return transportErrorResponse(res, result.status);
+    }
+
+    const data = parseMssResponse(result.data);
+    if (data.error) {
+      return res
+        .status(data.status || 401)
+        .json({ message: formatMssMessage(data.message) });
+    }
+
+    return res.json({
+      message: data.message || "Token renovado",
+      ...sessionFromContent(data.content),
+    });
+  } catch (err) {
+    console.error("[gateway] Erro no refresh:", err);
+    res.status(500).json({ message: "Erro ao renovar token" });
+  }
+});
+
+app.post(paths.auth.logout, async (req, res) => {
+  try {
+    const refreshToken = req.body?.refreshToken;
+    const result = await gateway.makeRequest({
+      method: "POST",
+      endpointName: "authLogout",
+      body: { payload: { refreshToken } },
+      ...emptyGatewayFields,
+    });
+
+    if (isGatewayTransportError(result.status)) {
+      return transportErrorResponse(res, result.status);
+    }
+
+    return res.json({ message: "Logout OK" });
+  } catch (err) {
+    console.error("[gateway] Erro no logout:", err);
+    res.status(500).json({ message: "Erro ao sair" });
   }
 });
 
@@ -104,9 +182,10 @@ app.post(paths.auth.register, async (req, res) => {
   }
 });
 
-app.put(paths.user.perfil, async (req, res) => {
+app.put(paths.user.perfil, requireAuth, async (req, res) => {
   try {
-    const { email, nome, senha } = req.body;
+    const email = req.auth?.email || req.body?.email;
+    const { nome, senha } = req.body;
 
     if (senha) {
       const result = await gateway.makeRequest({
@@ -130,7 +209,11 @@ app.put(paths.user.perfil, async (req, res) => {
 
     return res.json({
       message: "Dados atualizados",
-      usuario: { email, nome },
+      usuario: {
+        email,
+        nome: nome || req.auth?.nome,
+        authId: req.auth?.sub,
+      },
     });
   } catch (err) {
     console.error("[gateway] Erro no perfil:", err);
@@ -211,12 +294,16 @@ app.get(`${paths.review.list}/:produtoId`, async (req, res) => {
   }
 });
 
-app.post(paths.review.create, async (req, res) => {
+app.post(paths.review.create, requireAuth, async (req, res) => {
   try {
     const result = await gateway.makeRequest({
       method: "POST",
       endpointName: "reviewCreate",
-      body: req.body,
+      body: {
+        ...req.body,
+        email: req.auth?.email,
+        nome: req.auth?.nome,
+      },
       ...emptyGatewayFields,
     });
 
@@ -231,16 +318,14 @@ app.post(paths.review.create, async (req, res) => {
   }
 });
 
-app.post(paths.history.history, async (req, res) => {
+app.post(paths.history.history, requireAuth, async (req, res) => {
   try {
-    const body =
-      req.body?.payload != null
-        ? req.body
-        : {
-            authId: req.body?.authId,
-            productId: req.body?.productId ?? req.body?._id,
-            _id: req.body?._id ?? req.body?.productId,
-          };
+    const authId = req.auth!.sub;
+    const body = {
+      authId,
+      productId: req.body?.productId ?? req.body?._id,
+      _id: req.body?._id ?? req.body?.productId,
+    };
 
     const result = await gateway.makeRequest({
       method: "POST",
@@ -269,12 +354,9 @@ app.post(paths.history.history, async (req, res) => {
   }
 });
 
-app.get(paths.history.history, async (req, res) => {
+app.get(paths.history.history, requireAuth, async (req, res) => {
   try {
-    const authId = String(req.query.authId ?? "");
-    if (!authId) {
-      return res.status(400).json({ error: "authId é obrigatório" });
-    }
+    const authId = req.auth!.sub;
 
     const result = await gateway.makeRequest({
       method: "GET",
@@ -294,7 +376,6 @@ app.get(paths.history.history, async (req, res) => {
         .json({ error: formatMssMessage(data.message) || "Erro ao carregar histórico" });
     }
 
-    // Front espera { error, content } ou array; mantém envelope do MSS
     return res.status(data.status || 200).json({
       error: false,
       content: data.content ?? [],
@@ -305,12 +386,9 @@ app.get(paths.history.history, async (req, res) => {
   }
 });
 
-app.delete(paths.history.history, async (req, res) => {
+app.delete(paths.history.history, requireAuth, async (req, res) => {
   try {
-    const authId = String(req.query.authId ?? "");
-    if (!authId) {
-      return res.status(400).json({ error: "authId é obrigatório" });
-    }
+    const authId = req.auth!.sub;
 
     const result = await gateway.makeRequest({
       method: "DELETE",

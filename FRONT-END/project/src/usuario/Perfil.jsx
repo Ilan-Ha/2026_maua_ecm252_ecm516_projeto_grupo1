@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../Header.jsx";
-import config, { apiBase } from "../config";
+import config from "../config";
+import { useAuth } from "../auth/AuthContext.jsx";
+import { apiFetch } from "../auth/api.js";
+import { saveSession } from "../auth/session.js";
 
-export default function Perfil({ usuario, setUsuario }) {
+export default function Perfil() {
   const svc = config.services.user;
   const loginPath = config.services.auth.endpoints.login;
-  const url = apiBase + svc.endpoints.perfil;
+  const url = svc.endpoints.perfil;
   const navigate = useNavigate();
+  const { usuario, logout, loginSession } = useAuth();
 
   const [form, setForm] = useState({
     email: usuario?.email || "",
@@ -26,9 +30,8 @@ export default function Perfil({ usuario, setUsuario }) {
     if (mensagem.texto) setMensagem({ tipo: "", texto: "" });
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("usuario");
-    setUsuario(null);
+  const handleLogout = async () => {
+    await logout();
     navigate(loginPath);
   };
 
@@ -60,11 +63,8 @@ export default function Perfil({ usuario, setUsuario }) {
     if (form.senha) payload.senha = form.senha;
 
     try {
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(payload),
       });
 
@@ -85,8 +85,13 @@ export default function Perfil({ usuario, setUsuario }) {
       });
 
       if (data.usuario) {
-        setUsuario(data.usuario);
-        localStorage.setItem("usuario", JSON.stringify(data.usuario));
+        loginSession({
+          usuario: data.usuario,
+          accessToken: undefined,
+          refreshToken: undefined,
+        });
+        // preserve tokens: saveSession only updates provided fields
+        saveSession({ usuario: data.usuario });
         setForm({
           email: data.usuario.email,
           nome: data.usuario.nome,
@@ -132,106 +137,73 @@ export default function Perfil({ usuario, setUsuario }) {
         <div className="auth-card perfil-card">
           <h2 className="auth-title">Meu perfil</h2>
           <p className="auth-subtitle text-muted">
-            Atualize seu nome ou altere sua senha de acesso.
+            Atualize seus dados ou altere a senha.
           </p>
 
           {mensagem.texto && (
-            <div
-              className={`alert alert-${mensagem.tipo} auth-alert`}
-              role="alert"
-            >
+            <div className={`alert alert-${mensagem.tipo} auth-alert`} role="alert">
               {mensagem.texto}
             </div>
           )}
 
           <form onSubmit={handleUpdate} className="auth-form">
             <div className="mb-3 text-start">
-              <label htmlFor="perfil-email" className="form-label auth-label">
-                Email
-              </label>
+              <label className="form-label auth-label">Email</label>
               <input
-                id="perfil-email"
                 className="form-control auth-input"
                 type="email"
                 name="email"
                 value={form.email}
+                onChange={handleChange}
+                required
                 disabled
-                autoComplete="email"
               />
             </div>
-
             <div className="mb-3 text-start">
-              <label htmlFor="perfil-nome" className="form-label auth-label">
-                Nome
-              </label>
+              <label className="form-label auth-label">Nome</label>
               <input
-                id="perfil-nome"
                 className="form-control auth-input"
                 type="text"
                 name="nome"
-                placeholder="Seu nome"
                 value={form.nome}
                 onChange={handleChange}
                 required
-                autoComplete="name"
               />
             </div>
-
             <div className="mb-3 text-start">
-              <label htmlFor="perfil-senha" className="form-label auth-label">
-                Nova senha
-              </label>
+              <label className="form-label auth-label">Nova senha</label>
               <input
-                id="perfil-senha"
                 className="form-control auth-input"
                 type="password"
                 name="senha"
-                placeholder="Deixe em branco para manter a atual"
                 value={form.senha}
                 onChange={handleChange}
-                minLength={8}
                 autoComplete="new-password"
               />
             </div>
-
             <div className="mb-4 text-start">
-              <label
-                htmlFor="perfil-confirmarSenha"
-                className="form-label auth-label"
-              >
-                Confirmar nova senha
-              </label>
+              <label className="form-label auth-label">Confirmar senha</label>
               <input
-                id="perfil-confirmarSenha"
                 className="form-control auth-input"
                 type="password"
                 name="confirmarSenha"
-                placeholder="Repita a nova senha"
                 value={form.confirmarSenha}
                 onChange={handleChange}
-                minLength={8}
                 autoComplete="new-password"
               />
             </div>
-
             <button className="auth-submit" type="submit" disabled={loading}>
-              {loading ? "Salvando..." : "Salvar alterações"}
+              {loading ? "Salvando..." : "Salvar"}
             </button>
           </form>
 
-          <p className="auth-footer">
-            <Link to={config.start} className="auth-link">
-              Voltar ao catálogo
-            </Link>
-            {" · "}
-            <button
-              type="button"
-              className="btn btn-link auth-link p-0 align-baseline border-0"
-              onClick={handleLogout}
-            >
-              Sair
-            </button>
-          </p>
+          <button
+            type="button"
+            className="btn btn-outline-danger w-100 mt-3"
+            onClick={handleLogout}
+          >
+            Sair
+          </button>
         </div>
       </div>
     </div>
