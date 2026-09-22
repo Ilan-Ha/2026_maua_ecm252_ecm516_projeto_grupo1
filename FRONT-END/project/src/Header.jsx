@@ -1,28 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import config from "./config";
+import { useAuth } from "./auth/AuthContext.jsx";
 
 export default function Header() {
   const svc = config.services;
   const navigate = useNavigate();
-  const [usuario, setUsuario] = useState(null);
+  const { usuario, logout } = useAuth();
 
-  useEffect(() => {
-    const saved = localStorage.getItem("usuario");
-    if (saved) {
-      try {
-        setUsuario(JSON.parse(saved));
-      } catch (e) {
-        console.error("Erro ao carregar usuário", e);
-      }
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("usuario");
-    setUsuario(null);
+  const handleLogout = async () => {
+    await logout();
     navigate("/");
-    window.location.reload();
   };
 
   return (

@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import Header from "../Header.jsx";
 import config, { apiBase } from "../config";
+import { useAuth } from "../auth/AuthContext.jsx";
 
-export default function Login({ setUsuario }) {
+export default function Login() {
   const svc = config.services.auth;
   const perfilPath = config.services.user.endpoints.perfil;
   const url = apiBase + svc.endpoints.login;
   const navigate = useNavigate();
+  const location = useLocation();
+  const { loginSession } = useAuth();
 
   const [form, setForm] = useState({
     email: "",
@@ -49,13 +52,19 @@ export default function Login({ setUsuario }) {
 
       const data = await res.json();
       const usuario = data.usuario || data.content?.usuario;
-      if (!usuario) {
+      if (!usuario || !data.accessToken) {
         setMensagem({ tipo: "danger", texto: "Resposta inválida do servidor" });
         return;
       }
-      setUsuario(usuario);
-      localStorage.setItem("usuario", JSON.stringify(usuario));
-      navigate(perfilPath);
+
+      loginSession({
+        usuario,
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+      });
+
+      const redirectTo = location.state?.from || perfilPath;
+      navigate(redirectTo);
     } catch {
       setMensagem({
         tipo: "danger",
@@ -73,7 +82,7 @@ export default function Login({ setUsuario }) {
         <div className="auth-card login-card">
           <h2 className="auth-title">Entrar</h2>
           <p className="auth-subtitle text-muted">
-            Acesse sua conta para ver seu perfil e comparar produtos.
+            Acesse sua conta para ver seu perfil, histórico e avaliações.
           </p>
 
           {mensagem.texto && (
@@ -120,11 +129,7 @@ export default function Login({ setUsuario }) {
               />
             </div>
 
-            <button
-              className="auth-submit"
-              type="submit"
-              disabled={loading}
-            >
+            <button className="auth-submit" type="submit" disabled={loading}>
               {loading ? "Entrando..." : "Entrar"}
             </button>
           </form>

@@ -1,29 +1,47 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Header from "../Header.jsx";
+import { apiFetch } from "../auth/api.js";
 
 export default function Historico() {
   const [historicoVistos, setHistoricoVistos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fonte, setFonte] = useState("banco");
 
-  // Carrega os dados salvos do localStorage
   useEffect(() => {
+    carregarHistorico();
+  }, []);
+
+  async function carregarHistorico() {
     setLoading(true);
     try {
-      const vistosLocais = JSON.parse(localStorage.getItem("allforone_history_produtos") || "[]");
-      setHistoricoVistos(vistosLocais);
+      const res = await apiFetch("/historico");
+      if (!res.ok) {
+        throw new Error("Falha ao carregar histórico");
+      }
+      const data = await res.json();
+      setHistoricoVistos(Array.isArray(data.content) ? data.content : []);
+      setFonte("banco");
     } catch (err) {
-      console.error("Erro ao ler histórico do localStorage", err);
+      console.error("Erro ao carregar histórico:", err);
+      setHistoricoVistos([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }
 
-  // Limpa o histórico de produtos
-  const handleLimparHistorico = () => {
-    const confirmar = window.confirm("Tem certeza que deseja limpar o histórico de produtos vistos?");
+  const handleLimparHistorico = async () => {
+    const confirmar = window.confirm(
+      "Tem certeza que deseja limpar o histórico de produtos vistos?",
+    );
     if (!confirmar) return;
-    localStorage.removeItem("allforone_history_produtos");
+
+    try {
+      await apiFetch("/historico", { method: "DELETE" });
+    } catch {
+      /* Ignora */
+    }
+
     setHistoricoVistos([]);
   };
 
@@ -40,6 +58,11 @@ export default function Historico() {
             </h2>
             <p className="text-muted mb-0">
               Revise os produtos que você acessou recentemente
+              {fonte === "banco" && (
+                <span className="badge bg-success-subtle text-success ms-2" style={{ fontSize: "0.72rem" }}>
+                  💾 Sincronizado
+                </span>
+              )}
             </p>
           </div>
           {historicoVistos.length > 0 && (
@@ -98,6 +121,13 @@ export default function Historico() {
                           R$ {item.precoMedio.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                         </p>
                       )}
+                      {item.acessadoEm && (
+                        <small className="text-muted d-block" style={{ fontSize: "0.72rem" }}>
+                          {new Date(item.acessadoEm).toLocaleDateString("pt-BR", {
+                            day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit"
+                          })}
+                        </small>
+                      )}
                       <Link
                         to={`/produto/${item._id}`}
                         className="btn btn-link text-success p-0 fw-semibold text-decoration-none"
@@ -117,4 +147,3 @@ export default function Historico() {
     </div>
   );
 }
-

@@ -1,0 +1,15 @@
+{
+  "name": "@allforone/logging",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./writer.ts",
+  "exports": {
+    ".": "./writer.ts",
+    "./express": "./express.ts",
+    "./correlation": "./correlation.ts"
+  },
+  "dependencies": {
+    "mongoose": "^9.6.1"
+  }
+}

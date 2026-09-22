@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@allforone/contracts": "file:../../back-end/packages/contracts",
     "@fortawesome/fontawesome-free": "^7.2.0",
     "bootstrap": "^5.3.8",
     "react": "^19.2.4",
