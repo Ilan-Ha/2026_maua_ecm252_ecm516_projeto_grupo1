@@ -20,7 +20,7 @@ Registro do que foi feito em cada sessão:
 
 - [tarefas/README.md](./tarefas/README.md) — convenção e template
 - [tarefas/2026-09-21/](./tarefas/2026-09-21/) — Nest, auth Bearer, logs console
-- [tarefas/2026-09-22/](./tarefas/2026-09-22/) — Infra Nest (gateway + buses)
+- [tarefas/2026-09-22/](./tarefas/2026-09-22/) — Infra Nest + pacote `@allforone/contracts`
 
 ## Como agentes devem atualizar
 
@@ -45,4 +45,4 @@ npm --prefix back-end/mss/catalog run build
 - Gateway: `http://localhost:10000`
 - Front (Vite): `http://localhost:5173`
 - Logs console: `http://localhost:5174`
-- Contrato compartilhado: `back-end/api-shared-config.json`
+- Contrato compartilhado: `@allforone/contracts` (`back-end/packages/contracts`)

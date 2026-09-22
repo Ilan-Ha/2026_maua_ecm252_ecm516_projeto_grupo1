@@ -75,7 +75,7 @@ Módulos em `back-end/infra/gateway/src/`:
 - Request: `POST /requisicao` (registry tipado dos `requests.*` do config)
 - Campo wire de callback no event-bus permanece `calbackUrl` (typo histórico — não renomear no contrato)
 - Também emitem logs HTTP/event/request para `app_logs`
-- Nomes de eventos/requests em `api-shared-config.json` (`events.*`, `requests.*`)
+- Nomes de eventos/requests no pacote `@allforone/contracts` (`events.*`, `requests.*`)
 
 ## Console de logs
 

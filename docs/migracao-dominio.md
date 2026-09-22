@@ -8,7 +8,7 @@ Catalog (slim) · Price/Offer · Comparison · User/Account · Notification (só
 
 ## Já feito (parcial)
 
-- Contrato `api-shared-config.json` com portas/paths/ownership reservados
+- Contrato `@allforone/contracts` (`back-end/packages/contracts`) com portas/paths/ownership reservados
 - MSS atuais em Nest + layout flat
 - Auth Bearer (access/refresh)
 - Branches `modernizacao/*` a partir de `modernizacao/stack`

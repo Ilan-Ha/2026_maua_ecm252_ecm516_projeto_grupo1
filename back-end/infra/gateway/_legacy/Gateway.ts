@@ -1,5 +1,5 @@
 import axios from "axios";
-import config from "../../mss/shared/utils/config.js";
+import config from "@allforone/contracts";
 import { Endpoint, GatewayRequest, GatewayResponse, HealthReport, ServiceStatus } from "../../shared/interfaces/gateway/gatewayInterfaces.js";
 import { getCorrelationId } from "../../shared/logging/correlation.ts";
 const HEALTH_TIMEOUT_MS = 3000;
