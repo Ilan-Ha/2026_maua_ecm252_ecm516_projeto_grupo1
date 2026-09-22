@@ -10,10 +10,11 @@
 - Extraído `back-end/api-shared-config.json` para `back-end/packages/contracts` (`@allforone/contracts`)
 - Exports CJS/ESM + `index.d.ts`
 - 6 MSS Nest: `getAppConfig()` importa o pacote (sem `readFileSync`)
-- Infra Express (gateway, event-bus, request-bus): `import` do pacote
+- Infra Nest (gateway, event-bus, request-bus): `getAppConfig()` via pacote
 - Front: `config.jsx` importa `@allforone/contracts`
 - `scripts/install-all.js` instala o pacote antes dos consumidores
 - Removido `back-end/mss/shared/utils/config.js` (morto)
+- Rebase/merge com `modernizacao/infra-nest` (Nest + contracts juntos)
 
 ## Como foi feito
 
@@ -31,7 +32,6 @@ npm start
 
 - Nest `ConfigModule` em cima do pacote (opcional)
 - npm workspaces na raiz (opcional)
-- Rebase com `modernizacao/infra-nest` quando mergeado no stack
 
 ## Arquivos tocados
 

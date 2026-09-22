@@ -20,7 +20,7 @@ Registro do que foi feito em cada sessão:
 
 - [tarefas/README.md](./tarefas/README.md) — convenção e template
 - [tarefas/2026-09-21/](./tarefas/2026-09-21/) — Nest, auth Bearer, logs console
-- [tarefas/2026-09-22/](./tarefas/2026-09-22/) — Pacote `@allforone/contracts`
+- [tarefas/2026-09-22/](./tarefas/2026-09-22/) — Infra Nest + pacote `@allforone/contracts`
 
 ## Como agentes devem atualizar
 

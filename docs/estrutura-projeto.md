@@ -7,9 +7,9 @@
 ├── back-end/
 │   ├── packages/
 │   │   └── contracts/           # @allforone/contracts (api-shared-config)
-│   ├── infra/                   # gateway, event-bus, request-bus
-│   ├── mss/                     # microsserviços (layout flat)
-│   └── shared/                  # logging Express + helpers gateway
+│   ├── infra/                   # gateway, event-bus, request-bus (NestJS)
+│   ├── mss/                     # microsserviços (layout flat, NestJS)
+│   └── shared/                  # logging Express legado + helpers
 ├── front-end/project/           # React + Vite (site AllForOne)
 ├── front-end/logs/              # Console de logs (Vite :5174, localhost)
 ├── docs/                        # documentação (agentes + time)
@@ -74,6 +74,7 @@ Branch base: `modernizacao/stack`
 | `modernizacao/04-user-account` | Unificar auth+user+history |
 | `modernizacao/05-notification` | Notification consumidor |
 | `modernizacao/nestjs-mss-flat` | Layout flat Nest |
+| `modernizacao/infra-nest` | Gateway + event/request bus Nest |
 | `modernizacao/contracts-package` | Pacote `@allforone/contracts` |
 
 ## O que NÃO fazer
