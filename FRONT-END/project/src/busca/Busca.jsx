@@ -8,6 +8,7 @@ const Search = () => {
 
   // Estado do Catálogo
   const [data, setData] = useState({ Categorias: [], Itens: {} });
+  const [catalogErro, setCatalogErro] = useState(null);
 
   // Categoria selecionada
   const [categoriaSel, setCategoriaSel] = useState("");
@@ -20,10 +21,39 @@ const Search = () => {
 
   // Carrega catálogo inicial
   useEffect(() => {
+    let cancelled = false;
+    setCatalogErro(null);
+
     fetch(`${baseUrl}/catalogo`)
-      .then((res) => res.json())
-      .then((json) => setData(json))
-      .catch(console.error);
+      .then(async (res) => {
+        const json = await res.json().catch(() => null);
+        if (!res.ok) {
+          throw new Error(json?.error || json?.message || "Catálogo indisponível");
+        }
+        if (!json || !Array.isArray(json.Categorias)) {
+          throw new Error("Resposta inválida do catálogo");
+        }
+        return json;
+      })
+      .then((json) => {
+        if (!cancelled) {
+          setData({
+            Categorias: json.Categorias,
+            Itens: json.Itens && typeof json.Itens === "object" ? json.Itens : {},
+          });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        if (!cancelled) {
+          setData({ Categorias: [], Itens: {} });
+          setCatalogErro(err.message || "Erro ao carregar catálogo");
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [baseUrl]);
 
   // Ao mudar de categoria, limpa as colunas e os detalhes
@@ -87,7 +117,8 @@ const Search = () => {
   };
 
   const chavesSpecs = getTodasEspecificacoes();
-  const listaProdutos = categoriaSel ? data.Itens[categoriaSel] || [] : [];
+  const categorias = Array.isArray(data.Categorias) ? data.Categorias : [];
+  const listaProdutos = categoriaSel ? data.Itens?.[categoriaSel] || [] : [];
   
   // Calcula menor preço para destacar
   const precosValidos = colunas
@@ -106,6 +137,12 @@ const Search = () => {
           Comparação de Produtos
         </h2>
 
+        {catalogErro && (
+          <div className="alert alert-warning text-center" role="alert">
+            {catalogErro}
+          </div>
+        )}
+
         {/* CONTROLES DE SELEÇÃO */}
         <div className="card shadow-sm p-4 mb-4 rounded-4">
           <div className="mb-4 d-flex flex-column align-items-center">
@@ -115,9 +152,10 @@ const Search = () => {
               value={categoriaSel}
               onChange={(e) => setCategoriaSel(e.target.value)}
               style={{ maxWidth: "300px" }}
+              disabled={!!catalogErro || categorias.length === 0}
             >
               <option value="">Selecione...</option>
-              {data.Categorias.map((cat, i) => (
+              {categorias.map((cat, i) => (
                 <option key={i} value={cat.tag}>
                   {cat.nome}
                 </option>

@@ -3,50 +3,29 @@ import { useParams, Link } from "react-router-dom";
 import Header from "../Header.jsx";
 import config, { apiBase } from "../config.jsx";
 import ReviewSection from "./ReviewSection.jsx";
+import { apiFetch } from "../auth/api.js";
+import { isAuthenticated } from "../auth/session.js";
 
-// Salva o acesso ao produto no localStorage e no backend
+// Persiste acesso no backend quando logado
 function registrarAcesso(produto) {
-  try {
-    const CHAVE = "allforone_history_produtos";
-    const historico = JSON.parse(localStorage.getItem(CHAVE) || "[]");
-    // Remove entrada anterior do mesmo produto para não duplicar
-    const filtrado = historico.filter(item => item._id !== produto._id);
-    // Insere no início com timestamp
-    filtrado.unshift({
-      _id: produto._id,
-      nome: produto.nome,
-      marca: produto.marca || "",
-      imagem: produto.imagem || "",
-      precoMedio: produto.precoMedio || 0,
-      categoriaTag: produto.categoriaTag || "",
-      acessadoEm: new Date().toISOString()
-    });
-    // Mantém no máximo 50 itens
-    localStorage.setItem(CHAVE, JSON.stringify(filtrado.slice(0, 50)));
-  } catch (err) {
-    console.error("Erro ao salvar histórico local:", err);
-  }
+  if (!isAuthenticated()) return;
 
-  // Persiste no backend (silencioso: falhas não afetam a experiência)
-  try {
-    const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
-    const svcHistory = config.services.history;
-    const url = config.url + ":" + svcHistory.port + svcHistory.endpoints.history;
-    fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: usuario?.email || "anonimo",
-        _id: produto._id,
-        nome: produto.nome,
-        marca: produto.marca || "",
-        imagem: produto.imagem || "",
-        precoMedio: produto.precoMedio || 0,
-        categoriaTag: produto.categoriaTag || ""
-      })
-    }).catch(() => {}); // Ignora erros de rede silenciosamente
-  } catch { /* Ignora */ }
+  apiFetch("/historico", {
+    method: "POST",
+    body: JSON.stringify({
+      productId: produto._id,
+      _id: produto._id,
+    }),
+  })
+    .then(async (res) => {
+      if (!res.ok) {
+        const text = await res.text();
+        console.warn("Falha ao registrar histórico no backend:", res.status, text);
+      }
+    })
+    .catch((err) => console.warn("Erro na requisição do histórico:", err));
 }
+
 
 export default function DetalhesProduto() {
   const { id } = useParams();

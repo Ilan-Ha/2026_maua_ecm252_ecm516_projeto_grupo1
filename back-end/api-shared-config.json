@@ -1,0 +1,244 @@
+{
+  "url": "http://localhost",
+  "start": "/",
+  "gateway": {
+    "port": 10000,
+    "baseUrl": "http://localhost:10000"
+  },
+  "requests": {
+    "user": {
+      "exist": "user.exist",
+      "byEmail": "user.byEmail",
+      "byAuthId": "user.byAuthId",
+      "name": {
+        "exits": "user.name.exists",
+        "valdate": "user.name.validate",
+        "tell": "user.name.tell"
+      }
+    },
+    "catalog": {
+      "product": {
+        "exist": "catalog.product.exist",
+        "get": "catalog.product.get"
+      }
+    },
+    "price": {
+      "offer": {
+        "byProduct": "price.offer.byProduct",
+        "byProducts": "price.offer.byProducts"
+      }
+    }
+  },
+  "events": {
+    "user": {
+      "register": "user.create",
+      "added": "user.added",
+      "not.register": "user.re.register",
+      "registered": "user.registered",
+      "favorite": {
+        "added": "favorite.added",
+        "removed": "favorite.removed"
+      },
+      "savedList": {
+        "updated": "savedList.updated"
+      }
+    },
+    "product": {
+      "created": "product.created",
+      "updated": "product.updated",
+      "deleted": "product.deleted"
+    },
+    "offer": {
+      "upserted": "offer.upserted"
+    },
+    "price": {
+      "changed": "price.changed",
+      "dropped": "price.dropped"
+    },
+    "stock": {
+      "back": "stock.back"
+    },
+    "comparison": {
+      "created": "comparison.created"
+    },
+    "review": {
+      "created": "review.created"
+    }
+  },
+  "ports": {
+    "back": {
+      "requestBus": 10002,
+      "eventBus": 10001,
+      "gateway": 10000,
+      "images": 3000,
+      "auth": 3001,
+      "user": 3002,
+      "catalog": 3003,
+      "review": 3004,
+      "history": 3005,
+      "userAccount": 3001,
+      "priceOffer": 3006,
+      "comparison": 3007,
+      "notification": 3008,
+      "logs": 3009
+    },
+    "front": {
+      "shell": 4000,
+      "auth": 4001,
+      "user": 4002,
+      "catalog": 4003,
+      "review": 4004,
+      "history": 4005,
+      "logs": 5174
+    }
+  },
+  "paths": {
+    "start": "/",
+    "requests": {
+      "request": "/requisicao"
+    },
+    "events": {
+      "event": "/eventos",
+      "subscribe": "/inscricao",
+      "unsubscribe": "/desinscricao"
+    },
+    "auth": {
+      "login": "/login",
+      "register": "/cadastro",
+      "refresh": "/auth/refresh",
+      "logout": "/auth/logout",
+      "update": {
+        "password": "/perfil/atualizar/senha"
+      }
+    },
+    "user": {
+      "perfil": "/perfil",
+      "update": "/perfil/atualizar"
+    },
+    "catalog": {
+      "catalog": "/catalogo",
+      "product": "/produto"
+    },
+    "price": {
+      "offers": "/ofertas",
+      "byProduct": "/ofertas/produto"
+    },
+    "history": {
+      "history": "/historico"
+    },
+    "favorites": {
+      "list": "/favoritos"
+    },
+    "lists": {
+      "list": "/listas"
+    },
+    "search": {
+      "search": "/comparar"
+    },
+    "comparison": {
+      "compare": "/comparar"
+    },
+    "review": {
+      "list": "/reviews/produto",
+      "create": "/reviews"
+    },
+    "notification": {
+      "inbox": "/notificacoes"
+    },
+    "logs": {
+      "list": "/logs",
+      "byId": "/logs"
+    }
+  },
+  "services": {
+    "auth": {
+      "port": 10000,
+      "endpoints": {
+        "login": "/login",
+        "register": "/cadastro",
+        "refresh": "/auth/refresh",
+        "logout": "/auth/logout"
+      }
+    },
+    "user": {
+      "port": 10000,
+      "endpoints": {
+        "perfil": "/perfil",
+        "update": "/perfil/atualizar"
+      }
+    },
+    "catalog": {
+      "port": 10000,
+      "endpoints": {
+        "catalog": "/catalogo",
+        "product": "/produto"
+      }
+    },
+    "price": {
+      "port": 10000,
+      "endpoints": {
+        "offers": "/ofertas",
+        "byProduct": "/ofertas/produto"
+      }
+    },
+    "search": {
+      "port": 10000,
+      "endpoints": {
+        "search": "/comparar"
+      }
+    },
+    "comparison": {
+      "port": 10000,
+      "endpoints": {
+        "compare": "/comparar"
+      }
+    },
+    "review": {
+      "port": 10000,
+      "endpoints": {
+        "list": "/reviews/produto",
+        "create": "/reviews"
+      }
+    },
+    "history": {
+      "port": 10000,
+      "endpoints": {
+        "history": "/historico"
+      }
+    },
+    "favorites": {
+      "port": 10000,
+      "endpoints": {
+        "list": "/favoritos"
+      }
+    },
+    "lists": {
+      "port": 10000,
+      "endpoints": {
+        "list": "/listas"
+      }
+    },
+    "notification": {
+      "port": 10000,
+      "endpoints": {
+        "inbox": "/notificacoes"
+      }
+    },
+    "logs": {
+      "port": 10000,
+      "endpoints": {
+        "list": "/logs",
+        "byId": "/logs"
+      }
+    }
+  },
+  "ownership": {
+    "catalog": "categoria, marca, specs, imagens, lancamento — sem preco/lojas",
+    "priceOffer": "ofertas por loja, precoMedio derivado, historico de preco",
+    "comparison": "matriz spec-a-spec + vencedores + preco atual",
+    "userAccount": "auth + perfil + historico + favoritos + listas salvas",
+    "notification": "so consome eventos; sem rota de negocio obrigatoria no gateway",
+    "review": "avaliacoes (legado Nest ate fase 2 analytics)",
+    "logs": "consulta read-only de app_logs (console localhost)"
+  }
+}

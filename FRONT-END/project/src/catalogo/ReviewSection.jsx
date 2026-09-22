@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import config, { apiBase } from "../config.jsx";
+import { useAuth } from "../auth/AuthContext.jsx";
+import { apiFetch } from "../auth/api.js";
 
 function Estrelas({ valor, max = 5, tamanho = "1.1rem", interativo = false, onChange }) {
   return (
@@ -43,7 +45,7 @@ function formatarData(iso) {
 export default function ReviewSection({ produtoId }) {
   const svc = config.services.review;
   const loginPath = config.services.auth.endpoints.login;
-  const reviewBase = apiBase;
+  const { usuario, isAuthenticated } = useAuth();
 
   const [dados, setDados] = useState({ mediaEstrelas: 0, total: 0, reviews: [] });
   const [loading, setLoading] = useState(true);
@@ -51,23 +53,11 @@ export default function ReviewSection({ produtoId }) {
   const [mensagem, setMensagem] = useState({ tipo: "", texto: "" });
   const [estrelas, setEstrelas] = useState(5);
   const [comentario, setComentario] = useState("");
-  const [usuario, setUsuario] = useState(null);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("usuario");
-      if (saved) setUsuario(JSON.parse(saved));
-    } catch {
-      setUsuario(null);
-    }
-  }, []);
 
   const carregarReviews = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(
-        `${reviewBase}${svc.endpoints.list}/${produtoId}`
-      );
+      const res = await fetch(`${apiBase}${svc.endpoints.list}/${produtoId}`);
       if (!res.ok) throw new Error("Falha ao carregar");
       const json = await res.json();
       setDados(json);
@@ -76,7 +66,7 @@ export default function ReviewSection({ produtoId }) {
     } finally {
       setLoading(false);
     }
-  }, [produtoId, reviewBase, svc.endpoints.list]);
+  }, [produtoId, svc.endpoints.list]);
 
   useEffect(() => {
     carregarReviews();
@@ -84,19 +74,16 @@ export default function ReviewSection({ produtoId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!usuario) return;
+    if (!isAuthenticated) return;
 
     setEnviando(true);
     setMensagem({ tipo: "", texto: "" });
 
     try {
-      const res = await fetch(`${reviewBase}${svc.endpoints.create}`, {
+      const res = await apiFetch(svc.endpoints.create, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           produtoId,
-          email: usuario.email,
-          nome: usuario.nome,
           estrelas,
           comentario,
         }),
@@ -145,10 +132,7 @@ export default function ReviewSection({ produtoId }) {
             className="d-flex align-items-center gap-3 mb-4 p-3 rounded-3"
             style={{ backgroundColor: "#e8f6e4" }}
           >
-            <Estrelas
-              valor={Math.round(dados.mediaEstrelas)}
-              tamanho="1.4rem"
-            />
+            <Estrelas valor={Math.round(dados.mediaEstrelas)} tamanho="1.4rem" />
             <span className="text-muted fw-semibold">{textoMedia}</span>
           </div>
 
@@ -198,7 +182,11 @@ export default function ReviewSection({ produtoId }) {
             </form>
           ) : (
             <p className="text-muted mb-4 pb-4 border-bottom">
-              <Link to={loginPath} className="text-decoration-none fw-semibold" style={{ color: "#377f3f" }}>
+              <Link
+                to={loginPath}
+                className="text-decoration-none fw-semibold"
+                style={{ color: "#377f3f" }}
+              >
                 Faça login
               </Link>{" "}
               para avaliar este produto.
@@ -221,7 +209,9 @@ export default function ReviewSection({ produtoId }) {
                         <Estrelas valor={review.estrelas} tamanho="0.95rem" />
                       </div>
                     </div>
-                    <small className="text-muted">{formatarData(review.updatedAt || review.createdAt)}</small>
+                    <small className="text-muted">
+                      {formatarData(review.updatedAt || review.createdAt)}
+                    </small>
                   </div>
                   <p className="mb-0 text-secondary">{review.comentario}</p>
                 </div>

@@ -1,0 +1,24 @@
+---
+description: Agentes devem manter docs/ atualizada (geral + tarefas)
+alwaysApply: true
+---
+
+# Manutenção de documentação
+
+Antes de mudanças grandes, leia `docs/README.md`, `docs/estrutura-projeto.md` e `docs/infra.md`.
+
+## Ao concluir uma task
+
+1. Crie ou atualize `docs/tarefas/YYYY-MM-DD/NN-slug.md` com: o que foi feito, como, instruções, próximos passos, arquivos tocados.
+2. Se a mudança alterou pastas, portas, auth, gateway ou contratos → atualize o doc geral em `docs/` (`estrutura-projeto.md`, `infra.md`, `auth.md`, `nestjs.md`, `migracao-dominio.md`).
+3. Atualize o índice em `docs/README.md` e `docs/tarefas/README.md` se adicionar pasta/data nova.
+
+## Não fazer
+
+- Não documentar secrets (`.env`, senhas, URI com credenciais).
+- Não recriar layout `Identity/` / `Catalog/` / `Engagment/` — MSS é flat em `back-end/mss/`.
+- Não inventar status: se ficou parcial, marque `partial` e liste o gap.
+
+## Template
+
+Ver `docs/tarefas/README.md`.
