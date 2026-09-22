@@ -33,6 +33,10 @@ npm start
 - Nest `ConfigModule` em cima do pacote (opcional)
 - npm workspaces na raiz (opcional)
 
+## Follow-up (mesmo dia)
+
+- `index.mjs` não pode usar `node:module`/`createRequire` — Vite externaliza e o front fica tela cinza (`config.gateway` undefined). Corrigido para `import … from './api-shared-config.json' with { type: 'json' }`.
+
 ## Arquivos tocados
 
 - `back-end/packages/contracts/**`
