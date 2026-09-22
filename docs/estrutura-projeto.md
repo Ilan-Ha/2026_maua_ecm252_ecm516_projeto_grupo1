@@ -5,10 +5,11 @@
 ```
 /
 ├── back-end/
-│   ├── api-shared-config.json   # contrato único (portas, paths, events, requests)
+│   ├── packages/
+│   │   └── contracts/           # @allforone/contracts (api-shared-config)
 │   ├── infra/                   # gateway, event-bus, request-bus
 │   ├── mss/                     # microsserviços (layout flat)
-│   └── shared/                  # utilitários compartilhados do gateway
+│   └── shared/                  # logging Express + helpers gateway
 ├── front-end/project/           # React + Vite (site AllForOne)
 ├── front-end/logs/              # Console de logs (Vite :5174, localhost)
 ├── docs/                        # documentação (agentes + time)
@@ -29,7 +30,11 @@ Cada serviço fica **lado a lado** em `back-end/mss/` — sem pastas de contexto
 | `review` | 3004 | NestJS | Avaliações |
 | `history` | 3005 | NestJS | Histórico de visualização |
 | `logs` | 3009 | NestJS | Query read-only de `app_logs` (console) |
-| `shared/` | — | TS | Config helpers + kit de logging Nest |
+| `shared/` | — | TS | Kit de logging Nest / helpers |
+
+## Pacote de contrato
+
+`back-end/packages/contracts` publica `@allforone/contracts` (JSON + tipos). Dependência local `file:` em cada Nest/infra/front — sem `readFileSync` nem `../../../api-shared-config.json`.
 
 Reservadas no contrato (ainda sem pasta implementada como Nest standalone):
 
@@ -51,10 +56,10 @@ Logging compartilhado: `back-end/shared/logging/` (writer Mongo + middleware Exp
 
 ## Contrato compartilhado
 
-Fonte da verdade: `back-end/api-shared-config.json`.
+Fonte da verdade: pacote npm local `@allforone/contracts` em [`back-end/packages/contracts/`](../back-end/packages/contracts/) (`api-shared-config.json` + `index.cjs`/`index.mjs`).
 
-- Front importa via `config.jsx` (cópia/bridge do contrato)
-- Gateway e MSS leem via `back-end/mss/shared/.../config`
+- Front: `import config from '@allforone/contracts'` via [`config.jsx`](../front-end/project/src/config.jsx)
+- Gateway / buses / MSS: `import { config } from '@allforone/contracts'` (Nest via `getAppConfig()` fino)
 - `services.*.port` no JSON aponta para **10000** (gateway) — portas reais ficam em `ports.back.*`
 
 ## Branches de modernização
@@ -69,6 +74,7 @@ Branch base: `modernizacao/stack`
 | `modernizacao/04-user-account` | Unificar auth+user+history |
 | `modernizacao/05-notification` | Notification consumidor |
 | `modernizacao/nestjs-mss-flat` | Layout flat Nest |
+| `modernizacao/contracts-package` | Pacote `@allforone/contracts` |
 
 ## O que NÃO fazer
 

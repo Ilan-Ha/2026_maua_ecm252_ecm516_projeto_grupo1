@@ -7,7 +7,8 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.6.1",
     "node-fetch": "^3.3.2",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "@allforone/contracts": "file:../../packages/contracts"
   },
   "name": "gateway",
   "version": "1.0.0",

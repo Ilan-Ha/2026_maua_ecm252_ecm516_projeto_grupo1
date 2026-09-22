@@ -23,7 +23,8 @@ back-end/
 │   └── shared/              ← Utilitários legados (em transição)
 │
 ├── shared/                  ← Tipos/helpers do gateway
-└── api-shared-config.json   ← Contrato: portas, rotas, eventos
+└── packages/
+    └── contracts/           ← @allforone/contracts (portas, rotas, eventos)
 ```
 
 ---
@@ -85,7 +86,7 @@ Cada MSS em `mss/<servico>/` segue o mesmo padrão:
 
 ## Configuração
 
-[`api-shared-config.json`](./api-shared-config.json) é o contrato único (portas, paths, nomes de eventos/requests).
+[`@allforone/contracts`](./packages/contracts/) é o contrato único (portas, paths, nomes de eventos/requests).
 
 ---
 

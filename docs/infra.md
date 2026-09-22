@@ -60,7 +60,7 @@ Arquivos-chave:
 
 - Paths: `POST /eventos`, `POST /inscricao`, `POST /requisicao`
 - Também emitem logs HTTP/event/request para `app_logs`
-- Nomes de eventos/requests em `api-shared-config.json` (`events.*`, `requests.*`)
+- Nomes de eventos/requests no pacote `@allforone/contracts` (`events.*`, `requests.*`)
 
 ## Console de logs
 

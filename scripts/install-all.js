@@ -15,6 +15,7 @@ function run(cmd, dir) {
 
 const directories = [
   root,
+  path.join(root, 'back-end', 'packages', 'contracts'),
   path.join(root, 'back-end', 'mss'),
   path.join(root, 'back-end', 'infra', 'event-bus'),
   path.join(root, 'back-end', 'infra', 'request-bus'),

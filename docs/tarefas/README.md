@@ -30,4 +30,5 @@ Exemplo: `docs/tarefas/2026-09-21/01-nestjs-catalog.md`
 
 ## Índice recente
 
+- [2026-09-22](./2026-09-22/) — Pacote `@allforone/contracts`
 - [2026-09-21](./2026-09-21/) — Nest flat, plano migração, FE smoke, auth Bearer, pasta docs
