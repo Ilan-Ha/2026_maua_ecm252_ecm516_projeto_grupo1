@@ -11,3 +11,4 @@ Agente: [Nest Catalog](0ba08ff8-8cea-4c67-a741-8a27a51972a8) · branch `moderniz
 | 05 | [integracao-frontend](./05-integracao-frontend.md) | done |
 | 06 | [auth-bearer](./06-auth-bearer.md) | done |
 | 07 | [docs-e-regra-cursor](./07-docs-e-regra-cursor.md) | done |
+| 08 | [logs-console](./08-logs-console.md) | done |

@@ -27,8 +27,15 @@ const services = [
   { name: 'catalog', path: path.join(root, 'back-end', 'mss', 'catalog'), color: 'cyan' },
   { name: 'review', path: path.join(root, 'back-end', 'mss', 'review'), color: 'white' },
   { name: 'history', path: path.join(root, 'back-end', 'mss', 'history'), color: 'red' },
+  { name: 'logs', path: path.join(root, 'back-end', 'mss', 'logs'), color: 'gray' },
   { name: 'gateway', path: path.join(root, 'back-end', 'infra', 'gateway'), color: 'brightBlue' },
-  { name: 'front', path: frontDir, color: 'brightGreen', cmd: 'run dev' }
+  { name: 'front', path: frontDir, color: 'brightGreen', cmd: 'run dev' },
+  {
+    name: 'logui',
+    path: path.join(root, 'front-end', 'logs'),
+    color: 'brightMagenta',
+    cmd: 'run dev',
+  },
 ];
 
 const names = services.map(s => s.name).join(',');
@@ -36,7 +43,8 @@ const colors = services.map(s => s.color).join(',');
 
 console.log("\nSubindo MSS + front-end...");
 console.log("  Back-end (gateway): http://localhost:10000");
-console.log("  Front-end:          http://localhost:5173\n");
+console.log("  Front-end:          http://localhost:5173");
+console.log("  Logs console:       http://localhost:5174\n");
 
 const commands = services.map(s => `\"npm --prefix \"\"${s.path}\"\" ${s.cmd || 'start'}\"`);
 

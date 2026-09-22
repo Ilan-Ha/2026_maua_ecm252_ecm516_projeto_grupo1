@@ -1,13 +1,28 @@
 import express from "express"
 import cors from "cors"
+import dotenv from "dotenv"
+import path from "path"
+import { fileURLToPath } from "url"
 import config from "../../mss/shared/utils/config.js"
 import EventBus from "./eventBus.ts"
+import {
+  correlationMiddleware,
+  httpLoggingMiddleware,
+} from "../../shared/logging/express.ts"
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+for (const envPath of [
+  path.join(__dirname, "../../../.env"),
+  path.join(__dirname, "../../.env"),
+]) {
+  dotenv.config({ path: envPath, override: true, quiet: true })
+}
 
 const app = express()
-// Middlewares
-app.use(cors());
-// Permite receber JSON direto no req.body
+app.use(cors({ origin: [/localhost/, /127\.0\.0\.1/] }));
 app.use(express.json());
+app.use(correlationMiddleware);
+app.use(httpLoggingMiddleware("event-bus"));
 
 const eventBus = new EventBus()
 const paths = config.paths.events

@@ -1,6 +1,7 @@
 import axios from "axios";
 import config from "../../mss/shared/utils/config.js";
 import { Endpoint, GatewayRequest, GatewayResponse, HealthReport, ServiceStatus } from "../../shared/interfaces/gateway/gatewayInterfaces.js";
+import { getCorrelationId } from "../../shared/logging/correlation.ts";
 const HEALTH_TIMEOUT_MS = 3000;
 
 export default class Gateway {
@@ -50,12 +51,20 @@ export default class Gateway {
                 ? `${endpoint.url.replace(/\/$/, "")}/${request.pathSuffix}`
                 : endpoint.url;
 
+            const correlationId = getCorrelationId();
+            const headers: Record<string, string> = {
+                ...(request.headers ?? {}),
+            };
+            if (correlationId) {
+                headers["x-correlation-id"] = correlationId;
+            }
+
             const response = await axios({
                 method: request.method,
                 url: targetUrl,
                 data: request.body,
                 params: request.query ?? {},
-                headers: request.headers ?? {},
+                headers,
                 validateStatus: () => true,
             });
 

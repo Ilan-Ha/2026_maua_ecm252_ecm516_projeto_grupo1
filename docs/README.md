@@ -7,7 +7,7 @@
 | Doc | Quando ler |
 |-----|------------|
 | [estrutura-projeto.md](./estrutura-projeto.md) | Visão de pastas, MSS, front e contratos |
-| [infra.md](./infra.md) | Gateway, event bus, request bus, portas, start |
+| [infra.md](./infra.md) | Gateway, buses, portas, start, console de logs |
 | [auth.md](./auth.md) | Sessão Bearer (access + refresh), guards FE |
 | [nestjs.md](./nestjs.md) | Como os MSS Nest estão organizados |
 | [migracao-dominio.md](./migracao-dominio.md) | Plano de domínio (price/comparison/notification) e branches |
@@ -19,7 +19,7 @@ Baseline antigo de infra (jun/2026) ainda em [`.cursor/docs/infra-baseline/`](..
 Registro do que foi feito em cada sessão:
 
 - [tarefas/README.md](./tarefas/README.md) — convenção e template
-- [tarefas/2026-09-21/](./tarefas/2026-09-21/) — modernização Nest + auth Bearer
+- [tarefas/2026-09-21/](./tarefas/2026-09-21/) — Nest, auth Bearer, logs console
 
 ## Como agentes devem atualizar
 
@@ -34,7 +34,7 @@ Resumo:
 ## Comandos rápidos
 
 ```bash
-# sobe event + request + auth + user + catalog + review + history + gateway + front
+# sobe buses + MSS (incl. logs) + gateway + site + console de logs
 npm start
 
 # build de um MSS Nest
@@ -43,4 +43,5 @@ npm --prefix back-end/mss/catalog run build
 
 - Gateway: `http://localhost:10000`
 - Front (Vite): `http://localhost:5173`
+- Logs console: `http://localhost:5174`
 - Contrato compartilhado: `back-end/api-shared-config.json`

@@ -7,12 +7,14 @@ import {
   Query,
 } from '@nestjs/common';
 import { HistoryService } from './history.service';
+import { AuditLog } from '../common/logging/audit-log.decorator';
 
 @Controller()
 export class HistoryController {
   constructor(private readonly historyService: HistoryService) {}
 
   @Post('historico')
+  @AuditLog({ message: 'Acesso registrado no histórico', kind: 'manual' })
   registrar(@Body() body: unknown) {
     return this.historyService.registrarAcesso(body);
   }
