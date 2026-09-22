@@ -1,15 +1,17 @@
 # Infraestrutura
 
-Estado atual (2026-09-21). Snapshot histórico jun/2026: `.cursor/docs/infra-baseline/`.
+Estado atual (2026-09-22). Snapshot histórico jun/2026: `.cursor/docs/infra-baseline/`.
 
 ## Componentes
 
-| Componente | Pasta | Porta | Papel |
-|------------|-------|-------|-------|
-| Gateway | `back-end/infra/gateway/` | 10000 | Única entrada HTTP do front |
-| Event Bus | `back-end/infra/event-bus/` | 10001 | Pub/sub assíncrono |
-| Request Bus | `back-end/infra/request-bus/` | 10002 | Request/reply síncrono |
-| Logs MSS | `back-end/mss/logs/` | 3009 | Query de `app_logs` |
+| Componente | Pasta | Porta | Stack | Papel |
+|------------|-------|-------|-------|-------|
+| Gateway | `back-end/infra/gateway/` | 10000 | NestJS | Única entrada HTTP do front |
+| Event Bus | `back-end/infra/event-bus/` | 10001 | NestJS | Pub/sub assíncrono |
+| Request Bus | `back-end/infra/request-bus/` | 10002 | NestJS | Request/reply síncrono |
+| Logs MSS | `back-end/mss/logs/` | 3009 | NestJS | Query de `app_logs` |
+
+Os três processos de infra seguem o mesmo padrão Nest dos MSS (`src/main.ts`, modules, middleware de correlation/logging). Código Express/JS anterior ficou em `_legacy/` de cada pasta (referência; não sobe no `npm start`).
 
 Os MSS **não** embutem um bus “de infra” próprio: módulos Nest `event-bus/` / handlers só **se inscrevem** e publicam contra os processos em `infra/`.
 
@@ -20,6 +22,8 @@ npm start   # scripts/start-all.js + concurrently
 ```
 
 Ordem lógica: event → request → auth → user → catalog → review → history → logs → gateway → front → logui.
+
+Cada pasta Nest sobe com `nest start --watch` (`npm start` local).
 
 Requer `.env` na raiz com ao menos:
 
@@ -41,36 +45,48 @@ URLs:
 - Site: `http://localhost:5173`
 - Logs console: `http://localhost:5174` (localhost only)
 
-## Gateway
+## Gateway (Nest)
 
-- Express + `Gateway` class (proxy tipado por endpoint name)
-- Correlation: middleware `x-correlation-id` + propagação aos MSS
+Módulos em `back-end/infra/gateway/src/`:
+
+| Módulo | Responsabilidade |
+|--------|------------------|
+| `AuthRoutesModule` | login, cadastro, refresh, logout |
+| `CatalogGatewayModule` | `/catalogo`, `/produto` |
+| `ReviewGatewayModule` | list + create (Bearer no create) |
+| `HistoryGatewayModule` | CRUD histórico (Bearer) |
+| `UserGatewayModule` | perfil (Bearer) |
+| `LogsGatewayModule` | proxy `GET /logs` |
+| `HealthModule` | `/health`, `/health/db` |
+| `ProxyModule` | `ProxyService` (ex-`Gateway.ts`) |
+| `BearerAuthGuard` | JWT access Bearer |
+
+- CORS localhost / 127.0.0.1
+- Correlation: middleware `x-correlation-id` + propagação aos MSS no proxy
 - HTTP logging → Mongo `app_logs` (serviço `gateway`)
 - Rotas públicas: login, cadastro, refresh, logout, catálogo, GET reviews, **GET /logs**
-- Rotas com `requireAuth` (Bearer access JWT): perfil, POST reviews, histórico CRUD
-- Identidade injetada a partir do JWT (`req.auth.sub|email|nome`) — **não** confiar no body do cliente para `authId`
+- Rotas com guard Bearer: perfil, POST reviews, histórico CRUD
+- Identidade a partir do JWT (`req.auth.sub|email|nome`) — **não** confiar no body do cliente para `authId`
+- Envelopes HTTP iguais ao gateway Express (front não precisa mudar)
 
-Arquivos-chave:
+## Event / Request bus (Nest)
 
-- `back-end/infra/gateway/index.ts`
-- `back-end/infra/gateway/auth.ts`
-- `back-end/shared/logging/`
-
-## Event / Request bus
-
-- Paths: `POST /eventos`, `POST /inscricao`, `POST /requisicao`
+- Event: `POST /eventos`, `POST /inscricao`, `POST /desinscricao`, `GET /dados`
+- Request: `POST /requisicao` (registry tipado dos `requests.*` do config)
+- Campo wire de callback no event-bus permanece `calbackUrl` (typo histórico — não renomear no contrato)
 - Também emitem logs HTTP/event/request para `app_logs`
-- Nomes de eventos/requests em `api-shared-config.json` (`events.*`, `requests.*`)
+- Nomes de eventos/requests no pacote `@allforone/contracts` (`events.*`, `requests.*`)
 
 ## Console de logs
 
 - Escrita: cada processo (domínio + infra) grava direto no Mongo (`writeLog`)
 - Leitura: UI → `GET /logs` no gateway → MSS `logs`
 - Decorator Nest `@AuditLog` para eventos de negócio
-- Interceptor HTTP global + exception filter enriquecido
+- Interceptor HTTP global + exception filter enriquecido (MSS)
 
 ## Observações
 
 - macOS case-insensitive: cuidado ao mover `Catalog` ↔ `catalog`
-- Nodemon no gateway recarrega TS; Nest precisa restart após mudança de `.env`
+- Nest precisa restart após mudança de `.env` (watch não recarrega env)
 - Notification **não** é chamado pelo gateway (só evento)
+- Branch de modernização desta mudança: `modernizacao/infra-nest` → base `modernizacao/stack`

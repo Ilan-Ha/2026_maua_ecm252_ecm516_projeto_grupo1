@@ -1,28 +1,31 @@
 {
-  "dependencies": {
-    "axios": "^1.16.1",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.6.1",
-    "node-fetch": "^3.3.2",
-    "nodemon": "^3.1.14"
-  },
   "name": "gateway",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec tsx index.ts"
-  },
-  "keywords": [],
-  "author": "",
+  "private": true,
+  "description": "API gateway (NestJS)",
   "license": "ISC",
-  "type": "module",
+  "scripts": {
+    "start": "nest start --watch",
+    "start:prod": "node dist/main",
+    "build": "nest build"
+  },
+  "dependencies": {
+    "@allforone/contracts": "file:../../packages/contracts",
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/core": "^11.1.6",
+    "@nestjs/platform-express": "^11.1.6",
+    "axios": "^1.16.1",
+    "dotenv": "^17.4.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.6.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
   "devDependencies": {
+    "@nestjs/cli": "^11.0.10",
+    "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
-    "tsx": "^4.22.4"
+    "@types/node": "^24.13.1",
+    "typescript": "^5.9.3"
   }
 }
