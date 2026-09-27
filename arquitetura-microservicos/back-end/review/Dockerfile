@@ -8,13 +8,13 @@ WORKDIR /app
 COPY api-shared-config.json .
 
 # cópia de dependencias da pasta de utilidades
-COPY back-end/utils/package.json /app/back-end/utils/package.json
+COPY back-end/utlis/package.json /app/back-end/utlis/package.json
 
 # instalação em utilidade
-RUN npm --prefix back-end/utils install
+RUN npm --prefix back-end/utlis install
 
 # copia do resto dos arquivos em utils
-COPY back-end/utils /app/back-end/utils
+COPY back-end/utlis /app/back-end/utlis
 
 # copia de dependencias principais
 COPY back-end/review/package.json /app/back-end/review/package.json
