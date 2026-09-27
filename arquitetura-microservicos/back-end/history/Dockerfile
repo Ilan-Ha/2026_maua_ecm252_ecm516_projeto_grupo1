@@ -23,7 +23,7 @@ COPY back-end/history/package.json /app/back-end/history/package.json
 RUN npm --prefix back-end/history install
 
 # copia do resto dos arquivos principais
-COPY back-end/history /app/back-end/hisotry
+COPY back-end/history /app/back-end/history
 
 EXPOSE 3005
 
