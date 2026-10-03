@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: history
+  namespace: allforone
+  labels:
+    app: history
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: history
+  template:
+    metadata:
+      labels:
+        app: history
+    spec:
+      containers:
+        - name: history
+          image: history:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3005
+              hostPort: 3005
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongo
+                  key: MONGO_URI
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: history
+  namespace: allforone
+  labels:
+    app: history
+spec:
+  type: ClusterIP
+  selector:
+    app: history
+  ports:
+    - name: http
+      port: 3005
+      targetPort: 3005

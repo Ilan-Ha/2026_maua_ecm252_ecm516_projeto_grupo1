@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: review
+  namespace: allforone
+  labels:
+    app: review
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: review
+  template:
+    metadata:
+      labels:
+        app: review
+    spec:
+      containers:
+        - name: review
+          image: review:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3004
+              hostPort: 3004
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongo
+                  key: MONGO_URI
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: review
+  namespace: allforone
+  labels:
+    app: review
+spec:
+  type: ClusterIP
+  selector:
+    app: review
+  ports:
+    - name: http
+      port: 3004
+      targetPort: 3004
