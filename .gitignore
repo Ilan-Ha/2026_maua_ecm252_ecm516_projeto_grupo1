@@ -145,3 +145,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Kubernetes secrets with real credentials (keep the .example)
+k8s/secret-mongo.yaml

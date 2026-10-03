@@ -446,6 +446,47 @@ npm run dev
 
 ---
 
+# 🐳 Docker e Kubernetes (back-end)
+
+Requisitos: Docker Desktop com **Kubernetes** habilitado, `.env` na raiz com `MONGO_URI`, e `kubectl` no PATH.
+
+As imagens usam `arquitetura-microservicos/` (Dockerfiles por serviço). A config compartilhada aponta `url` para `http://host.docker.internal` para os containers/pods se comunicarem pelas portas publicadas no host.
+
+## Build e run com Docker
+
+Na raiz do repositório:
+
+```bash
+./scripts/create-all-images.sh
+./scripts/run-all-images.sh
+```
+
+## Deploy local com Kubernetes
+
+```bash
+./scripts/create-all-images.sh   # se as imagens ainda não existirem
+./scripts/k8s-apply.sh
+```
+
+O script cria o namespace `allforone`, o Secret `mongo` a partir do `.env`, aplica os manifests em `k8s/` e espera os Deployments. Cada pod usa `hostPort` na porta do serviço (mesmo mapeamento do Docker).
+
+Verificação:
+
+```bash
+kubectl -n allforone get pods
+curl -s http://localhost:10000/health
+```
+
+Remover o stack:
+
+```bash
+./scripts/k8s-delete.sh
+```
+
+Template do Secret (sem credenciais reais): `k8s/secret-mongo.yaml.example`.
+
+---
+
 # 🔌 Portas Utilizadas
 
 ## Back-end
@@ -565,14 +606,17 @@ O sistema utiliza **MongoDB** com **Mongoose**.
 - Event Bus
 - Request Bus
 - Organização em microsserviços
+- Dockerfiles e scripts de imagens
+- Manifests e scripts Kubernetes (deploy local)
 
 ---
 
 # 💡 Melhorias Futuras
 
 - [ ] Script único de instalação
-- [ ] Script único de inicialização
-- [ ] Docker
+- [x] Script único de inicialização (`scripts/start-all.sh`)
+- [x] Docker (Dockerfiles + `scripts/create-all-images.sh` / `run-all-images.sh`)
+- [x] Kubernetes local (`k8s/` + `scripts/k8s-apply.sh` / `k8s-delete.sh`)
 - [ ] Docker Compose
 - [ ] Testes automatizados
 - [ ] JWT
