@@ -1,5 +1,5 @@
 {
-    "url": "http://localhost",
+    "url": "http://host.docker.internal",
     "start": "/",
     "gateway": {
         "port": 10000,
