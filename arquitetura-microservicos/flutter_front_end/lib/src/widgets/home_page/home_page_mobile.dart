@@ -6,7 +6,7 @@ class HomePageMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(appBar: AppBar(title: const Text('Mobile'))),
+      home: Scaffold(body: Text("Mobile"),),
     );
   }
 }

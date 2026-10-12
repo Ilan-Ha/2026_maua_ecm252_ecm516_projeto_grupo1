@@ -6,7 +6,7 @@ class HomePageWeb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(appBar: AppBar(title: const Text('Web'))),
+      home: Scaffold(body: Text("Web"),),
     );
   }
 }
