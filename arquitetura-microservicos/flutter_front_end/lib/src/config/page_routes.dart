@@ -1,3 +1,3 @@
-var homePage = '/home';
-var loginPage = '/login';
-var registerPage = '/register';
+const homePage = '/home';
+const loginPage = '/login';
+const registerPage = '/register';
