@@ -5,6 +5,24 @@
         "port": 10000,
         "baseUrl": "http://localhost:10000"
     },
+    "k8s":{
+        "url": "http://",
+        "services":{
+            "clusterIP":{
+                "auth": "auth-cluesterip-service",
+                "catalog": "catalog-clusterip-service",
+                "event-bus": "event-bus-clusterip-service",
+                "request-bus":"request-bus-cluesterip-service",
+                "gateway":"gateway-clusterip-service",
+                "history":"history-cluesterip-service",
+                "review":"review-cluesterip-service",
+                "user":"user-cluesterip-service"
+            },
+            "nodePort":{
+                "gateway":"gateway-nodeport-service"
+            }
+        }
+    },
     "requests": {
         "user":{
             "exist": "user.exist",

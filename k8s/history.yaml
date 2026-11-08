@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: history
+  name: history-deployment
   namespace: allforone
   labels:
     app: history
@@ -20,7 +20,7 @@ spec:
           image: history:latest
           imagePullPolicy: IfNotPresent
           ports:
-            - name: http
+            - name: history
               containerPort: 3005
               hostPort: 3005
           env:
@@ -33,7 +33,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: history
+  name: history-cluesterip-service
   namespace: allforone
   labels:
     app: history
@@ -42,6 +42,7 @@ spec:
   selector:
     app: history
   ports:
-    - name: http
+    - name: history
+      protocol: TCP
       port: 3005
       targetPort: 3005

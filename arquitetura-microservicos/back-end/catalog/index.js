@@ -25,10 +25,11 @@ const paths = config.paths
 const PORT = svc.catalog
 const events = config.events
 const request = config.requests
+const clusterIp = config.k8s.services.clusterIP
 // #endregion
 
 // #region request-bus
-const sendRequest = `${config.url}:${svc.requestBus}${paths.requests.request}`
+const sendRequest = `${config.k8s.url}${clusterIp["request-bus"]}:${svc.requestBus}${paths.requests.request}`
 
 // tratamento de eventos
 const requestFunctions = {
@@ -43,8 +44,8 @@ const requestFunctions = {
 // #endregion
 
 // #region event-bus
-const sendEvent = `${config.url}:${svc.eventBus}${paths.events.event}`
-const calbackUrl = `${config.url}:${PORT}${paths.events.event}`
+const sendEvent = `${config.k8s.url}${clusterIp["event-bus"]}:${svc.eventBus}${paths.events.event}`
+const calbackUrl = `${config.k8s.url}${clusterIp.catalog}:${PORT}${paths.events.event}`
 const serverName = 'catalog'
 
 // eventos para se inscrever
@@ -162,14 +163,14 @@ const startServer = async () => {
     await initSeed();
 
     const server = app.listen(PORT, () => {
-      console.log(`Rodando em ${config.url}:${PORT}`)
+      console.log(`Rodando em ${config.k8s.url}${clusterIp.catalog}:${PORT}`)
 
        console.log(subscribe)
     });
       
 
           // registro no bus de eventos
-      await axios.post(`${config.url}:${svc.eventBus}${paths.events.subscribe}`,{
+      await axios.post(`${config.k8s.url}${clusterIp["event-bus"]}:${svc.eventBus}${paths.events.subscribe}`,{
           calbackUrl: calbackUrl,
           serviceName: serverName,
           events: subscribe
@@ -188,7 +189,7 @@ const startServer = async () => {
 let servidor
 
 async function gracefulShutdown(signal) {
-  await axios.post(`${config.url}:${svc.eventBus}${paths.events.unsubscribe}`,{
+  await axios.post(`${config.k8s.url}${clusterIp["event-bus"]}:${svc.eventBus}${paths.events.unsubscribe}`,{
           calbackUrl: calbackUrl,
           serviceName: serverName,
           events: subscribe

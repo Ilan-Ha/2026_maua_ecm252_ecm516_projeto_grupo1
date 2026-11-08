@@ -49,7 +49,9 @@ const svc = config.ports.back;
 const paths = config.paths;
 const events = config.events;
 const PORT = svc.review;
-const sendEvent = `${config.url}:${svc.eventBus}${paths.events.event}`;
+const clusterIp = config.k8s.services.clusterIP
+
+const sendEvent = `${config.k8s.url}${clusterIp["event-bus"]}:${svc.eventBus}${paths.events.event}`;
 
 function formatZodErrors(error) {
   const formatted = z.treeifyError(error).properties || {};

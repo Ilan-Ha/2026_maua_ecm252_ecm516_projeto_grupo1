@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user
+  name: user-deployment
   namespace: allforone
   labels:
     app: user
@@ -20,7 +20,7 @@ spec:
           image: user:latest
           imagePullPolicy: IfNotPresent
           ports:
-            - name: http
+            - name: user
               containerPort: 3002
               hostPort: 3002
           env:
@@ -33,7 +33,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: user
+  name: user-cluesterip-service
   namespace: allforone
   labels:
     app: user
@@ -42,6 +42,7 @@ spec:
   selector:
     app: user
   ports:
-    - name: http
+    - name: user
+      protocol: TCP
       port: 3002
       targetPort: 3002

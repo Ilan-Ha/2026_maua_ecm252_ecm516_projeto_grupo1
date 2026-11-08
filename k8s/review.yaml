@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: review
+  name: review-deployment
   namespace: allforone
   labels:
     app: review
@@ -20,7 +20,7 @@ spec:
           image: review:latest
           imagePullPolicy: IfNotPresent
           ports:
-            - name: http
+            - name: review
               containerPort: 3004
               hostPort: 3004
           env:
@@ -33,7 +33,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: review
+  name: review-cluesterip-service
   namespace: allforone
   labels:
     app: review
@@ -42,6 +42,7 @@ spec:
   selector:
     app: review
   ports:
-    - name: http
+    - name: review
+      protocol: TCP
       port: 3004
       targetPort: 3004

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: catalog
+  name: catalog-deployment
   namespace: allforone
   labels:
     app: catalog
@@ -20,7 +20,7 @@ spec:
           image: catalog:latest
           imagePullPolicy: IfNotPresent
           ports:
-            - name: http
+            - name: catalog
               containerPort: 3003
               hostPort: 3003
           env:
@@ -33,7 +33,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: catalog
+  name: catalog-clusterip-service
   namespace: allforone
   labels:
     app: catalog
@@ -42,6 +42,7 @@ spec:
   selector:
     app: catalog
   ports:
-    - name: http
+    - name: catalog
+      protocol: TCP
       port: 3003
       targetPort: 3003

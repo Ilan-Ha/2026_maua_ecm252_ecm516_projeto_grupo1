@@ -15,11 +15,12 @@ const svc = config.ports.back
 const PORT = svc.requestBus
 const paths = config.paths.requests
 const request = config.requests
-const url = config.url
+const url = config.k8s.url
+const clusterIp = config.k8s.services.clusterIP
 
 const urls = {
-    user: `${url}:${svc.user}${paths.request}`,
-    catalog: `${url}:${svc.catalog}${paths.request}`
+    user: `${url}${clusterIp.user}:${svc.user}${paths.request}`,
+    catalog: `${url}${clusterIp.catalog}:${svc.catalog}${paths.request}`
 }
 
 const copyCode = async (payload, req, urlString) => {

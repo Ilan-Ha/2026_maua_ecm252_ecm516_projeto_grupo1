@@ -1,3 +1,9 @@
+Uso
+kubectl config set-context --current --namespace=allforone
+kubectl get svc gateway-nodeport-service
+pegar porta 10000:x/TCP
+x -> api-shared-config
+
 # 🛒 AllForOne — Plataforma de Comparação e Reviews de Produtos
 
 ![React](https://img.shields.io/badge/React-Frontend-61DAFB?logo=react)

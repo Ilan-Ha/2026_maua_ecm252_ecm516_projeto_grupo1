@@ -2,39 +2,39 @@
     "url": "http://localhost",
     "start": "/",
     "gateway": {
-        "port": 10000,
-        "baseUrl": "http://localhost:10000"
+        "port": 32371,
+        "baseUrl": "http://localhost:32371"
     },
     "services": {
         "auth": {
-            "port": 10000,
+            "port": 32371,
             "endpoints": {
                 "login": "/login",
                 "register": "/cadastro"
             }
         },
         "user": {
-            "port": 10000,
+            "port": 32371,
             "endpoints": {
                 "perfil": "/perfil",
                 "update": "/perfil/atualizar"
             }
         },
         "catalog": {
-            "port": 10000,
+            "port": 32371,
             "endpoints": {
                 "catalog": "/catalogo",
                 "produto": "/produto"
             }
         },
         "search": {
-            "port": 10000,
+            "port": 32371,
             "endpoints": {
                 "search": "/comparar"
             }
         },
         "review": {
-            "port": 10000,
+            "port": 32371,
             "endpoints": {
                 "list": "/reviews/produto",
                 "create": "/reviews"

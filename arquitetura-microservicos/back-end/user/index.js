@@ -52,9 +52,10 @@ const paths = config.paths
 const PORT = svc.user
 const events = config.events
 const requests = config.requests
+const clusterIp = config.k8s.services.clusterIP
 
-const calbackUrl = `${config.url}:${PORT}${paths.events.event}`
-const sendEvent = `${config.url}:${svc.eventBus}${paths.events.event}`
+const calbackUrl = `${config.k8s.url}${clusterIp.user}:${PORT}${paths.events.event}`
+const sendEvent = `${config.k8s.url}${clusterIp["event-bus"]}:${svc.eventBus}${paths.events.event}`
 const serverName = "user"
 // #endregion
 
@@ -250,7 +251,7 @@ const startServer = async () => {
     });
 
     // registro no bus de eventos
-      await axios.post(`${config.url}:${svc.eventBus}${paths.events.subscribe}`,{
+      await axios.post(`${config.k8s.url}${clusterIp["event-bus"]}:${svc.eventBus}${paths.events.subscribe}`,{
           calbackUrl: calbackUrl,
           serviceName: serverName,
           events: subscribe
@@ -270,7 +271,7 @@ const startServer = async () => {
 let servidor
 
 async function gracefulShutdown(signal) {
-  await axios.post(`${config.url}:${svc.eventBus}${paths.events.unsubscribe}`,{
+  await axios.post(`${config.k8s.url}${clusterIp["event-bus"]}:${svc.eventBus}${paths.events.unsubscribe}`,{
           calbackUrl: calbackUrl,
           serviceName: serverName,
           events: subscribe

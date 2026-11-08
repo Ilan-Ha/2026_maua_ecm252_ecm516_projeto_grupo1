@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: event-bus
+  name: event-bus-deployment
   namespace: allforone
   labels:
     app: event-bus
@@ -20,14 +20,14 @@ spec:
           image: event-bus:latest
           imagePullPolicy: IfNotPresent
           ports:
-            - name: http
+            - name: event-bus
               containerPort: 10001
               hostPort: 10001
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: event-bus
+  name: event-bus-clusterip-service
   namespace: allforone
   labels:
     app: event-bus
@@ -36,6 +36,7 @@ spec:
   selector:
     app: event-bus
   ports:
-    - name: http
+    - name: event-bus
+      protocol: TCP
       port: 10001
       targetPort: 10001

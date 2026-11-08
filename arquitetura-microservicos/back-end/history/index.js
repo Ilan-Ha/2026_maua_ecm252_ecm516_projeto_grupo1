@@ -25,6 +25,8 @@ const paths = config.paths
 const PORT = svc.history
 const events = config.events
 const request = config.requests
+const clusterIp = config.k8s.services.clusterIP
+
 // #endregion
 
 // #region schemas
@@ -48,15 +50,15 @@ historySchema.index({userId: 1, productId: 1, cretedAt: 1}, {unique: true})
 const History = mongoose.model("History", historySchema)
 // #endregion
 // #region request-bus
-const sendRequest = `${config.url}:${svc.requestBus}${paths.requests.request}`
+const sendRequest = `${config.k8s.url}${clusterIp["request-bus"]}:${svc.requestBus}${paths.requests.request}`
 
 // tratamento de eventos
 const requestFunctions = {}
 // #endregion
 
 // #region event-bus
-const sendEvent = `${config.url}:${svc.eventBus}${paths.events.event}`
-const calbackUrl = `${config.url}:${PORT}${paths.events.event}`
+const sendEvent = `${config.k8s.url}${clusterIp["event-bus"]}:${svc.eventBus}${paths.events.event}`
+const calbackUrl = `${config.k8s.url}${clusterIp.history}:${PORT}${paths.events.event}`
 const serverName = 'product user search history'
 
 // eventos para se inscrever
@@ -197,7 +199,7 @@ const startServer = async () => {
     });
 
     // registro no bus de eventos
-      await axios.post(`${config.url}:${svc.eventBus}${paths.events.subscribe}`,{
+      await axios.post(`${config.k8s.url}${clusterIp["event-bus"]}:${svc.eventBus}${paths.events.subscribe}`,{
           calbackUrl: calbackUrl,
           serviceName: serverName,
           events: subscribe
@@ -215,7 +217,7 @@ const startServer = async () => {
 let servidor
 
 async function gracefulShutdown(signal) {
-  await axios.post(`${config.url}:${svc.eventBus}${paths.events.unsubscribe}`,{
+  await axios.post(`${config.k8s.url}${clusterIp["event-bus"]}:${svc.eventBus}${paths.events.unsubscribe}`,{
           calbackUrl: calbackUrl,
           serviceName: serverName,
           events: subscribe

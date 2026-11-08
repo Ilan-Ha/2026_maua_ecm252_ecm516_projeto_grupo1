@@ -6,7 +6,8 @@ import axios from "axios";
 const svc = config.ports.back;
 const paths = config.paths;
 const PORT = svc.gateway;
-const base = config.url;
+const base = config.k8s.url;
+const clusterIp = config.k8s.services.clusterIP
 
 const app = express();
 app.use(cors());
@@ -29,13 +30,13 @@ const returnData = (response) => {
 };
 
 async function callAuth(path, payload) {
-  const response = await axios.post(`${base}:${svc.auth}${path}`, { payload });
+  const response = await axios.post(`${base}${clusterIp.auth}:${svc.auth}${path}`, { payload });
   return response.data;
 }
 
 async function proxyToReview(method, targetPath, req, res) {
   try {
-    const url = `${base}:${svc.review}${targetPath}`;
+    const url = `${base}${clusterIp.review}:${svc.review}${targetPath}`;
     const response = await axios({
       method,
       url,
@@ -51,8 +52,8 @@ async function proxyToReview(method, targetPath, req, res) {
 
 app.get("/health", async (req, res) => {
   const checks = await Promise.allSettled([
-    axios.get(`${base}:${svc.catalog}${paths.catalog.catalog}`, { timeout: 3000 }),
-    axios.get(`${base}:${svc.review}/health`, { timeout: 3000 }).catch(() => null),
+    axios.get(`${base}${clusterIp.catalog}:${svc.catalog}${paths.catalog.catalog}`, { timeout: 3000 }),
+    axios.get(`${base}${clusterIp.review}:${svc.review}/health`, { timeout: 3000 }).catch(() => null),
   ]);
 
   const catalogOk =
@@ -72,7 +73,7 @@ app.get("/health", async (req, res) => {
 
 app.get("/health/db", async (req, res) => {
   try {
-    const response = await axios.get(`${base}:${svc.catalog}${paths.catalog.catalog}`, {
+    const response = await axios.get(`${base}${clusterIp.catalog}:${svc.catalog}${paths.catalog.catalog}`, {
       timeout: 3000,
     });
     const ok = response.data?.error === false;
@@ -84,7 +85,7 @@ app.get("/health/db", async (req, res) => {
 
 app.get(paths.catalog.catalog, async (req, res) => {
   try {
-    const response = await axios.get(`${base}:${svc.catalog}${paths.catalog.catalog}`);
+    const response = await axios.get(`${base}${clusterIp.catalog}:${svc.catalog}${paths.catalog.catalog}`);
     const { error, status, content, message } = returnData(response);
     if (error) {
       return res.status(status || 500).json({ error: message || "Erro ao carregar catálogo" });
@@ -98,7 +99,7 @@ app.get(paths.catalog.catalog, async (req, res) => {
 
 app.get("/produto/:id", async (req, res) => {
   try {
-    const response = await axios.get(`${base}:${svc.catalog}${paths.catalog.product}`, {
+    const response = await axios.get(`${base}${clusterIp.catalog}:${svc.catalog}${paths.catalog.product}`, {
       params: { id: req.params.id },
     });
     const { error, status, content, message } = returnData(response);
@@ -197,20 +198,20 @@ app.post(paths.review.create, (req, res) =>
 
 const funcoesRequestPost = {
   [paths.auth.register]: (payload) =>
-    axios.post(`${base}:${svc.auth}${paths.auth.register}`, { payload }),
+    axios.post(`${base}${clusterIp.auth}:${svc.auth}${paths.auth.register}`, { payload }),
   [paths.auth.login]: (payload) =>
-    axios.post(`${base}:${svc.auth}${paths.auth.login}`, { payload }),
+    axios.post(`${base}${clusterIp.auth}:${svc.auth}${paths.auth.login}`, { payload }),
   [paths.auth.update.password]: (payload) =>
-    axios.post(`${base}:${svc.auth}${paths.auth.update.password}`, { payload }),
+    axios.post(`${base}${clusterIp.auth}:${svc.auth}${paths.auth.update.password}`, { payload }),
   [paths.history.history]: (payload) => 
-    axios.post(`${base}:${svc.history}${paths.history.history}`, { payload })
+    axios.post(`${base}${clusterIp.history}:${svc.history}${paths.history.history}`, { payload })
 };
 
 const funcoesRequestGet = {
   [paths.catalog.catalog]: () =>
-    axios.get(`${base}:${svc.catalog}${paths.catalog.catalog}`),
+    axios.get(`${base}${clusterIp.catalog}:${svc.catalog}${paths.catalog.catalog}`),
   [paths.catalog.product]: (payload) =>
-    axios.get(`${base}:${svc.catalog}${paths.catalog.product}`, {
+    axios.get(`${base}${clusterIp.catalog}:${svc.catalog}${paths.catalog.product}`, {
       params: { id: payload.id },
     }),
 };
@@ -257,8 +258,8 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`[gateway] Rodando em ${base}:${PORT}`);
-  console.log(`[gateway] Auth    → ${base}:${svc.auth}`);
-  console.log(`[gateway] Catalog → ${base}:${svc.catalog}`);
-  console.log(`[gateway] Review  → ${base}:${svc.review}`);
+  console.log(`[gateway] Rodando em ${base}${config.k8s.services.nodePort.gateway}:${PORT}`);
+  console.log(`[gateway] Auth    → ${base}${clusterIp.auth}:${svc.auth}`);
+  console.log(`[gateway] Catalog → ${base}${clusterIp.catalog}:${svc.catalog}`);
+  console.log(`[gateway] Review  → ${base}${clusterIp.review}:${svc.review}`);
 });
