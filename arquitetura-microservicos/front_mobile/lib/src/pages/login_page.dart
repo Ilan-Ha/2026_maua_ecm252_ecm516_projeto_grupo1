@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_front_end/src/config/break_points.dart';
-import 'package:flutter_front_end/src/widgets/app_bar/app_bar_mobile.dart';
-import 'package:flutter_front_end/src/widgets/app_bar/app_bar_tablet.dart';
-import 'package:flutter_front_end/src/widgets/app_bar/app_bar_web.dart';
-import 'package:flutter_front_end/src/widgets/login_page/Login_page_web.dart';
-import 'package:flutter_front_end/src/widgets/login_page/login_page_mobile.dart';
-import 'package:flutter_front_end/src/widgets/login_page/login_page_tablet.dart';
+import 'package:front_mobile/src/config/break_points.dart';
+import 'package:front_mobile/src/widgets/app_bar/app_bar_mobile.dart';
+import 'package:front_mobile/src/widgets/app_bar/app_bar_tablet.dart';
+import 'package:front_mobile/src/widgets/app_bar/app_bar_web.dart';
+import 'package:front_mobile/src/widgets/login_page/Login_page_web.dart';
+import 'package:front_mobile/src/widgets/login_page/login_page_mobile.dart';
+import 'package:front_mobile/src/widgets/login_page/login_page_tablet.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

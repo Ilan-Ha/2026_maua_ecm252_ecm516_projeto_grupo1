@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_front_end/src/config/api_config.dart';
-import 'package:flutter_front_end/src/theme/textstyle.dart';
+import 'package:front_mobile/src/config/api_config.dart';
+import 'package:front_mobile/src/theme/textstyle.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:convert';

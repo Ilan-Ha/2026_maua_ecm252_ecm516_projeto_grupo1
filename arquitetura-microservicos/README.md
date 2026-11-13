@@ -1,141 +1,31 @@
-# 🛒 Plataforma de Reviews de Produtos
+# AllForOne — arquitetura de microsserviços
 
-![Web](https://img.shields.io/badge/Web-Platform-blue?style=for-the-badge) ![Build](https://img.shields.io/badge/Build-Passing-brightgreen)
+Camada ativa da solução (parte 2 do projeto). O monólito legado permanece em `/BACK-END` e `/FRONT-END`.
 
-Aplicação web em desenvolvimento para **busca e análise de avaliações de produtos**, permitindo que usuários encontrem opiniões confiáveis antes de realizar compras.  
-O sistema reúne reviews, notas e comentários de diferentes usuários em uma interface simples e eficiente.
+## Estrutura
 
-Projeto desenvolvido pelos integrantes da equipe durante o curso, com foco em aplicar conceitos de desenvolvimento web e experiência do usuário.
-
----
-
-## 🌐 Funcionalidade Principal
-
-Permitir que usuários:
- 
-- Façam cadastro
-- Façam login
-- Façam alterações de dados cadastrados
-
---- 
-
-## 🖥️ Telas principais
-
-- Página de login
-- Página de cadastro 
-- Página de perfil
-
----
-
-## ⚙️ Como usar
-
-1. Acesse o site.  
-2. Faça cadastro.  
-3. Faça login.  
-
----
-
-## ⚙️ Funcionalidades
-
-- 🔍 Criação de cadatro  
-- ⭐ Login do usuário
-
----
-
-## 🛠 Tecnologias
-
-- **Front-end:** React
-- **Back-end:** Node.js (JavaScript)
-- **Gerenciador de pacotes:** npm
-- **Versionamento:** Git / GitHub  
-
----
-
-## 🚀 Como Executar
-
-1. Clone o repositório:
-```bash
-git clone https://github.com/Ilan-Ha/2026_maua_ecm252_ecm516_projeto_grupo1
-```
-2. Acesse a pasta do projeto.
-
-3. Instale as dependências pelo terminal:
-```bash
-cd FRONT-END
-
-cd project
-
-npm install
+```text
+arquitetura-microservicos/
+├── api-shared-config.json   # contrato compartilhado (ports, paths, k8s)
+├── back-end/                # MSS Node: gateway, buses, auth, user, review, history
+│                            # catalog Node é legado de referência (deploy usa Dart)
+├── dart_back_end/
+│   └── catalog/             # MSS Dart de catálogo (produção / Docker / K8s)
+├── front_mobile/            # App Flutter (acesso a todas as APIs via gateway)
+└── front-end/               # Micro-frontends React (opcional / legado MSS)
 ```
 
-4. Execute Front-End:
-```bash
-npm run dev
-```
-5. Abra outro terminal e execute Back-End:
+## Fluxo
 
-```bash
-cd BACK-END
-
-Node back.js
+```text
+React (FRONT-END) ─┐
+                   ├─► API Gateway ─► auth | user | catalog(Dart) | review | history
+Flutter (front_mobile) ─┘              ↕ event-bus / request-bus
 ```
 
-6. Acesse no navegador:
+## Subir localmente
 
-http://localhost:5173
+- Sem cluster: `scripts/start-all.sh` (Node) + Flutter apontando para `http://localhost:10000`
+- Com Docker/K8s: ver seção no README da raiz (`create-all-images.sh`, `k8s-apply.sh`)
 
- ---
-
-## 💡 Melhorias Futuras
-
-- Página inicial (Seleção de categoria)  
-- Pesquisem produtos 
-- Especificações de produtos
-- Comentários de produtos no site
-- Autenticação de usuários
-- Histórico de produtos vistos
-- Histórico de avaliações do usuário
-- Integração com APIs externas (ex: Amazon, Mercado Livre)
-- Sistema de recomendação inteligente
-- Likes/dislikes em comentários
-- Ranking de produtos mais bem avaliados
-
----
-
-## ⚠️ Desafios e Aprendizados
-
-- Criação de interface intuitiva
-- Integração entre front-end e back-end
-- Trabalho em equipe
-- Padronização de código
-
----
-
-## 📄 Licença
-
-Este projeto está sem licença definida.
-
----
-
-## 👥 Integrantes
-
-Arthur Silva Correia
-23.00877-6
-
-Bruno Ferreira Nishiya
-23.01020-7
-
-Diego Mourão Oliveira
-23.01580-2
-
-Felipe Kolanian Pasquini
-23.00118-6 
-
-Ilan Hameiry
-23.00981-0
-
-Leonardo Luiz Seixas Iorio
-23.00847-7
-
-Luca Lopes Martinho
-23.00064-3
+Gateway é a **única** porta pública para os fronts.
