@@ -35,7 +35,7 @@ function App() {
         <Route path="/produto/:id" element={<DetalhesProduto />} />
         <Route path="/historico" element={<Historico />} />
         <Route path={svc.search.endpoints.search} element={<Search />}></Route>
-        <Route path={svc.auth.endpoints.register} element={<Cadastro />} />
+        <Route path={svc.auth.endpoints.register} element={<Cadastro setUsuario={setUsuario} />} />
         <Route path={svc.auth.endpoints.login} element={<Login setUsuario={setUsuario} />} />
         <Route path={svc.user.endpoints.perfil} element={<Perfil usuario={usuario} setUsuario={setUsuario} />} />
       </Routes>

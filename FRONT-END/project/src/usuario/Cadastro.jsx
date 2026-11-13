@@ -1,11 +1,13 @@
 import { useState } from "react";
 import Header from "../Header.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import config, { apiBase } from "../config";
 
-export default function Cadastro() {
+export default function Cadastro({ setUsuario }) {
   const svc = config.services.auth;
-  const url = apiBase + svc.endpoints.register;
+  const registerUrl = apiBase + svc.endpoints.register;
+  const loginUrl = apiBase + svc.endpoints.login;
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     nome: "",
@@ -30,7 +32,7 @@ export default function Cadastro() {
     setMensagem({ tipo: "", texto: "" });
 
     try {
-      const res = await fetch(url, {
+      const res = await fetch(registerUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,9 +50,36 @@ export default function Cadastro() {
         return;
       }
 
-      const data = await res.json();
-      setMensagem({ tipo: "success", texto: data.message });
-      setForm({ nome: "", email: "", senha: "", confirmarSenha: "" });
+      // Login automático e redireciona ao catálogo
+      const loginRes = await fetch(loginUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email, senha: form.senha }),
+      });
+      const loginData = await loginRes.json().catch(() => ({}));
+      if (!loginRes.ok) {
+        setMensagem({
+          tipo: "danger",
+          texto:
+            typeof loginData.message === "string"
+              ? loginData.message
+              : "Cadastro ok, mas o login automático falhou. Faça login.",
+        });
+        return;
+      }
+
+      const usuario = loginData.usuario || loginData.content?.usuario;
+      if (!usuario) {
+        setMensagem({
+          tipo: "danger",
+          texto: "Cadastro ok, mas a sessão não foi iniciada. Faça login.",
+        });
+        return;
+      }
+
+      setUsuario?.(usuario);
+      localStorage.setItem("usuario", JSON.stringify(usuario));
+      navigate("/");
     } catch {
       setMensagem({
         tipo: "danger",
