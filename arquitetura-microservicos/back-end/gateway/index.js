@@ -52,32 +52,43 @@ async function proxyToReview(method, targetPath, req, res) {
 
 app.get("/health", async (req, res) => {
   const checks = await Promise.allSettled([
-    axios.get(`${base}${clusterIp.catalog}:${svc.catalog}${paths.catalog.catalog}`, { timeout: 3000 }),
-    axios.get(`${base}${clusterIp.review}:${svc.review}/health`, { timeout: 3000 }).catch(() => null),
+    axios.get(`${base}${clusterIp.catalog}:${svc.catalog}/health`, { timeout: 3000 }),
+    axios.get(`${base}${clusterIp.auth}:${svc.auth}/health`, { timeout: 3000 }),
+    axios.get(`${base}${clusterIp.user}:${svc.user}/health`, { timeout: 3000 }),
+    axios.get(`${base}${clusterIp.review}:${svc.review}/health`, { timeout: 3000 }),
   ]);
 
-  const catalogOk =
-    checks[0].status === "fulfilled" &&
-    checks[0].value?.data?.error === false &&
-    checks[0].value?.data?.content;
-  const reviewDb =
-    checks[1].status === "fulfilled" && checks[1].value?.data?.db === true;
+  const ok = (result) =>
+    result.status === "fulfilled" &&
+    (result.value?.data?.backend === true ||
+      result.value?.data?.status === "ok" ||
+      result.value?.data?.db === true);
+
+  const catalogOk = ok(checks[0]);
+  const authOk = ok(checks[1]);
+  const userOk = ok(checks[2]);
+  const reviewOk = ok(checks[3]);
+  const dbOk = catalogOk || reviewOk;
 
   res.json({
     backend: true,
-    catalog: !!catalogOk,
-    db: !!catalogOk || reviewDb,
-    status: catalogOk ? "ok" : "degraded",
+    catalog: catalogOk,
+    auth: authOk,
+    user: userOk,
+    review: reviewOk,
+    db: dbOk,
+    status: catalogOk && authOk && userOk ? "ok" : "degraded",
   });
 });
 
 app.get("/health/db", async (req, res) => {
   try {
-    const response = await axios.get(`${base}${clusterIp.catalog}:${svc.catalog}${paths.catalog.catalog}`, {
-      timeout: 3000,
-    });
-    const ok = response.data?.error === false;
-    res.json({ db: ok, status: ok ? "ok" : "error" });
+    const response = await axios.get(
+      `${base}${clusterIp.catalog}:${svc.catalog}/health/db`,
+      { timeout: 3000 }
+    );
+    const ok = response.data?.db === true || response.data?.status === "ok";
+    res.json({ db: !!ok, status: ok ? "ok" : "error" });
   } catch {
     res.json({ db: false, status: "error" });
   }

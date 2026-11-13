@@ -364,6 +364,25 @@ app.post(paths.events.event, async (req, res) => {
 });
 // #endregion
 
+app.get("/health", (req, res) => {
+  const dbOk = mongoose.connection.readyState === 1;
+  res.json({
+    service: "auth",
+    backend: true,
+    db: dbOk,
+    status: dbOk ? "ok" : "degraded",
+  });
+});
+
+app.get("/health/db", (req, res) => {
+  const dbOk = mongoose.connection.readyState === 1;
+  res.json({
+    service: "auth",
+    db: dbOk,
+    status: dbOk ? "ok" : "error",
+  });
+});
+
 // #region Inicialização do servidor
 const startServer = async () => {
   try {
