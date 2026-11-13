@@ -96,7 +96,21 @@ app.get("/health/db", async (req, res) => {
 
 app.get(paths.catalog.catalog, async (req, res) => {
   try {
-    const response = await axios.get(`${base}${clusterIp.catalog}:${svc.catalog}${paths.catalog.catalog}`);
+    const response = await axios.get(
+      `${base}${clusterIp.catalog}:${svc.catalog}${paths.catalog.catalog}`,
+      { validateStatus: () => true, timeout: 15000 }
+    );
+    if (response.status >= 400) {
+      console.error("[gateway] Catálogo HTTP", response.status, response.data);
+      return res
+        .status(response.status)
+        .json({
+          error:
+            response.data?.message ||
+            response.data?.error ||
+            "Erro ao carregar catálogo",
+        });
+    }
     const { error, status, content, message } = returnData(response);
     if (error) {
       return res.status(status || 500).json({ error: message || "Erro ao carregar catálogo" });

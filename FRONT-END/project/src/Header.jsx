@@ -63,7 +63,7 @@ export default function Header() {
                   className="btn btn-outline-success ms-1 btn-header fw-semibold d-flex align-items-center gap-1"
                   style={{ borderColor: "#377f3f", color: "#377f3f" }}
                 >
-                  {usuario.nome.split(" ")[0]}
+                  {(usuario.nome || "Perfil").split(" ")[0]}
                 </button>
               </Link>
               <button onClick={handleLogout} className="btn btn-danger ms-1 btn-header">

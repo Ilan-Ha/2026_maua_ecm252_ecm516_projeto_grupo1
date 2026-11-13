@@ -10,7 +10,8 @@ dynamic jsonSafe(dynamic value) {
   if (value is Iterable) {
     return value.map(jsonSafe).toList();
   }
-  return value;
+  if (value is num || value is String || value is bool) return value;
+  return value.toString();
 }
 
 Map<String, dynamic> docToJson(Map<String, dynamic> doc) {

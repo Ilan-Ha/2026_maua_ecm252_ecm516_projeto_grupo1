@@ -1,14 +1,18 @@
+import 'dart:io';
+
 import 'package:mongo_dart/mongo_dart.dart';
 
 import '../mongo/json_utils.dart';
 
 class CatalogRepository {
-  CatalogRepository(this._db);
+  CatalogRepository({
+    required this.mongoUri,
+    required this.dbName,
+  });
 
-  final Db _db;
-
-  DbCollection get _categorias => _db.collection('categorias');
-  DbCollection get _produtos => _db.collection('produtos');
+  final String mongoUri;
+  final String dbName;
+  Db? _db;
 
   static const _seedCategorias = [
     {
@@ -37,55 +41,95 @@ class CatalogRepository {
     },
   ];
 
-  Future<void> ensureSeed() async {
-    for (final cat in _seedCategorias) {
-      final existing = await _categorias.findOne(where.eq('tag', cat['tag']));
-      if (existing == null) {
-        await _categorias.insertOne(Map<String, dynamic>.from(cat));
-      }
+  Future<Db> _connection({bool force = false}) async {
+    if (!force && _db != null && _db!.isConnected) {
+      return _db!;
     }
+    try {
+      await _db?.close();
+    } catch (_) {}
+
+    final db = Db(mongoUri);
+    db.databaseName = dbName;
+    await db.open();
+    _db = db;
+    return db;
+  }
+
+  Future<T> _withDb<T>(Future<T> Function(Db db) action) async {
+    try {
+      final db = await _connection();
+      return await action(db);
+    } catch (e) {
+      stderr.writeln('[catalog] Mongo falhou, tentando reconectar: $e');
+      final db = await _connection(force: true);
+      return await action(db);
+    }
+  }
+
+  Future<void> ensureSeed() async {
+    await _withDb((db) async {
+      final categorias = db.collection('categorias');
+      for (final cat in _seedCategorias) {
+        final existing =
+            await categorias.findOne(where.eq('tag', cat['tag']));
+        if (existing == null) {
+          await categorias.insertOne(Map<String, dynamic>.from(cat));
+        }
+      }
+    });
   }
 
   Future<Map<String, dynamic>> getCatalogo() async {
-    final categorias = await _categorias.find().toList();
-    final produtos = await _produtos.find().toList();
+    return _withDb((db) async {
+      final categorias = await db.collection('categorias').find().toList();
+      final produtos = await db.collection('produtos').find().toList();
 
-    final itens = <String, List<Map<String, dynamic>>>{};
-    for (final cat in categorias) {
-      final tag = (cat['tag'] as String?)?.trim() ?? '';
-      if (tag.isNotEmpty) itens[tag] = [];
-    }
+      final itens = <String, List<Map<String, dynamic>>>{};
+      for (final cat in categorias) {
+        final tag = (cat['tag'] as String?)?.trim() ?? '';
+        if (tag.isNotEmpty) itens[tag] = [];
+      }
 
-    for (final prod in produtos) {
-      final key = (prod['categoriaTag'] as String?)?.trim();
-      if (key == null || key.isEmpty) continue;
-      itens.putIfAbsent(key, () => []);
-      itens[key]!.add(docToJson(prod));
-    }
+      for (final prod in produtos) {
+        final key = (prod['categoriaTag'] as String?)?.trim();
+        if (key == null || key.isEmpty) continue;
+        itens.putIfAbsent(key, () => []);
+        itens[key]!.add(docToJson(prod));
+      }
 
-    return {
-      'Categorias': categorias.map(docToJson).toList(),
-      'Itens': itens,
-    };
+      return {
+        'Categorias': categorias.map(docToJson).toList(),
+        'Itens': itens,
+      };
+    });
   }
 
   Future<Map<String, dynamic>?> getProdutoById(String id) async {
-    ObjectId objectId;
-    try {
-      objectId = ObjectId.fromHexString(id);
-    } catch (_) {
-      rethrow;
-    }
-    final prod = await _produtos.findOne(where.id(objectId));
-    return prod == null ? null : docToJson(prod);
+    return _withDb((db) async {
+      final objectId = ObjectId.fromHexString(id);
+      final prod =
+          await db.collection('produtos').findOne(where.id(objectId));
+      return prod == null ? null : docToJson(prod);
+    });
   }
 
   Future<bool> isConnected() async {
     try {
-      await _db.collection('categorias').find(where.limit(1)).toList();
+      await _withDb((db) async {
+        await db.collection('categorias').find(where.limit(1)).toList();
+      });
       return true;
-    } catch (_) {
+    } catch (e) {
+      stderr.writeln('[catalog] health/db falhou: $e');
       return false;
     }
+  }
+
+  Future<void> close() async {
+    try {
+      await _db?.close();
+    } catch (_) {}
+    _db = null;
   }
 }

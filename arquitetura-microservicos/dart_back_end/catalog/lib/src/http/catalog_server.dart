@@ -49,7 +49,8 @@ class CatalogServer {
           'status': 200,
           'content': data,
         });
-      } catch (e) {
+      } catch (e, st) {
+        stderr.writeln('[catalog] GET /catalogo falhou: $e\n$st');
         return _json({
           'error': true,
           'status': 500,
