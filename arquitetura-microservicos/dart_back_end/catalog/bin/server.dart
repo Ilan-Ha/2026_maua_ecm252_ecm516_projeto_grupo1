@@ -1,40 +1,29 @@
-// ref: https://pub.dev/packages/mongo_dart
+import 'dart:async';
+import 'dart:io';
+
+import 'package:catalog/src/config/app_config.dart';
+import 'package:catalog/src/http/catalog_server.dart';
+import 'package:catalog/src/repositories/catalog_repository.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
-//#region schemas
-// const categoriaSchema = new mongoose.Schema({
-//   nome: String,
-//   tag: { type: String, unique: true },
-//   imagem: String
-// }, {collection: 'categorias'});
-// // Produto
-// const produtoSchema = new mongoose.Schema({
-//   nome: String,
-//   imagem: String,
-//   categoriaTag: { type: String, index: true },
-//   descricao: String,
-//   precoMedio: Number,
-//   lancamento: Number,
-//   marca: String,
-//   imagens: [String],
-//   especificacoes: Object,
-//   sitesCompra: [
-//     {
-//       loja: String,
-//       preco: Number,
-//       link: String
-//     }
-//   ]
-// }, {collection: 'produtos'});
-//#endregion
-var db = Db(
-  'mongodb://arthursilvacorreia199_db_user:diegoamaenxadas2@ac-7wuyakn-shard-00-00.7ybc0ug.mongodb.net:27017,ac-7wuyakn-shard-00-01.7ybc0ug.mongodb.net:27017,ac-7wuyakn-shard-00-02.7ybc0ug.mongodb.net:27017/?ssl=true&replicaSet=atlas-pfy2is-shard-0&authSource=admin&appName=ALLFORONE',
-);
-
-void main() async {
+Future<void> main(List<String> args) async {
+  final config = await AppConfig.load();
+  final db = Db(config.mongoUri);
+  db.databaseName = config.dbName;
   await db.open();
-  // var coll = db.collection('categorias');
-  // await coll.find().forEach((v)=>print(v));
-  var prod = db.collection('produtos');
-  await prod.find(where.limit(1)).forEach((v)=>print(v));
+
+  final repository = CatalogRepository(db);
+  final server = CatalogServer(config: config, repository: repository);
+
+  Future<void> shutdown(String signal) async {
+    stdout.writeln('Encerrando catalog ($signal)...');
+    await server.stop();
+    await db.close();
+    exit(0);
+  }
+
+  ProcessSignal.sigint.watch().listen((_) => shutdown('SIGINT'));
+  ProcessSignal.sigterm.watch().listen((_) => shutdown('SIGTERM'));
+
+  await server.start();
 }

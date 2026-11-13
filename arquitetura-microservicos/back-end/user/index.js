@@ -203,6 +203,25 @@ app.post(paths.events.event, async (req, res) => {
 });
 // #endregion
 
+app.get("/health", (req, res) => {
+  const dbOk = mongoose.connection.readyState === 1;
+  res.json({
+    service: "user",
+    backend: true,
+    db: dbOk,
+    status: dbOk ? "ok" : "degraded",
+  });
+});
+
+app.get("/health/db", (req, res) => {
+  const dbOk = mongoose.connection.readyState === 1;
+  res.json({
+    service: "user",
+    db: dbOk,
+    status: dbOk ? "ok" : "error",
+  });
+});
+
 // #region endpoint de requisições
 app.post(paths.requests.request, async (req, res) => {
   const {request, payload} = req.body

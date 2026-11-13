@@ -1,5 +1,3 @@
-import 'package:catalog/catalog.dart' as catalog;
+import 'server.dart' as server;
 
-void main(List<String> arguments) {
-  print('Hello world: ${catalog.calculate()}!');
-}
+Future<void> main(List<String> arguments) => server.main(arguments);
