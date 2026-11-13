@@ -7,7 +7,9 @@ import 'package:front_mobile/src/services/catalog_service.dart';
 import 'package:front_mobile/src/services/history_service.dart';
 import 'package:front_mobile/src/services/review_service.dart';
 import 'package:front_mobile/src/state/session_scope.dart';
+import 'package:front_mobile/src/theme/brand.dart';
 import 'package:front_mobile/src/widgets/app_shell.dart';
+import 'package:front_mobile/src/widgets/network_image_view.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key, required this.productId});
@@ -138,17 +140,30 @@ class _ProductPageState extends State<ProductPage> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        if (p.imagem.isNotEmpty)
-          AspectRatio(
-            aspectRatio: 16 / 10,
-            child: Image.network(p.imagem, fit: BoxFit.contain),
+        AspectRatio(
+          aspectRatio: 16 / 10,
+          child: NetworkImageView(
+            url: p.imagem,
+            fit: BoxFit.contain,
+            borderRadius: 12,
           ),
+        ),
         const SizedBox(height: 12),
-        Text(p.nome, style: Theme.of(context).textTheme.headlineSmall),
+        Text(
+          p.nome,
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Brand.greenDark,
+                fontWeight: FontWeight.w700,
+              ),
+        ),
         Text('${p.marca} · ${p.lancamento}'),
         Text(
           'Preço médio: R\$ ${p.precoMedio.toStringAsFixed(2)}',
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: Brand.green,
+          ),
         ),
         const SizedBox(height: 8),
         Text(p.descricao),
@@ -189,7 +204,7 @@ class _ProductPageState extends State<ProductPage> {
                 onPressed: () => setState(() => _estrelas = n),
                 icon: Icon(
                   n <= _estrelas ? Icons.star : Icons.star_border,
-                  color: const Color(0xFF377F3F),
+                  color: Brand.green,
                 ),
               );
             }),

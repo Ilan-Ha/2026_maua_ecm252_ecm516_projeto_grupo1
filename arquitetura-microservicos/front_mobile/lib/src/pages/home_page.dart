@@ -5,7 +5,9 @@ import 'package:front_mobile/src/models/categoria.dart';
 import 'package:front_mobile/src/models/produto.dart';
 import 'package:front_mobile/src/services/api_client.dart';
 import 'package:front_mobile/src/services/catalog_service.dart';
+import 'package:front_mobile/src/theme/brand.dart';
 import 'package:front_mobile/src/widgets/app_shell.dart';
+import 'package:front_mobile/src/widgets/network_image_view.dart';
 import 'package:front_mobile/src/widgets/product_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -68,7 +70,11 @@ class _HomePageState extends State<HomePage> {
               children: [
                 const Text(
                   'CATEGORIAS DE PRODUTOS',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Brand.greenDark,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -79,8 +85,11 @@ class _HomePageState extends State<HomePage> {
                 TextField(
                   decoration: const InputDecoration(
                     hintText: 'Buscar categoria',
-                    prefixIcon: Icon(Icons.search),
+                    prefixIcon: Icon(Icons.search, color: Brand.green),
                     border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Brand.green, width: 2),
+                    ),
                   ),
                   onChanged: (v) => setState(() => _search = v),
                 ),
@@ -132,16 +141,21 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             Expanded(
-              child: Image.network(
-                cat.imagem,
+              child: NetworkImageView(
+                url: cat.imagem,
                 fit: BoxFit.cover,
-                width: double.infinity,
-                errorBuilder: (_, __, ___) => const Icon(Icons.category),
+                borderRadius: 0,
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8),
-              child: Text(cat.nome, style: const TextStyle(fontWeight: FontWeight.w600)),
+              child: Text(
+                cat.nome,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Brand.greenDark,
+                ),
+              ),
             ),
           ],
         ),

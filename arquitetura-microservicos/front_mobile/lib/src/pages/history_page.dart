@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:front_mobile/src/config/routes.dart';
 import 'package:front_mobile/src/services/history_service.dart';
+import 'package:front_mobile/src/theme/brand.dart';
 import 'package:front_mobile/src/widgets/app_shell.dart';
+import 'package:front_mobile/src/widgets/network_image_view.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -39,13 +41,17 @@ class _HistoryPageState extends State<HistoryPage> {
           : Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.fromLTRB(16, 12, 8, 8),
                   child: Row(
                     children: [
                       const Expanded(
                         child: Text(
-                          'Produtos visualizados neste dispositivo',
-                          style: TextStyle(fontWeight: FontWeight.w600),
+                          'Produtos visualizados',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                            color: Brand.greenDark,
+                          ),
                         ),
                       ),
                       TextButton(
@@ -63,29 +69,62 @@ class _HistoryPageState extends State<HistoryPage> {
                 Expanded(
                   child: _items.isEmpty
                       ? const Center(child: Text('Nenhum produto no histórico'))
-                      : ListView.builder(
+                      : ListView.separated(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
                           itemCount: _items.length,
+                          separatorBuilder: (_, __) => const SizedBox(height: 8),
                           itemBuilder: (_, i) {
                             final item = _items[i];
-                            return ListTile(
-                              leading: item['imagem'] == null ||
-                                      '${item['imagem']}'.isEmpty
-                                  ? const Icon(Icons.image)
-                                  : Image.network(
-                                      '${item['imagem']}',
-                                      width: 48,
-                                      height: 48,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) =>
-                                          const Icon(Icons.broken_image),
-                                    ),
-                              title: Text('${item['nome'] ?? ''}'),
-                              subtitle: Text(
-                                '${item['marca'] ?? ''} · R\$ ${(item['precoMedio'] as num?)?.toStringAsFixed(2) ?? '0.00'}',
-                              ),
-                              onTap: () => Navigator.pushNamed(
-                                context,
-                                '${AppRoutes.product}/${item['_id']}',
+                            return Material(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(12),
+                                onTap: () => Navigator.pushNamed(
+                                  context,
+                                  '${AppRoutes.product}/${item['_id']}',
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Row(
+                                    children: [
+                                      NetworkImageView(
+                                        url: '${item['imagem'] ?? ''}',
+                                        width: 64,
+                                        height: 64,
+                                        fit: BoxFit.contain,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${item['nome'] ?? ''}',
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              '${item['marca'] ?? ''} · R\$ ${(item['precoMedio'] as num?)?.toStringAsFixed(2) ?? '0.00'}',
+                                              style: TextStyle(
+                                                color: Colors.grey.shade700,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const Icon(
+                                        Icons.chevron_right,
+                                        color: Brand.green,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             );
                           },
