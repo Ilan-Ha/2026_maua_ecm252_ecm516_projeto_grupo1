@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:front_mobile/src/config/routes.dart';
 import 'package:front_mobile/src/services/api_client.dart';
 import 'package:front_mobile/src/services/auth_service.dart';
+import 'package:front_mobile/src/state/session_scope.dart';
+import 'package:front_mobile/src/theme/brand.dart';
 import 'package:front_mobile/src/widgets/app_shell.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -19,7 +21,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final _confirmar = TextEditingController();
   bool _loading = false;
   String? _message;
-  bool _success = false;
 
   @override
   void dispose() {
@@ -32,36 +33,37 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<void> _submit() async {
     if (_senha.text != _confirmar.text) {
-      setState(() {
-        _success = false;
-        _message = 'As senhas não coincidem';
-      });
+      setState(() => _message = 'As senhas não coincidem');
       return;
     }
     setState(() {
       _loading = true;
       _message = null;
     });
+
+    final nome = _nome.text.trim();
+    final email = _email.text.trim();
+    final senha = _senha.text;
+    final confirmar = _confirmar.text;
+
     try {
-      final msg = await _auth.register(
-        nome: _nome.text.trim(),
-        email: _email.text.trim(),
-        senha: _senha.text,
-        confirmarSenha: _confirmar.text,
+      await _auth.register(
+        nome: nome,
+        email: email,
+        senha: senha,
+        confirmarSenha: confirmar,
       );
-      setState(() {
-        _success = true;
-        _message = msg;
-        _nome.clear();
-        _email.clear();
-        _senha.clear();
-        _confirmar.clear();
-      });
+
+      // Login automático após cadastro bem-sucedido
+      final user = await _auth.login(email: email, senha: senha);
+      if (!mounted) return;
+      await SessionScope.of(context).setUsuario(user);
+      if (!mounted) return;
+
+      AppShellNav.go(context, AppRoutes.home);
     } catch (e) {
-      setState(() {
-        _success = false;
-        _message = '$e';
-      });
+      if (!mounted) return;
+      setState(() => _message = '$e');
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -77,7 +79,14 @@ class _RegisterPageState extends State<RegisterPage> {
           child: ListView(
             padding: const EdgeInsets.all(24),
             children: [
-              const Text('Criar conta', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+              const Text(
+                'Criar conta',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Brand.greenDark,
+                ),
+              ),
               const SizedBox(height: 16),
               TextField(
                 controller: _nome,
@@ -93,6 +102,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
+                keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 12),
               TextField(
@@ -114,16 +124,13 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               const SizedBox(height: 16),
               if (_message != null)
-                Text(
-                  _message!,
-                  style: TextStyle(color: _success ? Colors.green : Colors.red),
-                ),
+                Text(_message!, style: const TextStyle(color: Colors.red)),
               FilledButton(
                 onPressed: _loading ? null : _submit,
                 child: Text(_loading ? 'Cadastrando...' : 'Cadastrar'),
               ),
               TextButton(
-                onPressed: () => Navigator.pushNamed(context, AppRoutes.login),
+                onPressed: () => AppShellNav.go(context, AppRoutes.login),
                 child: const Text('Já tenho conta'),
               ),
             ],
