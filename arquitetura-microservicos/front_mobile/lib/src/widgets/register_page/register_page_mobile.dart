@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_front_end/src/config/page_routes.dart';
+import 'package:front_mobile/src/config/page_routes.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterPageMobile extends StatelessWidget {
