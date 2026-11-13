@@ -57,3 +57,4 @@ spec:
       protocol: TCP
       port: 10000
       targetPort: 10000
+      nodePort: 32371

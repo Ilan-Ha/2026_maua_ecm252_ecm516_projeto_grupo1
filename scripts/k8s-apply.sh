@@ -16,6 +16,17 @@ MANIFESTS=(
   k8s/history.yaml
   k8s/gateway.yaml
 )
+# Nomes reais dos Deployments nos manifests (sufixo -deployment)
+DEPLOYMENTS=(
+  event-bus-deployment
+  request-bus-deployment
+  auth-deployment
+  user-deployment
+  catalog-deployment
+  review-deployment
+  history-deployment
+  gateway-deployment
+)
 
 if ! command -v kubectl >/dev/null 2>&1; then
   echo "Erro: kubectl não encontrado."
@@ -75,12 +86,21 @@ for f in "${MANIFESTS[@]}"; do
 done
 
 echo "Aguardando Deployments..."
-for name in event-bus request-bus auth user catalog review history gateway; do
+for name in "${DEPLOYMENTS[@]}"; do
   kubectl -n "$NAMESPACE" rollout status "deployment/${name}" --timeout=180s || true
 done
 
 echo
 kubectl -n "$NAMESPACE" get pods,svc
 echo
-echo "Gateway health (hostPort 10000): curl -s http://localhost:10000/health"
-echo "Se algum MSS falhou ao se inscrever no event-bus no boot, reinicie o pod: kubectl -n ${NAMESPACE} rollout restart deployment/<nome>"
+
+NODE_PORT="$(kubectl -n "$NAMESPACE" get svc gateway-nodeport-service -o jsonpath='{.spec.ports[0].nodePort}' 2>/dev/null || true)"
+if [[ -n "${NODE_PORT}" ]]; then
+  echo "Gateway NodePort: http://localhost:${NODE_PORT}"
+  echo "Health: curl -s http://localhost:${NODE_PORT}/health"
+else
+  echo "Gateway NodePort não encontrado — confira: kubectl -n ${NAMESPACE} get svc"
+fi
+
+echo "Se algum MSS falhou ao se inscrever no event-bus no boot:"
+echo "  kubectl -n ${NAMESPACE} rollout restart deployment/<nome>-deployment"
