@@ -1,17 +1,25 @@
-# flutter_front_end
+# AllForOne — front_mobile (Flutter)
 
-A new Flutter project.
+Aplicação mobile Flutter com acesso gráfico a todas as funcionalidades do back-end via API Gateway.
 
-## Getting Started
+## Telas
 
-This project is a starting point for a Flutter application.
+- Catálogo (categorias + produtos)
+- Detalhe do produto + reviews
+- Comparação de produtos
+- Histórico local
+- Cadastro / Login / Perfil
+- Indicador de health (API/DB)
 
-A few resources to get you started if this is your first Flutter project:
+## Executar
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+```bash
+cd arquitetura-microservicos/front_mobile
+flutter pub get
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Gateway Kubernetes (NodePort padrão)
+flutter run -d chrome
+
+# Gateway local sem k8s
+flutter run -d chrome --dart-define=GATEWAY_BASE=http://localhost:10000
+```

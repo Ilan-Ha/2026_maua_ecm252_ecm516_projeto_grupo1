@@ -1,3 +1,2 @@
-
-var breakpointMobile = 800;
-var breakpointTablet = 1000;
+const breakpointMobile = 800.0;
+const breakpointTablet = 1000.0;

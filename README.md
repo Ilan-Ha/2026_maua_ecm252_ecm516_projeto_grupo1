@@ -7,10 +7,13 @@ x -> api-shared-config
 # 🛒 AllForOne — Plataforma de Comparação e Reviews de Produtos
 
 ![React](https://img.shields.io/badge/React-Frontend-61DAFB?logo=react)
+![Flutter](https://img.shields.io/badge/Flutter-Mobile-02569B?logo=flutter)
 ![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?logo=node.js)
+![Dart](https://img.shields.io/badge/Dart-Catalog%20MSS-0175C2?logo=dart)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?logo=mongodb)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-Local-326CE5?logo=kubernetes)
 ![Microservices](https://img.shields.io/badge/Architecture-Microservices-blue)
-![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-orange)
+![Status](https://img.shields.io/badge/Status-Parte%202%20consolidada-success)
 
 Aplicação web desenvolvida durante as disciplinas **ECM252** e **ECM516** do **Instituto Mauá de Tecnologia**, com foco em desenvolvimento web full stack, persistência de dados, integração entre front-end e back-end e evolução para uma arquitetura baseada em microsserviços.
 
@@ -132,30 +135,20 @@ Nesta versão:
 
 ---
 
-## 2️⃣ Arquitetura de Microsserviços
+## 2️⃣ Arquitetura de Microsserviços (ativa)
 
 ```text
 arquitetura-microservicos/
-│
-├── back-end/
-│   ├── auth/
-│   ├── catalog/
-│   ├── event-bus/
-│   ├── gateway/
-│   ├── request-bus/
-│   ├── user/
-│   └── utils/
-│
-├── front-end/
-│   ├── auth/
-│   ├── catalog/
-│   ├── shell/
-│   ├── user/
-│   └── config.js
-│
 ├── api-shared-config.json
-└── README.md
+├── back-end/                 # MSS Node: gateway, buses, auth, user, review, history
+│                             # catalog Node = legado (deploy usa Dart)
+├── dart_back_end/
+│   └── catalog/              # MSS Dart de catálogo (produção Docker/K8s)
+├── front_mobile/             # Flutter — paridade com o React via gateway
+└── front-end/                # micro-fronts React (opcional)
 ```
+
+Fluxo: **React** (`FRONT-END`) e **Flutter** (`front_mobile`) → **API Gateway** → microsserviços.
 
 Essa estrutura promove:
 
@@ -163,6 +156,7 @@ Essa estrutura promove:
 - Escalabilidade
 - Baixo acoplamento
 - Comunicação síncrona e assíncrona entre serviços
+- Entrega parte 2: Docker/K8s + Dart + Flutter
 
 ---
 
@@ -456,7 +450,9 @@ npm run dev
 
 Requisitos: Docker Desktop com **Kubernetes** habilitado, `.env` na raiz com `MONGO_URI`, e `kubectl` no PATH.
 
-As imagens usam `arquitetura-microservicos/` (Dockerfiles por serviço). A config compartilhada aponta `url` para `http://host.docker.internal` para os containers/pods se comunicarem pelas portas publicadas no host.
+As imagens usam `arquitetura-microservicos/` (Dockerfiles por serviço Node + Dockerfile Dart do catalog). A config compartilhada aponta `url` para `http://host.docker.internal` para os containers/pods se comunicarem pelas portas publicadas no host.
+
+O **catalog em produção** é o microsserviço Dart (`dart_back_end/catalog`). O catalog Node permanece só como referência.
 
 ## Build e run com Docker
 
@@ -481,6 +477,17 @@ Verificação:
 ```bash
 kubectl -n allforone get pods
 curl -s http://localhost:10000/health
+# Frontends no cluster: gateway NodePort (ex.: 32371) — ver `kubectl -n allforone get svc`
+```
+
+## Flutter (`front_mobile`)
+
+```bash
+cd arquitetura-microservicos/front_mobile
+flutter pub get
+flutter run -d chrome --dart-define=GATEWAY_BASE=http://localhost:32371
+# sem k8s:
+# flutter run -d chrome --dart-define=GATEWAY_BASE=http://localhost:10000
 ```
 
 Remover o stack:
@@ -522,12 +529,18 @@ Template do Secret (sem credenciais reais): `k8s/secret-mongo.yaml.example`.
 
 # 📡 Principais Rotas
 
-## Gateway
+## Gateway (contrato dos fronts)
 
 | Método | Rota |
 |----------|----------|
-| POST | `/requisicao` |
-| GET | `/requisicao` |
+| GET | `/health`, `/health/db` |
+| GET | `/catalogo` |
+| GET | `/produto/:id` |
+| POST | `/cadastro`, `/login` |
+| PUT | `/perfil` |
+| GET | `/reviews/produto/:produtoId` |
+| POST | `/reviews` |
+| POST/GET | `/requisicao` |
 
 ---
 
@@ -614,6 +627,9 @@ O sistema utiliza **MongoDB** com **Mongoose**.
 - Organização em microsserviços
 - Dockerfiles e scripts de imagens
 - Manifests e scripts Kubernetes (deploy local)
+- Microsserviço **catalog em Dart**
+- Front mobile **Flutter** com paridade das funcionalidades do React
+- Reviews (listar/criar via gateway)
 
 ---
 
@@ -623,17 +639,16 @@ O sistema utiliza **MongoDB** com **Mongoose**.
 - [x] Script único de inicialização (`scripts/start-all.sh`)
 - [x] Docker (Dockerfiles + `scripts/create-all-images.sh` / `run-all-images.sh`)
 - [x] Kubernetes local (`k8s/` + `scripts/k8s-apply.sh` / `k8s-delete.sh`)
+- [x] Microsserviço Dart (catalog)
+- [x] Flutter front_mobile
 - [ ] Docker Compose
-- [ ] Testes automatizados
+- [ ] Testes automatizados amplos
 - [ ] JWT
-- [ ] Persistência do histórico
-- [ ] Sistema de reviews
-- [ ] Avaliações por nota
+- [ ] Persistência server-side do histórico
 - [ ] Integração com APIs externas
 - [ ] Ranking de produtos
 - [ ] Likes e dislikes
 - [ ] Sistema de recomendação
-- [ ] Tratamento global de erros
 - [ ] Diagramas de arquitetura
 
 ---
