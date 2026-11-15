@@ -663,7 +663,7 @@ Este projeto atualmente **não possui licença definida**.
 
 # 🎥 Apresentação em Vídeo do Projeto
 
-Disponível em: [https://youtu.be/McrE0af-nmk](https://youtu.be/McrE0af-nmk)
+Disponível em: [https://youtu.be/lbm-7-gFWu8](https://youtu.be/lbm-7-gFWu8)
 
 ---
 
